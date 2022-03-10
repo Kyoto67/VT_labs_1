@@ -29,3 +29,8 @@ out/
 *.iml
 *.iws
 *.ipr
+
+# sub-products from LaTeX compiling
+*.log
+*.aux
+*.synctex.gz
