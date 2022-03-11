@@ -1,0 +1,25 @@
+int i = (int) (Math.random() * 5);
+        try {
+            clouds[(int) (Math.random() * 5)].riding((Mumintroll) snusmumrik);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+                i = (int) (Math.random() * 5);
+            }
+            clouds[i].riding((Mumintroll) snusmumrik);
+        }
+        try {
+            clouds[(int) (Math.random() * 5)].riding((Mumintroll) frekensnork);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+                i = (int) (Math.random() * 5);
+            }
+            clouds[i].riding((Mumintroll) frekensnork);
+        }
+        try {
+            clouds[(int) (Math.random() * 5)].riding((Mumintroll) papa);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+                i = (int) (Math.random() * 5);
+            }
+            clouds[i].riding((Mumintroll) papa);
+        }
