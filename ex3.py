@@ -1,0 +1,15 @@
+import re,codecs
+fileObj = codecs.open(r"C:\edu\inf\lab4\Thursday schedule.xml", "r", "utf_8_sig" )
+fileResult= open(r"C:\edu\inf\lab4\result with reg.txt", 'w')
+file=fileObj.read()
+who=re.search(r'[А-Я]\w+\s[А-Я]\w+\s[А-Я]\w+',file).group()
+d=re.findall(r'<title>\w+</title>',file)
+day=re.search(r'[а-я]\w+',d[0], flags=re.IGNORECASE).group()
+when=re.search(r'\d\d:\d\d-\d\d:\d\d', file).group()
+where=re.search(r'\d\d\d\s\w+',file).group()
+address=re.search(r'[А-Я]\w+\s[а-я]\D+\d+\D+\s',file).group()
+science=re.search(r'[А-Я]\w+\s[а-я]\w{5,}',file).group()
+result=day+'\n'+when+'\n'+address+'\n'+where+'\n'+who+'\n'+science
+fileResult.write(result)
+fileObj.close()
+fileResult.close()
