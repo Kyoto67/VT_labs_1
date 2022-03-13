@@ -62,47 +62,51 @@
 \begin{center}
     \begin{tabular}{|c|c|c|l|}
         \hline
-        \textbf{Cell Address} & \textbf{Cell Content} & \textbf{Mnemonics} & \textbf{Comments}                                    \\
+        \textbf{Cell Address} & \textbf{Cell Content} & \textbf{Mnemonics} & \textbf{Comments}                                            \\
         \hline
-        71D                   & AC01                  & LD (SP+1)         & Загрузка в аккумулятор последнего сохранённого в стек числа.    \\
-        71E                   & F001                  & BEQ (IP+1)        & IF Z==1 THEN 720 -> IP (skip next). \\
-        71F                   & F304                  & BPL (IP+4)        & IF N==0 THEN 724 -> IP. \\
-        720                   & 6E0A                  & SUB (IP+10)       & AC-MEM(72B). \\
-        721                   & F201                  & BMI (IP+1)        & IF N==1 THEN 723 -> IP (skip next). \\
-        722                   & CE05                  & JUMP (IP+5)       & 728 -> IP. \\
-        723                   & 4E07                  & ADD (IP+7)        & Сложение с аккумулятором значения из ячейки 72B (V). \\
-        724                   & 0500                  & ASL               & Арифметический сдвиг влево \\
-        725                   & 0500                  & ASL               & (AC_{15} -> C; AC_{i} = AC_{i-1}; 0 -> AC_{0}). \\
-        726                   & 6E05                  & SUB (IP+5)        & Вычитание из аккумулятора значение ячейки 72C (B). \\
-        727                   & CE01                  & JUMP (IP+1)       & 729 -> IP (skip next). \\
-        728                   & AE02                  & LD (IP+2)         & Загрузка в аккумулятор значения ячейки 72B (V). \\
-        729                   & EC01                  & ST (SP+1)         & Сохранение результата в стек (SP)+. \\
-        72A                   & 0A00                  & RET               & Возвращение из подпрограммы. \\
+        71D                   & AC01                  & LD (SP+1)          & Загрузка в аккумулятор последнего сохранённого в стек числа. \\
+        71E                   & F001                  & BEQ (IP+1)         & IF Z==1 THEN 720 -> IP (skip next).                          \\
+        71F                   & F304                  & BPL (IP+4)         & IF N==0 THEN 724 -> IP.                                      \\
+        720                   & 6E0A                  & SUB (IP+10)        & AC-MEM(72B).                                                 \\
+        721                   & F201                  & BMI (IP+1)         & IF N==1 THEN 723 -> IP (skip next).                          \\
+        722                   & CE05                  & JUMP (IP+5)        & 728 -> IP.                                                   \\
+        723                   & 4E07                  & ADD (IP+7)         & Сложение с аккумулятором значения из ячейки 72B (V).         \\
+        724                   & 0500                  & ASL                & Арифметический сдвиг влево                                   \\
+        725                   & 0500                  & ASL                & (AC_{15} -> C; AC_{i} = AC_{i-1}; 0 -> AC_{0}).              \\
+        726                   & 6E05                  & SUB (IP+5)         & Вычитание из аккумулятора значение ячейки 72C (B).           \\
+        727                   & CE01                  & JUMP (IP+1)        & 729 -> IP (skip next).                                       \\
+        728                   & AE02                  & LD (IP+2)          & Загрузка в аккумулятор значения ячейки 72B (V).              \\
+        729                   & EC01                  & ST (SP+1)          & Сохранение результата в стек (SP)+.                          \\
+        72A                   & 0A00                  & RET                & Возвращение из подпрограммы.                                 \\
         \hline
-        72B                   & FF06                  & V                 & Локальная переменная подпрограммы (-250). \\
-        72C                   & 0027                  & B                 & Локальная переменная подпрограммы (39). \\
+        72B                   & FF06                  & V                  & Локальная переменная подпрограммы (-250).                    \\
+        72C                   & 0027                  & B                  & Локальная переменная подпрограммы (39).                      \\
         \hline
     \end{tabular}
 \end{center}
 
+
 \section{Функция, реализуемая программой}
+
 \subsection{Основная программа:}
 \begin{center}
     \textit{R (X, Y, Z) = F(X+1) + F(Z-1) + F(Y-1) - 1 .}
 \end{center}
+
 \subsection{Подпрограмма:}
 \begin{center}
     \begin{equation*}
-    \textit{
-    F(X)=
-    \begin{cases}
-        4X - 39 &\text{, if X < -250 ;}\\
-        -250 &\text{, if -250 $\leqslant$ X $\leqslant$ 0 ;}\\
-        4X - 39 &\text{, if X > 0 .}\\
-    \end{cases}
-    }
+        \textit{
+            F(t)=
+            \begin{cases}
+                4t - 39 &\text{, if t < -250 ;}\\
+                -250 &\text{, if -250 $\leqslant$ t $\leqslant$ 0 ;}\\
+                4t - 39 &\text{, if t > 0 .}\\
+            \end{cases}
+        }
     \end{equation*}
 \end{center}
+
 \subsection{График функции подпрограммы:}
 \begin{figure}[H]
     \centering
@@ -111,40 +115,55 @@
 
 \newpage
 
+
 \section{Область представления данных и область допустимых значений}
+
 \subsection{Область представления:}
 В ячейках X, Y, Z, V, B, R находятся знаковые 16теричные целые числа.
+
 \subsection{ОДЗ}
+
 \subsubsection{Подпрограммы:}
 \begin{equation*}
     \begin{center}
-F(x) $\in$ [$\frac{-2^{15}+1}{3}$;$\frac{2^{15}}{3}$]
-\end{center}
-    \end{equation*}
+        F(x) $\in$ [$\frac{-2^{15}+1}{3}$;$\frac{2^{15}}{3}$]
+    \end{center}
+\end{equation*}
+
 \subsubsection{X:}
 \begin{equation*}
     \begin{center}
-$\frac{-2^{15}+1}{12} + 38 \leqslant X \leqslant \frac{2^{15}}{12} + 38$
-\end{center}
-    \end{equation*}
+        $\frac{-2^{15}+118}{12} - 1 \leqslant X \leqslant \frac{2^{15}+117}{12} - 1$\\
+        or\\
+        $-2721 \leqslant X \leqslant 2739 $
+    \end{center}
+\end{equation*}
+
 \subsubsection{Y:}
 \begin{equation*}
     \begin{center}
-$\frac{-2^{15}+1}{12} + 40 \leqslant Y \leqslant \frac{2^{15}}{12} + 40$
-\end{center}
-    \end{equation*}
+        $\frac{-2^{15}+118}{12} + 1 \leqslant Y \leqslant \frac{2^{15}+117}{12} + 1$\\
+        or\\
+        $-2719 \leqslant Y \leqslant 2741 $
+    \end{center}
+\end{equation*}
+
 \subsubsection{Z:}
 \begin{equation*}
     \begin{center}
-$\frac{-2^{15}+1}{12} + 40 \leqslant Z \leqslant \frac{2^{15}}{12} + 40$
-\end{center}
-    \end{equation*}
+        $\frac{-2^{15}+118}{12} + 1 \leqslant Z \leqslant \frac{2^{15}+117}{12} + 1$\\
+        or\\
+        $-2719 \leqslant Z \leqslant 2741 $
+    \end{center}
+\end{equation*}
+
 \subsubsection{Результата:}
 \begin{equation*}
     \begin{center}
-$-2^{15} \leqslant R \leqslant 2^{15}-1$
-\end{center}
-    \end{equation*}
+        $-2^{15} \leqslant R \leqslant 2^{15}-1$
+    \end{center}
+\end{equation*}
+
 
 \section{Расположение программы в памяти БЭВМ:}
 \noindent\textit{Основной программы - \textbf{1D9-1F1} . \\
