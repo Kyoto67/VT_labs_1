@@ -2,7 +2,7 @@ package data;
 
 import java.util.Date;
 
-public class Movie implements Comparable<Movie>{
+public class Movie implements Comparable<Movie> {
 
     private long id;
     private String name;
@@ -13,29 +13,31 @@ public class Movie implements Comparable<Movie>{
     private MpaaRating mpaaRating;
     private Person director;
 
-    public Movie (long id, String name, Coordinates coordinates, Date creationDate, long oscarsCount,
-                  MovieGenre genre, MpaaRating mpaaRating, Person director){
-        this.id=id;
-        this.name=name;
-        this.coordinates=coordinates;
-        this.creationDate=creationDate;
-        this.oscarsCount=oscarsCount;
-        this.genre=genre;
-        this.mpaaRating=mpaaRating;
-        this.director=director;
+    public Movie(long id, String name, Coordinates coordinates, Date creationDate, long oscarsCount,
+                 MovieGenre genre, MpaaRating mpaaRating, Person director) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.creationDate = creationDate;
+        this.oscarsCount = oscarsCount;
+        this.genre = genre;
+        this.mpaaRating = mpaaRating;
+        this.director = director;
     }
 
-    public Movie(){}
+    public Movie() {
+    }
 
-    public long getId(){
+    public long getId() {
         return id;
     }
 
     @Override
-    public String toString(){
-        return "Идентификатор: "+getId()+". \n"+"Название фильма: "+getName()+". \n"+"Координаты: "+coordinates+". \n"+"Дата создания: "+creationDate+". \n"
-                +"Количество оскаров: "+oscarsCount+". \n"+"Жанр: "+genre+". \n"+"Возрастной рейтинг: "+mpaaRating+". \n"
-                +"Режиссёр: \n"+director+"\n";
+    public String toString() {
+        return "Идентификатор: " + getId() + ". \n" + "Название фильма: " + getName() + ". \n" + "Координаты: " + coordinates + ". \n" + "Дата создания: " + creationDate + ". \n"
+                + "Количество оскаров: " + oscarsCount + ". \n" + "Жанр: " + genre + ". \n" + "Возрастной рейтинг: " + mpaaRating + ". \n"
+                + "Режиссёр: \n" + director + "\n"
+                + "hashCode: " + this.hashCode()+". ";
     }
 
     public String getName() {
@@ -99,8 +101,12 @@ public class Movie implements Comparable<Movie>{
     }
 
     @Override
+    public int hashCode(){
+        return getCoordinates().hashCode()+getDirector().hashCode()+getName().length();
+    }
+
+    @Override
     public int compareTo(Movie movie) {
-        Long thisID = id;
-        return thisID.compareTo(movie.getId());
+        return this.hashCode()-movie.hashCode();
     }
 }

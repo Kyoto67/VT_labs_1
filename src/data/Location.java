@@ -51,4 +51,9 @@ public class Location {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int hashCode(){
+        return (int) (getX()+getY()+getZ());
+    }
 }

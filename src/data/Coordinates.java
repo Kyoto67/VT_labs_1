@@ -31,4 +31,9 @@ public class Coordinates {
     public void setY(Integer y) {
         this.y = y;
     }
+
+    @Override
+    public int hashCode(){
+        return (int) (getX()+getY());
+    }
 }

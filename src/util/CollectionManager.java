@@ -24,9 +24,7 @@ public class CollectionManager {
     public CollectionManager() throws IOException {
         createCollection();
         loadCollection("random.json");
-        for (long i=1; i<20; i++){
-            idList.add(i);
-        }
+        idList = FileManager.getIdList();
         type="PriorityQueue";
         initTime=LocalDateTime.now();
     }
@@ -51,7 +49,8 @@ public class CollectionManager {
     }
 
     /**
-     * Метод, используемый для тесто, оставлен для возможных тестов в будущем.
+     * Метод, используемый для тестов, оставлен для возможных тестов в будущем.
+     * Загружает определённую коллекцию (обычно небольшую и с заранее забитыми данными).
      * @param moviesCollection
      */
     public void loadTestCollection(PriorityQueue<Movie> moviesCollection) {
@@ -66,6 +65,7 @@ public class CollectionManager {
     public void replaceElementByID(Movie newMovie, long id) {
         removeElement(findElementByID(id));
         MoviesCollection.add(newMovie);
+        sortCollection();
     }
 
     /**
@@ -84,6 +84,7 @@ public class CollectionManager {
     public void removeElement(Movie movie){
         removeID(movie);
         MoviesCollection.remove(movie);
+        sortCollection();
     }
 
     /**
@@ -92,6 +93,7 @@ public class CollectionManager {
      */
     public void removeElementByID(long id){
         removeElement(findElementByID(id));
+        sortCollection();
     }
 
     /**
@@ -165,6 +167,7 @@ public class CollectionManager {
         while (!(findElementByOscarsCount(count)==null)) {
             removeElement(findElementByOscarsCount(count));
         }
+        sortCollection();
     }
 
     /**
@@ -232,6 +235,7 @@ public class CollectionManager {
      */
     public void removeElementByDirectorName(String directorName){
         removeElement(findElementByDirector(directorName));
+        sortCollection();
     }
 
     /**
@@ -242,6 +246,7 @@ public class CollectionManager {
         for (long i=1; i<id; i++){
             removeElement(findElementByID(i));
         }
+        sortCollection();
     }
 
     /**
@@ -252,6 +257,7 @@ public class CollectionManager {
         for (long i = (long) (MoviesCollection.size()); i > id ; i--){
             removeElement(findElementByID(i));
         }
+        sortCollection();
     }
 
     /**
@@ -331,5 +337,13 @@ public class CollectionManager {
             }
         }
         return false;
+    }
+
+    public void sortCollection(){
+        PriorityQueue<Movie> sortedCollection = new PriorityQueue<>();
+        for (Movie m : getMoviesCollection()){
+            sortedCollection.add(m);
+        }
+        MoviesCollection=sortedCollection;
     }
 }

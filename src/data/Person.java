@@ -73,4 +73,9 @@ public class Person {
         this.location = location;
     }
 
+    @Override
+    public int hashCode(){
+        return getLocation().hashCode()+getName().length();
+    }
+
 }

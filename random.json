@@ -1,0 +1,524 @@
+{
+	MovieCollection: [
+		{
+		"hashCode": "832"
+		"movieid": "8"
+		"moviename": "ppwjngmgkx"
+		"coordinates": {
+			"coordinates_x": "152.04562211568725"
+			"coordinates_y": "357"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "5014"
+		"genre": "ADVENTURE"
+		"mpaaRating": "PG"
+		"director": {
+			"directorname": "ncawcynykg"
+			"height": "37.368806806888365"
+			"eyeColor": "ORANGE"
+			"hairColor": "GREEN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "73.89660167800905"
+				"location_y": "69.15130254867333"
+				"location_z": "160.83977769130527"
+				"locationname": "xaaxfisplr"
+				}
+			}
+		},
+		{
+		"hashCode": "1143"
+		"movieid": "10"
+		"moviename": "dvcgkdllbj"
+		"coordinates": {
+			"coordinates_x": "388.1824782745956"
+			"coordinates_y": "404"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "153"
+		"genre": "ACTION"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "ildnyxykjr"
+			"height": "29.033239125488908"
+			"eyeColor": "ORANGE"
+			"hairColor": "BLACK"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "89.59422909321441"
+				"location_y": "26.739923203367898"
+				"location_z": "215.44794113188067"
+				"locationname": "pimlzzqurw"
+				}
+			}
+		},
+		{
+		"hashCode": "1450"
+		"movieid": "13"
+		"moviename": "ipotkgpswm"
+		"coordinates": {
+			"coordinates_x": "592.419838525114"
+			"coordinates_y": "21"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "2587"
+		"genre": "DRAMA"
+		"mpaaRating": "PG"
+		"director": {
+			"directorname": "liwumddxyf"
+			"height": "76.96522958927434"
+			"eyeColor": "GREEN"
+			"hairColor": "WHITE"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "207.19718002367915"
+				"location_y": "39.80641645992513"
+				"location_z": "570.9170942917441"
+				"locationname": "qdfikgruod"
+				}
+			}
+		},
+		{
+		"hashCode": "1624"
+		"movieid": "1"
+		"moviename": "vydgyvduli"
+		"coordinates": {
+			"coordinates_x": "499.81757977119065"
+			"coordinates_y": "567"
+			}
+		"creationDate": "1647357116846"
+		"oscarsCount": "3606"
+		"genre": "DRAMA"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "oostgynctp"
+			"height": "61.063568495071664"
+			"eyeColor": "ORANGE"
+			"hairColor": "WHITE"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "89.57396893570385"
+				"location_y": "195.94081987066485"
+				"location_z": "253.40120746379512"
+				"locationname": "erarxasbkh"
+				}
+			}
+		},
+		{
+		"hashCode": "1487"
+		"movieid": "9"
+		"moviename": "rhtssrilcb"
+		"coordinates": {
+			"coordinates_x": "309.5721033119061"
+			"coordinates_y": "400"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "6058"
+		"genre": "DRAMA"
+		"mpaaRating": "PG_13"
+		"director": {
+			"directorname": "arxhhwrmrg"
+			"height": "95.89394548143254"
+			"eyeColor": "BROWN"
+			"hairColor": "BROWN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "233.86580706136579"
+				"location_y": "109.5107324426089"
+				"location_z": "414.9408659824604"
+				"locationname": "uzpgbrqqef"
+				}
+			}
+		},
+		{
+		"hashCode": "1538"
+		"movieid": "12"
+		"moviename": "snwqppqyat"
+		"coordinates": {
+			"coordinates_x": "998.8200078968462"
+			"coordinates_y": "189"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "2558"
+		"genre": "DRAMA"
+		"mpaaRating": "PG_13"
+		"director": {
+			"directorname": "drupqwdyik"
+			"height": "17.854296432692763"
+			"eyeColor": "GREEN"
+			"hairColor": "BROWN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "73.9617213249289"
+				"location_y": "37.10365900611904"
+				"location_z": "220.36710206933193"
+				"locationname": "rdboddrsij"
+				}
+			}
+		},
+		{
+		"hashCode": "1571"
+		"movieid": "14"
+		"moviename": "iyqsvgealg"
+		"coordinates": {
+			"coordinates_x": "328.7587711248812"
+			"coordinates_y": "659"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "1908"
+		"genre": "ACTION"
+		"mpaaRating": "PG"
+		"director": {
+			"directorname": "bflgauntjc"
+			"height": "57.4932972842253"
+			"eyeColor": "YELLOW"
+			"hairColor": "BROWN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "410.1840975329518"
+				"location_y": "40.36739978204869"
+				"location_z": "114.40837640279004"
+				"locationname": "uorsqzvpzo"
+				}
+			}
+		},
+		{
+		"hashCode": "2041"
+		"movieid": "17"
+		"moviename": "nscahqwnck"
+		"coordinates": {
+			"coordinates_x": "660.7819313484829"
+			"coordinates_y": "642"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "4736"
+		"genre": "DRAMA"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "kvqngtgzsv"
+			"height": "55.85414751479208"
+			"eyeColor": "WHITE"
+			"hairColor": "ORANGE"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "135.9800831009741"
+				"location_y": "63.53802313940794"
+				"location_z": "519.5689203516417"
+				"locationname": "ugaxdmwjfv"
+				}
+			}
+		},
+		{
+		"hashCode": "1877"
+		"movieid": "19"
+		"moviename": "cgnhfdfmrz"
+		"coordinates": {
+			"coordinates_x": "296.6479677075817"
+			"coordinates_y": "724"
+			}
+		"creationDate": "1647357116853"
+		"oscarsCount": "9596"
+		"genre": "ADVENTURE"
+		"mpaaRating": "PG_13"
+		"director": {
+			"directorname": "gjunznacwg"
+			"height": "99.50866270658855"
+			"eyeColor": "ORANGE"
+			"hairColor": "WHITE"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "50.471165434455955"
+				"location_y": "175.00524755249168"
+				"location_z": "612.5086117353402"
+				"locationname": "lkpnfggekd"
+				}
+			}
+		},
+		{
+		"hashCode": "1618"
+		"movieid": "20"
+		"moviename": "rihncaryfj"
+		"coordinates": {
+			"coordinates_x": "982.4186277768839"
+			"coordinates_y": "138"
+			}
+		"creationDate": "1647357116853"
+		"oscarsCount": "3898"
+		"genre": "ADVENTURE"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "zdymlpfvzv"
+			"height": "94.0086228470959"
+			"eyeColor": "ORANGE"
+			"hairColor": "BLACK"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "192.13355091509354"
+				"location_y": "247.64117999035523"
+				"location_z": "39.050140157114576"
+				"locationname": "ppuazckjkl"
+				}
+			}
+		},
+		{
+		"hashCode": "1968"
+		"movieid": "11"
+		"moviename": "voxvlbumtj"
+		"coordinates": {
+			"coordinates_x": "406.8919996905141"
+			"coordinates_y": "352"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "9113"
+		"genre": "ACTION"
+		"mpaaRating": "PG"
+		"director": {
+			"directorname": "zaxgiruswf"
+			"height": "63.46525689509869"
+			"eyeColor": "BLACK"
+			"hairColor": "YELLOW"
+			"nationality": "JAPAN"
+			"location": {
+				"location_x": "452.46550127714943"
+				"location_y": "197.08044203010573"
+				"location_z": "541.1931232635875"
+				"locationname": "yewqfoozdz"
+				}
+			}
+		},
+		{
+		"hashCode": "2487"
+		"movieid": "3"
+		"moviename": "eosotphnlr"
+		"coordinates": {
+			"coordinates_x": "912.3080900635945"
+			"coordinates_y": "961"
+			}
+		"creationDate": "1647357116850"
+		"oscarsCount": "8685"
+		"genre": "ADVENTURE"
+		"mpaaRating": "PG"
+		"director": {
+			"directorname": "akrffwhfqf"
+			"height": "66.05339670033781"
+			"eyeColor": "GREEN"
+			"hairColor": "BROWN"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "57.051030535692995"
+				"location_y": "156.59446011410859"
+				"location_z": "380.35653901432"
+				"locationname": "kaqymifrwv"
+				}
+			}
+		},
+		{
+		"hashCode": "2085"
+		"movieid": "6"
+		"moviename": "lgmdtrrnsc"
+		"coordinates": {
+			"coordinates_x": "790.317653968045"
+			"coordinates_y": "611"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "5425"
+		"genre": "DRAMA"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "lcwqsuqqxu"
+			"height": "77.43021303944863"
+			"eyeColor": "WHITE"
+			"hairColor": "BROWN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "364.84410075409977"
+				"location_y": "225.11008545664697"
+				"location_z": "74.74387079646"
+				"locationname": "gwdrtkqbjx"
+				}
+			}
+		},
+		{
+		"hashCode": "2237"
+		"movieid": "7"
+		"moviename": "qlnvkegsoz"
+		"coordinates": {
+			"coordinates_x": "768.0851989343719"
+			"coordinates_y": "532"
+			}
+		"creationDate": "1647357116851"
+		"oscarsCount": "2826"
+		"genre": "DRAMA"
+		"mpaaRating": "PG_13"
+		"director": {
+			"directorname": "leechoxuxl"
+			"height": "97.52536541455711"
+			"eyeColor": "WHITE"
+			"hairColor": "GREEN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "349.88959394044866"
+				"location_y": "195.50173242430986"
+				"location_z": "372.21236496761253"
+				"locationname": "opsasgsgml"
+				}
+			}
+		},
+		{
+		"hashCode": "1810"
+		"movieid": "15"
+		"moviename": "dbwlwfubah"
+		"coordinates": {
+			"coordinates_x": "462.95957549889016"
+			"coordinates_y": "602"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "8866"
+		"genre": "ADVENTURE"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "lfliozzbqi"
+			"height": "94.78061555988496"
+			"eyeColor": "YELLOW"
+			"hairColor": "BLUE"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "439.32605018667795"
+				"location_y": "155.8421922935916"
+				"location_z": "131.76097088712007"
+				"locationname": "tyebgnbcix"
+				}
+			}
+		},
+		{
+		"hashCode": "2594"
+		"movieid": "4"
+		"moviename": "whzgkzqxpl"
+		"coordinates": {
+			"coordinates_x": "880.5824392408404"
+			"coordinates_y": "933"
+			}
+		"creationDate": "1647357116850"
+		"oscarsCount": "2548"
+		"genre": "DRAMA"
+		"mpaaRating": "PG_13"
+		"director": {
+			"directorname": "cabdtgodmd"
+			"height": "65.01351818459611"
+			"eyeColor": "ORANGE"
+			"hairColor": "BLACK"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "131.46654342962537"
+				"location_y": "177.23252074030395"
+				"location_z": "453.15540442741195"
+				"locationname": "urgiglfzkn"
+				}
+			}
+		},
+		{
+		"hashCode": "2225"
+		"movieid": "16"
+		"moviename": "dqmeitunaw"
+		"coordinates": {
+			"coordinates_x": "689.2225694741928"
+			"coordinates_y": "794"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "4396"
+		"genre": "ACTION"
+		"mpaaRating": "NC_17"
+		"director": {
+			"directorname": "gdkhqtxylv"
+			"height": "66.79817653524164"
+			"eyeColor": "BROWN"
+			"hairColor": "BLUE"
+			"nationality": "GERMANY"
+			"location": {
+				"location_x": "345.794629749398"
+				"location_y": "35.164753904030455"
+				"location_z": "341.28419110698417"
+				"locationname": "dunekjbxus"
+				}
+			}
+		},
+		{
+		"hashCode": "2678"
+		"movieid": "18"
+		"moviename": "jkbfvtnxpb"
+		"coordinates": {
+			"coordinates_x": "848.7075096429627"
+			"coordinates_y": "978"
+			}
+		"creationDate": "1647357116852"
+		"oscarsCount": "9711"
+		"genre": "DRAMA"
+		"mpaaRating": "R"
+		"director": {
+			"directorname": "mywpurmbpz"
+			"height": "29.446332178231728"
+			"eyeColor": "BROWN"
+			"hairColor": "GREEN"
+			"nationality": "NORTH_KOREA"
+			"location": {
+				"location_x": "90.11700998188732"
+				"location_y": "188.63608892577244"
+				"location_z": "554.0587543668148"
+				"locationname": "xynmrcpkrc"
+				}
+			}
+		},
+		{
+		"hashCode": "1963"
+		"movieid": "2"
+		"moviename": "comkugkuvo"
+		"coordinates": {
+			"coordinates_x": "326.294659748693"
+			"coordinates_y": "780"
+			}
+		"creationDate": "1647357116850"
+		"oscarsCount": "6338"
+		"genre": "DRAMA"
+		"mpaaRating": "NC_17"
+		"director": {
+			"directorname": "ejjzwtqdkv"
+			"height": "32.355955680591066"
+			"eyeColor": "WHITE"
+			"hairColor": "GREEN"
+			"nationality": "JAPAN"
+			"location": {
+				"location_x": "160.6529439702437"
+				"location_y": "30.655808080508095"
+				"location_z": "646.4251667347415"
+				"locationname": "qhyekulhqe"
+				}
+			}
+		},
+		{
+		"hashCode": "2626"
+		"movieid": "5"
+		"moviename": "nludmzcxfg"
+		"coordinates": {
+			"coordinates_x": "873.4808296358192"
+			"coordinates_y": "517"
+			}
+		"creationDate": "1647357116850"
+		"oscarsCount": "2381"
+		"genre": "ACTION"
+		"mpaaRating": "NC_17"
+		"director": {
+			"directorname": "hnfurirfqr"
+			"height": "80.09380369129128"
+			"eyeColor": "GREEN"
+			"hairColor": "YELLOW"
+			"nationality": "JAPAN"
+			"location": {
+				"location_x": "433.22214890408526"
+				"location_y": "114.97446525718686"
+				"location_z": "668.5049127211619"
+				"locationname": "vdxjeiahkg"
+				}
+			}
+		}
+	]
+}

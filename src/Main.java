@@ -1,6 +1,10 @@
 import util.Asker;
 import util.CommandManager;
 import java.io.IOException;
+import java.util.Date;
+
+//@author Kyoto67
+//@variant 3119
 
 public class Main {
     /**
