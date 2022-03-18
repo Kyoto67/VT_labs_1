@@ -36,16 +36,21 @@ public class RemoveByID extends AbstractCommand{
         while (!successParse) {
             try {
                 id = Long.valueOf(argForParse);
-                while ((!(id>0)) || (manager.checkMatchingID(id))){
+                while (!(id>0)){
                     throw new NumberFormatException();
                 }
                 successParse = true;
             } catch(NumberFormatException e){
-                System.out.println("Введён неверный id, повторите ввод.");
+                System.out.println("Введён неверный формат id, повторите ввод.");
                 argForParse= Asker.askIDForExec();
             }
         }
-        manager.removeElementByID(id);
-        return true;
+        if (manager.checkMatchingID(id)) {
+            manager.removeElementByID(id);
+            return true;
+        } else {
+            System.out.println("Объекта с таким ID нет в коллекции.");
+            return false;
+        }
     }
 }

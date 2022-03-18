@@ -2,7 +2,7 @@ package data;
 
 import java.util.Date;
 
-public class Movie implements Comparable<Movie> {
+public class Movie {
 
     private long id;
     private String name;
@@ -103,10 +103,5 @@ public class Movie implements Comparable<Movie> {
     @Override
     public int hashCode(){
         return getCoordinates().hashCode()+getDirector().hashCode()+getName().length();
-    }
-
-    @Override
-    public int compareTo(Movie movie) {
-        return this.hashCode()-movie.hashCode();
     }
 }

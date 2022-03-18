@@ -1,7 +1,6 @@
 package util;
 
 import data.*;
-import exceptions.UnreadableData;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,10 +16,6 @@ import java.util.Scanner;
  */
 public class FileManager {
     /**
-     * поле path - системная переменная
-     */
-    private static final String path = System.getProperty("user.dir");
-    /**
      * остальные поля нужны для сборки коллекции из данных, полученных с файла
      */
     private static PriorityQueue<Movie> MoviesCollection;
@@ -30,16 +25,17 @@ public class FileManager {
     private static Location location = null;
     private static Date creationDate = null;
     private static ArrayList<Long> idList = new ArrayList<>();
+    private static final String collectionFileEnv = "LABA";
+    private static final String scriptEnv = "LABASCRIPT";
 
     /**
      * Метод читает коллекцию из файла
      *
-     * @param filename полное имя файла, который содержит коллекцию
      * @return Возвращает готовую коллекцию типа PriorityQueue<Movie>
      * @throws IOException
      */
-    public static PriorityQueue<Movie> readCollection(String filename) throws IOException {
-        Scanner scanner = scan(path + "/" + filename);
+    public static PriorityQueue<Movie> readCollection() throws IOException {
+        Scanner scanner = scan(System.getenv().get(collectionFileEnv));
         scanner.next(); //первая "{"
         while (scanner.hasNext()) {
             String line = scanner.next();
@@ -51,35 +47,29 @@ public class FileManager {
     /**
      * Метод читает скрипт из файла
      *
-     * @param filename полное имя файла, содержащего скрипт
      * @return Возвращает объект типа Scanner, в котором содержится прочитанный скрипт для последующего парсинга
      * @throws IOException
      */
     public static Scanner openScriptFile(String filename) throws IOException {
-        return scan(path + "/" + filename);
+        String OS = System.getProperty("os.name").toLowerCase();
+        if (OS.indexOf("win")>=0){
+            return scan(System.getenv().get(scriptEnv)+"\\"+filename);
+        } else {
+            return scan(System.getenv().get(scriptEnv)+"/"+filename);
+        }
     }
 
     /**
      * Метод сохраняет имеющуюся коллекцию в файл
      *
      * @param collection принимает коллекцию, которую нужно сохранить
-     * @param filename   и полное имя файла, в который нужно сохранить
      * @throws IOException
      */
-    public static void saveCollection(PriorityQueue<Movie> collection, String filename) throws IOException {
-        FileOutputStream fos = new FileOutputStream(path + "/" + filename);
+    public static void saveCollection(PriorityQueue<Movie> collection) throws IOException {
+        FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
         String data = Parser.parseToJSON(collection);
         byte[] buffer = data.getBytes();
         fos.write(buffer);
-    }
-
-    /**
-     * Метод вызывает генерацию рандомной коллекции и записывает её в файл random.json
-     *
-     * @throws IOException
-     */
-    public static void createRandomCollection() throws IOException {
-        saveCollection(GeneratingRandomInfo.run(), "random.json");
     }
 
     /**
@@ -118,7 +108,7 @@ public class FileManager {
             int caser = whatNeedToDo(elements);
             switch (caser) {
                 case (1): {
-                    MoviesCollection = new PriorityQueue<>();
+                    MoviesCollection = new PriorityQueue<>(CollectionManager.idComparator);
                     break;
                 }
                 case (2): {

@@ -31,11 +31,12 @@ public class RemoveAnyByDirector extends AbstractCommand{
     @Override
     public boolean exec(String argument) throws IOException {
         String directorName = argument;
-        while (!manager.checkMatchingDirectorName(directorName)) {
-            System.out.println("Режиссёра с таким именем не найдено, повторите ввод.");
-            directorName=Asker.askDirectorName();
-            }
-        manager.removeElementByDirectorName(directorName);
-        return true;
+        if (!manager.checkMatchingDirectorName(directorName)) {
+            System.out.println("Режиссёра с таким именем не найдено.");
+            return false;
+            } else {
+            manager.removeElementByDirectorName(directorName);
+            return true;
+        }
     }
 }

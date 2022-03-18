@@ -15,7 +15,6 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        System.out.println(System.getProperty("javaLabEnv"));
         System.out.println("Hello world!");
         CommandManager commandManager = new CommandManager();
         System.out.println("Команды вводятся в формате: \n\"команда\" \"данные\" (через пробел)\nДля просмотра справки введите help.");

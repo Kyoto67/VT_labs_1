@@ -42,45 +42,50 @@ public class UpdateByID extends AbstractCommand{
         while (!successParse) {
             try {
                 id = Long.valueOf(argForParse);
-                while ((!(id>0)) || (manager.checkMatchingID(id))){
+                while (!(id>0)){
                     throw new NumberFormatException();
                 }
                 successParse = true;
         } catch(NumberFormatException e){
-            System.out.println("Введён неверный id, повторите ввод.");
+            System.out.println("Введён неверный формат id, повторите ввод.");
             argForParse=Asker.askIDForExec();
             }
         }
+        if (manager.checkMatchingID(id)) {
             Movie newMovie = new Movie();
-        if (Asker.askRandomMovie()){
-            newMovie.setName(Asker.askMovieName());
-            newMovie.setGenre(Asker.askGenre());
-            newMovie.setMpaaRating(Asker.askRating());
-            newMovie.setCoordinates(new Coordinates(Asker.askCoordinatesX(),Asker.askCoordinatesY()));
-            newMovie.setCreationDate(new Date());
-            newMovie.setOscarsCount(Asker.askOscarsCount());
-            if (Asker.askPerson()){
-                Person director = new Person();
-                director.setName(Asker.askDirectorName());
-                director.setHeight(Asker.askDirectorHeight());
-                director.setEyeColor(Asker.askDirectorEyeColor());
-                director.setHairColor(Asker.askDirectorHairColor());
-                director.setNationality(Asker.askDirectorCountry());
-                if (Asker.askLocation()){
-                    director.setLocation(new Location(Asker.askLocationX(),Asker.askLocationY(),Asker.askLocationZ(),Asker.askLocationName()));
+            if (Asker.askRandomMovie()) {
+                newMovie.setName(Asker.askMovieName());
+                newMovie.setGenre(Asker.askGenre());
+                newMovie.setMpaaRating(Asker.askRating());
+                newMovie.setCoordinates(new Coordinates(Asker.askCoordinatesX(), Asker.askCoordinatesY()));
+                newMovie.setCreationDate(new Date());
+                newMovie.setOscarsCount(Asker.askOscarsCount());
+                if (Asker.askPerson()) {
+                    Person director = new Person();
+                    director.setName(Asker.askDirectorName());
+                    director.setHeight(Asker.askDirectorHeight());
+                    director.setEyeColor(Asker.askDirectorEyeColor());
+                    director.setHairColor(Asker.askDirectorHairColor());
+                    director.setNationality(Asker.askDirectorCountry());
+                    if (Asker.askLocation()) {
+                        director.setLocation(new Location(Asker.askLocationX(), Asker.askLocationY(), Asker.askLocationZ(), Asker.askLocationName()));
+                    } else {
+                        director.setLocation(null);
+                    }
+                    newMovie.setDirector(director);
                 } else {
-                    director.setLocation(null);
+                    newMovie.setDirector(null);
                 }
-                newMovie.setDirector(director);
             } else {
-                newMovie.setDirector(null);
+                newMovie = GeneratingRandomInfo.generateOneObject();
             }
+            newMovie.setId(id);
+            manager.replaceElementByID(newMovie, id);
+            return true;
         } else {
-            newMovie = GeneratingRandomInfo.generateOneObject();
+            System.out.println("Объект с таким id отсутствует в коллекции.");
+            return false;
         }
-        newMovie.setId(id);
-        manager.replaceElementByID(newMovie, id);
-        return true;
     }
 
 }

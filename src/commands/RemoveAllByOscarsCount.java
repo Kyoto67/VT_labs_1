@@ -37,12 +37,12 @@ public class RemoveAllByOscarsCount extends AbstractCommand{
         while (!successParse) {
             try {
                 OscarsCount = Long.valueOf(argForParse);
-                while ((!(OscarsCount>0)) || (!(manager.checkMatchingOscarsCount(OscarsCount)))){
+                while (!(OscarsCount>0)){
                     throw new NumberFormatException();
                 }
                 successParse = true;
             } catch(NumberFormatException e){
-                System.out.println("Введено неверное количество, повторите ввод.");
+                System.out.println("Введен неверный формат данных, повторите ввод.");
                 argForParse= Asker.askIDForExec();
             }
         }

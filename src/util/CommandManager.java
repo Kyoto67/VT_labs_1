@@ -4,6 +4,7 @@ import commands.*;
 import commands_for_script.AddIfMin_for_script;
 import commands_for_script.Add_for_script;
 import commands_for_script.UpdateByID_for_script;
+import exceptions.IncompleteData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ public class CommandManager {
     private ArrayList<String> ScriptsStack = new ArrayList<>();
     private ArrayList<Scanner> scripts = new ArrayList<>();
     private int scriptcounter=-1;
+    String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
+            "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
+            "print_field_descending_oscars_count"};
 
     /**
      * Конструктор менеджера. Автоматически инициализирует объекты всех команд при создании и менеджера коллекций.
@@ -164,8 +168,32 @@ public class CommandManager {
         }
     }
 
-    public String getNextLineFromScript(){
-        return scripts.get(scriptcounter).next();
+    public String getNextLineFromScript() throws IncompleteData {
+        Scanner scanner = scripts.get(scriptcounter);
+        for (String c : commands) {
+            if (scanner.hasNext(c)) {
+                throw new IncompleteData("Данные объекта неполные.");
+            }
+            }
+        return scanner.next();
+    }
+
+    public void rollScriptForNextCommand(){
+        boolean rollComplete = false;
+        Scanner scanner = scripts.get(scriptcounter);
+        while (scanner.hasNext()){
+            for (String c : commands){
+                if (scanner.hasNext(c)){
+                    rollComplete=true;
+                    break;
+                }
+            }
+            if (!rollComplete){
+                scanner.next();
+            } else {
+                break;
+            }
+        }
     }
 
     public void scriptscounterIncrement(){
@@ -187,7 +215,6 @@ public class CommandManager {
      */
     public void managerWorkForScript(Scanner script) throws IOException {
         scripts.add(script);
-        System.out.println(script);
         while (scripts.get(scriptcounter).hasNext()) {
             String[] data = commandParser(scripts.get(scriptcounter).next());
             switch (chooseCommand(data[0])) {
@@ -361,7 +388,10 @@ public class CommandManager {
         if (!(line.indexOf(" ") == -1)) {
             scanner.useDelimiter("\\s");
             String command = scanner.next();
-            String data = scanner.next();
+            String data="";
+            if(scanner.hasNext()) {
+                data = scanner.next();
+            }
             return new String[]{command, data};
         } else {
             String commandwodata = scanner.next();
@@ -374,9 +404,6 @@ public class CommandManager {
      * @return возвращает порядковый номер элемента, который удалось сопоставить или -1, если не получилось.
      */
     private int chooseCommand(String command){
-        String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
-                "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
-        "print_field_descending_oscars_count"};
         for (int i=0; i<commands.length; i++){
             if (command.equals(commands[i])){
                 return i;

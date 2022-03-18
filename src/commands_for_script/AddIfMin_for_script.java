@@ -2,11 +2,10 @@ package commands_for_script;
 
 import commands.AbstractCommand;
 import data.*;
-import sun.awt.X11.XSystemTrayPeer;
+import exceptions.IncompleteData;
 import util.Asker;
 import util.CollectionManager;
 import util.CommandManager;
-import util.GeneratingRandomInfo;
 
 import java.io.IOException;
 import java.util.Date;
@@ -61,8 +60,13 @@ public class AddIfMin_for_script extends AbstractCommand {
             newMovie.setDirector(director);
             newMovie.setId(id);
             collectionManager.addElementIfIDLowerMin(newMovie, id);
-        } catch (Exception e){
-            System.out.println("Кривой скрипт");
+        } catch (IncompleteData e){
+            System.out.println(e.getMessage()+" Skip add_if_min.");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Unreadable data. Skip add_if_min.");
+            commandManager.rollScriptForNextCommand();
+            return false;
         }
         return true;
     }

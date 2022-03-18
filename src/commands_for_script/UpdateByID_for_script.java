@@ -2,10 +2,10 @@ package commands_for_script;
 
 import commands.AbstractCommand;
 import data.*;
+import exceptions.IncompleteData;
 import util.Asker;
 import util.CollectionManager;
 import util.CommandManager;
-import util.GeneratingRandomInfo;
 
 import java.util.Date;
 
@@ -58,8 +58,13 @@ public class UpdateByID_for_script extends AbstractCommand {
             newMovie.setDirector(director);
             newMovie.setId(id);
             collectionManager.replaceElementByID(newMovie, id);
-        } catch (Exception e){
-            System.out.println("Кривой скрипт");
+        } catch (IncompleteData e){
+            System.out.println(e.getMessage()+" Skip update_by_id.");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Unreadable data. Skip add.");
+            commandManager.rollScriptForNextCommand();
+            return false;
         }
         return true;
     }

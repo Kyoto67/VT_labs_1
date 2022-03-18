@@ -1,0 +1,18 @@
+remove_lower 3
+add_if_min 2
+testname5
+ACTION
+PG
+1.1
+2
+123
+directorTestName
+180
+BLUE
+YELLOW
+JAPAN
+223.45456
+42
+543.423423
+testLocationName
+show
