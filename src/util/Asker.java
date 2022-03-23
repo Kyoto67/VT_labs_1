@@ -149,7 +149,7 @@ public class Asker {
         Double coordinateX = null;
         while (!success) {
             try {
-                System.out.print("Введите координату Х (дробное число, большее -312, целую часть отделять через \".\"): ");
+                System.out.print("Введите координату Х (дробное число, большее -312, целую часть отделять через \",\"): ");
                 Scanner in = new Scanner(System.in);
                 coordinateX = in.nextDouble();
                 while ((!(coordinateX > -312)) || (coordinateX == null)) {
@@ -235,10 +235,10 @@ public class Asker {
         double height = 0.0;
         while (!success) {
             try {
-                System.out.print("Введите рост режиссёра (дробное число больше нуля, целую часть разделять через \".\"): ");
+                System.out.print("Введите рост режиссёра (дробное число больше нуля, меньше 230 целую часть разделять через \",\"): ");
                 Scanner in = new Scanner(System.in);
                 height = in.nextDouble();
-                while (!(height > 0)) {
+                while ((!(height > 0)) || (!(height<230))){
                     System.out.println("Неверный формат данных. Повторите ввод.");
                     in = new Scanner(System.in);
                     height = in.nextDouble();
@@ -379,7 +379,7 @@ public class Asker {
         Double LocationX = 0.0;
         while (!success) {
             try {
-                System.out.print("Введите X-координату локации режиссёра (дробное число, целая часть отделяется через \".\"): ");
+                System.out.print("Введите X-координату локации режиссёра (дробное число, целая часть отделяется через \",\"): ");
                 Scanner in = new Scanner(System.in);
                 LocationX = in.nextDouble();
                 while (LocationX == null) {
@@ -405,7 +405,7 @@ public class Asker {
         double LocationY = 0.0;
         while (!success) {
             try {
-                System.out.print("Введите Y-координату локации режиссёра (дробное число, целая часть отделяется через \".\"): ");
+                System.out.print("Введите Y-координату локации режиссёра (дробное число, целая часть отделяется через \",\"): ");
                 Scanner in = new Scanner(System.in);
                 LocationY = in.nextDouble();
                 success = true;
@@ -427,7 +427,7 @@ public class Asker {
         Double LocationZ = null;
         while (!success) {
             try {
-                System.out.print("Введите Z-координату локации режиссёра (дробное число, целая часть отделяется через \".\"): ");
+                System.out.print("Введите Z-координату локации режиссёра (дробное число, целая часть отделяется через \",\"): ");
                 Scanner in = new Scanner(System.in);
                 LocationZ = in.nextDouble();
                 while (LocationZ == null) {

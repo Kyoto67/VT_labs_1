@@ -70,6 +70,9 @@ public class FileManager {
                 System.out.println("Отсутствуют права доступа к файлу коллекции. Обновите права или измените переменную" +
                         " окружения \"LABA\" на другой файл. После исправления ошибки введите ENTER.");
                 System.in.read();
+            } catch (Exception e) {
+                System.out.println("Ошибка чтения файла с переменной окружения. Задайте новую и нажмите ENTER.");
+                System.in.read();
             }
         }
         return MoviesCollection;
@@ -96,6 +99,9 @@ public class FileManager {
             } catch (AccessDeniedException e) {
                 System.out.println("Отсутствуют права доступа к файлу скрипта. Обновите права или переменную окруженя" +
                         " \"LABASCRIPT\", содержащую директорию со скриптом. После исправления ошибки введите ENTER.");
+                System.in.read();
+            } catch (Exception e) {
+                System.out.println("Ошибка чтения файла с переменной окружения. Задайте новую и нажмите ENTER.");
                 System.in.read();
             }
         }

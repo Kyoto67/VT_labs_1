@@ -57,7 +57,7 @@ public class CollectionManager {
      * @param id       id элемента, который нужно заменить
      */
     public void replaceElementByID(Movie newMovie, long id) {
-        removeElement(findElementByID(id));
+        MoviesCollection.remove(findElementByID(id));
         MoviesCollection.add(newMovie);
         sortCollection();
     }
@@ -251,7 +251,7 @@ public class CollectionManager {
      */
     public void removeAllLower(Movie movie) {
         System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
-        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>();
+        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>(idComparator);
         for (Movie m : MoviesCollection) {
             if (m.hashCode() < movie.hashCode()) {
                 System.out.println("Удаляю объект с hashcode " + m.hashCode());

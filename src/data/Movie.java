@@ -37,7 +37,7 @@ public class Movie {
         return "Идентификатор: " + getId() + ". \n" + "Название фильма: " + getName() + ". \n" + "Координаты: " + coordinates + ". \n" + "Дата создания: " + creationDate + ". \n"
                 + "Количество оскаров: " + oscarsCount + ". \n" + "Жанр: " + genre + ". \n" + "Возрастной рейтинг: " + mpaaRating + ". \n"
                 + "Режиссёр: \n" + director + "\n"
-                + "hashCode: " + this.hashCode()+". ";
+                + "hashCode: " + this.hashCode() + ". ";
     }
 
     public String getName() {
@@ -101,7 +101,11 @@ public class Movie {
     }
 
     @Override
-    public int hashCode(){
-        return getCoordinates().hashCode()+getDirector().hashCode()+getName().length();
+    public int hashCode() {
+        if (!(director == null)) {
+            return getCoordinates().hashCode() + getDirector().hashCode() + getName().length();
+        } else {
+            return getCoordinates().hashCode() + getName().length();
+        }
     }
 }

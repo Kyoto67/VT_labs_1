@@ -75,7 +75,10 @@ public class Person {
 
     @Override
     public int hashCode(){
-        return getLocation().hashCode()+getName().length();
+        if(!(location==null)){
+            return getLocation().hashCode()+getName().length();
+        } else {
+            return getName().length();
+        }
     }
-
 }
