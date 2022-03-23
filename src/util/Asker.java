@@ -1,6 +1,8 @@
 package util;
 
 import data.*;
+
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -457,5 +459,36 @@ public class Asker {
     public static String askFilenameForExecuteScript(){
         Scanner in = new Scanner(System.in);
         return in.nextLine();
+    }
+
+    public static Movie askMovie(){
+        Movie newMovie = new Movie();
+        if (askRandomMovie()){
+            newMovie.setName(askMovieName());
+            newMovie.setGenre(askGenre());
+            newMovie.setMpaaRating(askRating());
+            newMovie.setCoordinates(new Coordinates(askCoordinatesX(),askCoordinatesY()));
+            newMovie.setCreationDate(new Date());
+            newMovie.setOscarsCount(askOscarsCount());
+            if (askPerson()){
+                Person director = new Person();
+                director.setName(askDirectorName());
+                director.setHeight(askDirectorHeight());
+                director.setEyeColor(askDirectorEyeColor());
+                director.setHairColor(askDirectorHairColor());
+                director.setNationality(askDirectorCountry());
+                if (askLocation()){
+                    director.setLocation(new Location(askLocationX(),askLocationY(),askLocationZ(),askLocationName()));
+                } else {
+                    director.setLocation(null);
+                }
+                newMovie.setDirector(director);
+            } else {
+                newMovie.setDirector(null);
+            }
+        } else {
+            newMovie = GeneratingRandomInfo.generateOneObject();
+        }
+        return newMovie;
     }
 }

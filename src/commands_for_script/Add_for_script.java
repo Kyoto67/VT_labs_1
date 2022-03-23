@@ -23,6 +23,7 @@ public class Add_for_script extends AbstractCommand {
      * @param name
      * @param description
      * @param collectionManager сущность, управляющая коллекцией. Команда выполняется консолью, вызывая методы у менеджера
+     * @param commandManager    сущность, считывающая построчно данные из скрипта.
      */
     public Add_for_script(String name, String description, CollectionManager collectionManager, CommandManager commandManager) {
         super(name, description);
@@ -58,7 +59,7 @@ public class Add_for_script extends AbstractCommand {
             newMovie.setDirector(director);
             collectionManager.addElement(newMovie);
         } catch (IncompleteData e) {
-            System.out.println(e.getMessage()+" Skip add.");
+            System.out.println(e.getMessage() + " Skip add.");
             return false;
         } catch (Exception e) {
             System.out.println("Unreadable data. Skip add.");

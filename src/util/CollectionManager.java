@@ -245,25 +245,41 @@ public class CollectionManager {
     }
 
     /**
-     * Метод удаляет все элементы из коллекции, чей ID меньше заданного.
+     * Метод удаляет все элементы из коллекции, чей hashcode меньше заданного.
      *
-     * @param id заданный ID
+     * @param movie заданный объект, с хэшкодом которого сравниваются все объекты коллекции
      */
-    public void removeAllLowerByID(long id) {
-        for (long i = 1; i < id; i++) {
-            removeElement(findElementByID(i));
+    public void removeAllLower(Movie movie) {
+        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>();
+        for (Movie m : MoviesCollection) {
+            if (m.hashCode() < movie.hashCode()) {
+                System.out.println("Удаляю объект с hashcode " + m.hashCode());
+                movieForDelete.add(m);
+            }
+        }
+        for (Movie m : movieForDelete) {
+            removeElement(m);
         }
         sortCollection();
     }
 
     /**
-     * Метод удаляет все элементы из коллекции, чей ID больше заданного.
+     * Метод удаляет все элементы из коллекции, чей hashcode больше заданного.
      *
-     * @param id заданный ID
+     * @param movie заданный movie с хэшкодом которого сравниваются объекты.
      */
-    public void removeAllGreaterByID(long id) {
-        for (long i = (long) (MoviesCollection.size()); i > id; i--) {
-            removeElement(findElementByID(i));
+    public void removeAllGreater(Movie movie) {
+        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>();
+        for (Movie m : MoviesCollection) {
+            if (m.hashCode() > movie.hashCode()) {
+                System.out.println("Удаляю объект с hashcode " + m.hashCode());
+                movieForDelete.add(m);
+            }
+        }
+        for (Movie m : movieForDelete) {
+            removeElement(m);
         }
         sortCollection();
     }
@@ -273,13 +289,14 @@ public class CollectionManager {
      *
      * @return Возвращает 0й элемент (минимальный)
      */
-    public long getMinElementID() {
-        if (idList.isEmpty()) {
-            return 999999999999999999l;
-        } else {
-            Collections.sort(idList);
-            return idList.get(0);
+    public long getMinElement() {
+        int minEl = 999999999;
+        for (Movie m : MoviesCollection) {
+            if (m.hashCode() < minEl) {
+                minEl = m.hashCode();
+            }
         }
+        return minEl;
     }
 
 
@@ -287,13 +304,11 @@ public class CollectionManager {
      * Метод выполняет проверку, меньше ли заданный id минимального из имеющихся id элементов в коллекции. Если да, то добавляет заданный объект в коллекцию.
      *
      * @param movie объект, который нужно добавить.
-     * @param id    id, по которому выполняется проверка на "меньше минимального"
      */
-    public void addElementIfIDLowerMin(Movie movie, long id) {
-        if (id < getMinElementID()) {
-            movie.setId(id);
-            idList.add(id);
-            MoviesCollection.add(movie);
+    public void addElementIfLowerMin(Movie movie) {
+        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+        if (movie.hashCode() < getMinElement()) {
+            addElement(movie);
         } else {
             System.out.println("Элемент не был добавлен.");
         }
@@ -304,10 +319,9 @@ public class CollectionManager {
      */
     public void printInfo() {
         System.out.println("Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
-                + MoviesCollection.size() + ". \n" + "Элементы коллекции по идентификаторам: ");
-        Collections.sort(idList);
-        for (long id : idList) {
-            System.out.print(id + " ");
+                + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: ");
+        for (Movie m : MoviesCollection) {
+            System.out.print(m.hashCode() + " ");
         }
         System.out.println("\n");
     }

@@ -1,18 +1,18 @@
-remove_lower 3
-add_if_min 2
-testname5
+info
+add_if_min
+test
 ACTION
 PG
 1.1
 2
-123
+4
 directorTestName
 180
 BLUE
 YELLOW
 JAPAN
-223.45456
-42
-543.423423
+1.45456
+2
+3.423423
 testLocationName
-show
+info

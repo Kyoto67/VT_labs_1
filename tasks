@@ -6,3 +6,10 @@
 //чтение и запись Date - done!
         id - too!
 //skip всего объекта, если при чтении если не распознала поле (в скрипте) - done
+//допилить exception на отсутствие прав - done
+//add_if_min - done w/o tests
+//add_if_min script - done w/o tests
+//remove_greater - done w/o tests
+//remove_lower - done w/o tests
+//remove concurrentModification exception
+//файл без строки, скип объекта

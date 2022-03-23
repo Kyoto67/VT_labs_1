@@ -1,9 +1,12 @@
 package util;
 
 import data.*;
+import exceptions.*;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -35,11 +38,39 @@ public class FileManager {
      * @throws IOException
      */
     public static PriorityQueue<Movie> readCollection() throws IOException {
-        Scanner scanner = scan(System.getenv().get(collectionFileEnv));
-        scanner.next(); //первая "{"
-        while (scanner.hasNext()) {
-            String line = scanner.next();
-            Parser.parseJSON(line);
+        boolean read = false;
+        while (!read) {
+            try {
+                Scanner scanner = scan(System.getenv().get(collectionFileEnv));
+                read = true;
+                scanner.next(); //первая "{"
+                while (scanner.hasNext()) {
+                    try {
+                        String line = scanner.next();
+                        Parser.parseJSON(line);
+                    } catch (readMovieDataException e){
+                        while (!Parser.skipMovie(scanner.next())){
+                        }
+                    } catch (readGenreDataException e){
+                        movie.setGenre(null);
+                    } catch (readPersonDataException e) {
+                        director=null;
+                        while (!Parser.skipObject(scanner.next())) {
+                        }
+                    } catch (readLocationDataException e){
+                        location=null;
+                        while(!Parser.skipObject(scanner.next())){}
+                    } catch (readEyeDataException e){
+                        director.setEyeColor(null);
+                    } catch (readRatingDataException e){
+                        movie.setMpaaRating(null);
+                    }
+                }
+            } catch (AccessDeniedException e) {
+                System.out.println("Отсутствуют права доступа к файлу коллекции. Обновите права или измените переменную" +
+                        " окружения \"LABA\" на другой файл. После исправления ошибки введите ENTER.");
+                System.in.read();
+            }
         }
         return MoviesCollection;
     }
@@ -52,11 +83,23 @@ public class FileManager {
      */
     public static Scanner openScriptFile(String filename) throws IOException {
         String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("win")>=0){
-            return scan(System.getenv().get(scriptEnv)+"\\"+filename);
-        } else {
-            return scan(System.getenv().get(scriptEnv)+"/"+filename);
+        Scanner scan = null;
+        boolean read = false;
+        while (!read) {
+            try {
+                if (OS.indexOf("win") >= 0) {
+                    scan = scan(System.getenv().get(scriptEnv) + "\\" + filename);
+                } else {
+                    scan = scan(System.getenv().get(scriptEnv) + "/" + filename);
+                }
+                read = true;
+            } catch (AccessDeniedException e) {
+                System.out.println("Отсутствуют права доступа к файлу скрипта. Обновите права или переменную окруженя" +
+                        " \"LABASCRIPT\", содержащую директорию со скриптом. После исправления ошибки введите ENTER.");
+                System.in.read();
+            }
         }
+        return scan;
     }
 
     /**
@@ -66,10 +109,20 @@ public class FileManager {
      * @throws IOException
      */
     public static void saveCollection(PriorityQueue<Movie> collection) throws IOException {
-        FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
         String data = Parser.parseToJSON(collection);
         byte[] buffer = data.getBytes();
-        fos.write(buffer);
+        boolean save = false;
+        while (!save) {
+            try {
+                FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
+                fos.write(buffer);
+                save = true;
+            } catch (FileNotFoundException e) {
+                System.out.println("Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
+                        " переменную окружение \"LABA\" на другой файл. После обновления ошибки введите ENTER.");
+                System.in.read();
+            }
+        }
     }
 
     /**
@@ -95,7 +148,7 @@ public class FileManager {
          *
          * @param line получает на вход строку с данными в формате JSON
          */
-        private static void parseJSON(String line) {
+        private static void parseJSON(String line) throws readMovieDataException, readGenreDataException, readRatingDataException, readPersonDataException, readEyeDataException, readLocationDataException {
             Scanner scanner = new Scanner(line);
             scanner.useDelimiter("\\s");
             ArrayList<String> elements = new ArrayList<>();
@@ -131,40 +184,112 @@ public class FileManager {
                     String argument = elements.get(0).substring(1, elements.get(0).length() - 2);
                     String data = elements.get(1).substring(1, elements.get(1).length() - 1);
                     if (argument.equals("movieid")) {
-                        movie.setId(Long.parseLong(data));
-                        idList.add(Long.parseLong(data));
+                        try {
+                            movie.setId(Long.parseLong(data));
+                            idList.add(Long.parseLong(data));
+                        } catch (Exception e) {
+                            throw new readMovieDataException("Нечитаемый id.");
+                        }
+
                     } else if (argument.equals("moviename")) {
-                        movie.setName(data);
+                        try {
+                            movie.setName(data);
+                        } catch (Exception e){
+                            throw new readMovieDataException("Нечитаемый moviename.");
+                        }
                     } else if (argument.equals("oscarsCount")) {
-                        movie.setOscarsCount(Long.valueOf(data));
+                        try {
+                            movie.setOscarsCount(Long.parseLong(data));
+                        } catch (Exception e){
+                            throw new readMovieDataException("Нечитаемый oscarscount.");
+                        }
                     } else if (argument.equals("genre")) {
-                        movie.setGenre(MovieGenre.valueOf(data));
+                        try{
+                            movie.setGenre(MovieGenre.valueOf(data));
+                        } catch (Exception e){
+                            throw new readGenreDataException("Нечитаемый genre.");
+                        }
                     } else if (argument.equals(("mpaaRating"))) {
-                        movie.setMpaaRating(MpaaRating.valueOf(data));
+                        try{
+                            movie.setMpaaRating(MpaaRating.valueOf(data));
+                        } catch (Exception e){
+                            throw new readRatingDataException("Нечитаемый rating.");
+                        }
                     } else if (argument.equals("coordinates_x")) {
-                        coordinates.setX(Double.valueOf(data));
+                        try{
+                            coordinates.setX(Double.valueOf(data));
+                        } catch (Exception e){
+                            throw new readMovieDataException("Нечитаемый coordinates_x.");
+                        }
                     } else if (argument.equals("coordinates_y")) {
-                        coordinates.setY(Integer.valueOf(data));
+                        try{
+                            coordinates.setY(Integer.valueOf(data));
+                        } catch (Exception e){
+                            throw new readMovieDataException("Нечитаемый coordinates_y.");
+                        }
                     } else if (argument.equals("directorname")) {
-                        director.setName(data);
+                        try{
+                            director.setName(data);
+                        } catch (Exception e){
+                            throw new readPersonDataException("Нечитаемый directorname.");
+                        }
                     } else if (argument.equals("height")) {
-                        director.setHeight(Double.valueOf(data));
+                        try{
+                            director.setHeight(Double.parseDouble(data));
+                            if(director.getHeight()<=0){
+                                throw new readPersonDataException("Рост неположительный.");
+                            }
+                        } catch (Exception e){
+                            throw new readPersonDataException("Нечитаемый directorHeight.");
+                        }
                     } else if (argument.equals("eyeColor")) {
-                        director.setEyeColor(Color.valueOf(data));
+                        try{
+                            director.setEyeColor(Color.valueOf(data));
+                        } catch (Exception e){
+                            throw new readEyeDataException("Нечитаемый eyeColor.");
+                        }
                     } else if (argument.equals("hairColor")) {
-                        director.setHairColor(Color.valueOf(data));
+                        try{
+                            director.setHairColor(Color.valueOf(data));
+                        } catch (Exception e){
+                            throw new readPersonDataException("Нечитаемый hairColor.");
+                        }
                     } else if (argument.equals("nationality")) {
-                        director.setNationality(Country.valueOf(data));
+                        try{
+                            director.setNationality(Country.valueOf(data));
+                        } catch (Exception e){
+                            throw new readPersonDataException("Нечитаемый nationality.");
+                        }
                     } else if (argument.equals("location_x")) {
-                        location.setX(Double.valueOf(data));
+                        try{
+                            location.setX(Double.parseDouble(data));
+                        } catch (Exception e){
+                            throw new readLocationDataException("Нечитаемый location_x.");
+                        }
                     } else if (argument.equals("location_y")) {
-                        location.setY(Double.valueOf(data));
+                        try{
+                            location.setY(Double.parseDouble(data));
+                        } catch (Exception e){
+                            throw new readLocationDataException("Нечитаемый location_y.");
+                        }
                     } else if (argument.equals("location_z")) {
-                        location.setZ(Double.valueOf(data));
+                        try{
+                            location.setZ(Double.parseDouble(data));
+                        } catch (Exception e){
+                            throw new readLocationDataException("Нечитаемый location_z.");
+                        }
                     } else if (argument.equals("locationname")) {
-                        location.setName(data);
+                        try{
+                            location.setName(data);
+                        } catch (Exception e){
+                            throw new readLocationDataException("Нечитаемый locationname.");
+                        }
                     } else if (argument.equals("creationDate")) {
-                        creationDate = new Date(Long.parseLong(data));
+                        try{
+                            creationDate = new Date(Long.parseLong(data));
+                        } catch (Exception e){
+                            throw new readMovieDataException("Нечитаемый creationDate.");
+                        }
                     }
                     break;
                 }
@@ -204,6 +329,11 @@ public class FileManager {
             for (String s : elements) {
                 if (!(s.indexOf("]") == -1)) {
                     return 3;
+                }
+            }
+            for (String s : elements) {
+                if (!(s.indexOf("}") == -1)) {
+                    return 5;
                 }
             }
             return 0;
@@ -258,12 +388,44 @@ public class FileManager {
         }
 
         private static void loadObject() {
-            movie.setCoordinates(coordinates);
-            director.setLocation(location);
-            movie.setDirector(director);
-            movie.setCreationDate(creationDate);
-            MoviesCollection.add(movie);
+            if (movie.getName() != null) {
+                movie.setCoordinates(coordinates);
+                director.setLocation(location);
+                if(director.getName() != null) {
+                    movie.setDirector(director);
+                }
+                movie.setCreationDate(creationDate);
+                MoviesCollection.add(movie);
+            }
             clearAll();
+        }
+
+        private static boolean skipMovie(String line) {
+            Scanner scanner = new Scanner(line);
+            scanner.useDelimiter("\\s");
+            ArrayList<String> elements = new ArrayList<>();
+            while (scanner.hasNext()) {  //разделение строки на элементы MovieCollection
+                String element = scanner.next();
+                if (!(element.equals(""))) {
+                    elements.add(element);
+                }
+            }
+            int caser = whatNeedToDo(elements);
+            return caser==6;
+        }
+
+        private static boolean skipObject(String line) {
+            Scanner scanner = new Scanner(line);
+            scanner.useDelimiter("\\s");
+            ArrayList<String> elements = new ArrayList<>();
+            while (scanner.hasNext()) {  //разделение строки на элементы MovieCollection
+                String element = scanner.next();
+                if (!(element.equals(""))) {
+                    elements.add(element);
+                }
+            }
+            int caser = whatNeedToDo(elements);
+            return caser==5;
         }
     }
 

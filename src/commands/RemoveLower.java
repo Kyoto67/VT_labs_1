@@ -1,5 +1,6 @@
 package commands;
 
+import data.Movie;
 import util.Asker;
 import util.CollectionManager;
 
@@ -27,23 +28,12 @@ public class RemoveLower extends AbstractCommand{
      * @return Возвращает True при выполнении
      * @throws IOException
      * @see Asker#askIDForExec() 
-     * @see CollectionManager#removeAllLowerByID(long) 
+     * @see CollectionManager#removeAllLower(Movie)
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        boolean successParse = false;
-        String argForParse = argument;
-        long id=0;
-        while (!successParse) {
-            try {
-                id = Long.valueOf(argForParse);
-                successParse = true;
-            } catch(NumberFormatException e){
-                System.out.println("Введён неверный id, повторите ввод.");
-                argForParse= Asker.askIDForExec();
-            }
-        }
-        manager.removeAllLowerByID(id);
+        Movie movieForCompare = Asker.askMovie();
+        manager.removeAllLower(movieForCompare);
         return true;
     }
 }

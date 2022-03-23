@@ -1,5 +1,6 @@
 package commands;
 
+import data.Movie;
 import util.Asker;
 import util.CollectionManager;
 
@@ -27,23 +28,12 @@ public class RemoveGreater extends AbstractCommand{
      * @return Возвращает True при выполнении
      * @throws IOException
      * @see Asker#askIDForExec() 
-     * @see CollectionManager#removeAllGreaterByID(long) 
+     * @see CollectionManager#removeAllGreater(Movie)
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        boolean successParse = false;
-        String argForParse = argument;
-        long id=0;
-        while (!successParse) {
-            try {
-                id = Long.valueOf(argForParse);
-                successParse = true;
-            } catch(NumberFormatException e){
-                System.out.println("Введён неверный id, повторите ввод.");
-                argForParse= Asker.askIDForExec();
-            }
-        }
-        manager.removeAllGreaterByID(id);
+        Movie movieForCompare = Asker.askMovie();
+        manager.removeAllGreater(movieForCompare);
         return true;
     }
 }

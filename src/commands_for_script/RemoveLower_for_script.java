@@ -10,7 +10,7 @@ import util.CommandManager;
 import java.io.IOException;
 import java.util.Date;
 
-public class AddIfMin_for_script extends AbstractCommand {
+public class RemoveLower_for_script extends AbstractCommand {
 
     private final CollectionManager collectionManager;
     private final CommandManager commandManager;
@@ -23,33 +23,32 @@ public class AddIfMin_for_script extends AbstractCommand {
      * @param collectionManager сущность, управляющая коллекцией. Команда выполняется консолью, вызывая методы у менеджера
      * @param commandManager    сущность, считывающая построчно данные из скрипта.
      */
-    public AddIfMin_for_script(String name, String description, CollectionManager collectionManager, CommandManager commandManager) {
+    public RemoveLower_for_script(String name, String description, CollectionManager collectionManager, CommandManager commandManager) {
         super(name, description);
         this.collectionManager = collectionManager;
         this.commandManager = commandManager;
     }
 
     /**
-     * Метод считывает id, передаваемый в качестве аргумента. Если id введён неверно, запрашивает повторное введение, пока не сможет распознать данные.
-     * После создаёт объект типа Movie, заполняет его случайными данными или данными, введёнными пользователем (как решит пользователь),
-     * Добавляет объект в коллекцию, если переданный id в качестве аргумента меньше минимального имеющегося в коллекции.
+     * Метод конвертирует переданный id в числовой формат, при неверно введённом аргументе запрашивает повторный ввод.
+     * Вызывает удаление всех элементов коллекции, чей id меньше переданного в качестве аргумента программе.
      *
-     * @param argument id нового объекта Movie
-     * @return Возвращает True при выполнении программы
+     * @param argument номер id, элементы с меньшим которого должны быть удалены.
+     * @return Возвращает True при выполнении
      * @throws IOException
-     * @see Asker
-     * @see CollectionManager#addElementIfLowerMin(Movie)
+     * @see Asker#askIDForExec()
+     * @see CollectionManager#removeAllLower(Movie)
      */
     @Override
     public boolean exec(String argument) throws IOException {
         try {
-            Movie newMovie = new Movie();
-            newMovie.setName(commandManager.getNextLineFromScript());
-            newMovie.setGenre(MovieGenre.valueOf(commandManager.getNextLineFromScript()));
-            newMovie.setMpaaRating(MpaaRating.valueOf(commandManager.getNextLineFromScript()));
-            newMovie.setCoordinates(new Coordinates(Double.parseDouble(commandManager.getNextLineFromScript()), Integer.parseInt(commandManager.getNextLineFromScript())));
-            newMovie.setCreationDate(new Date());
-            newMovie.setOscarsCount(Long.parseLong(commandManager.getNextLineFromScript()));
+            Movie movieForCompare = new Movie();
+            movieForCompare.setName(commandManager.getNextLineFromScript());
+            movieForCompare.setGenre(MovieGenre.valueOf(commandManager.getNextLineFromScript()));
+            movieForCompare.setMpaaRating(MpaaRating.valueOf(commandManager.getNextLineFromScript()));
+            movieForCompare.setCoordinates(new Coordinates(Double.parseDouble(commandManager.getNextLineFromScript()), Integer.parseInt(commandManager.getNextLineFromScript())));
+            movieForCompare.setCreationDate(new Date());
+            movieForCompare.setOscarsCount(Long.parseLong(commandManager.getNextLineFromScript()));
             Person director = new Person();
             director.setName(commandManager.getNextLineFromScript());
             director.setHeight(Double.parseDouble(commandManager.getNextLineFromScript()));
@@ -57,13 +56,13 @@ public class AddIfMin_for_script extends AbstractCommand {
             director.setHairColor(Color.valueOf(commandManager.getNextLineFromScript()));
             director.setNationality(Country.valueOf(commandManager.getNextLineFromScript()));
             director.setLocation(new Location(Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), (commandManager.getNextLineFromScript())));
-            newMovie.setDirector(director);
-            collectionManager.addElementIfLowerMin(newMovie);
+            movieForCompare.setDirector(director);
+            collectionManager.removeAllGreater(movieForCompare);
         } catch (IncompleteData e) {
-            System.out.println(e.getMessage() + " Skip add_if_min.");
+            System.out.println(e.getMessage() + " Skip remove_lower.");
             return false;
         } catch (Exception e) {
-            System.out.println("Unreadable data. Skip add_if_min.");
+            System.out.println("Unreadable data. Skip remove_lower.");
             commandManager.rollScriptForNextCommand();
             return false;
         }

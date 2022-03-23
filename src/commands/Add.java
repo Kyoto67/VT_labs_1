@@ -37,33 +37,7 @@ public class Add extends AbstractCommand {
      */
     @Override
     public boolean exec(String argument) {
-        Movie newMovie = new Movie();
-        if (Asker.askRandomMovie()){
-            newMovie.setName(Asker.askMovieName());
-            newMovie.setGenre(Asker.askGenre());
-            newMovie.setMpaaRating(Asker.askRating());
-            newMovie.setCoordinates(new Coordinates(Asker.askCoordinatesX(),Asker.askCoordinatesY()));
-            newMovie.setCreationDate(new Date());
-            newMovie.setOscarsCount(Asker.askOscarsCount());
-            if (Asker.askPerson()){
-                Person director = new Person();
-                director.setName(Asker.askDirectorName());
-                director.setHeight(Asker.askDirectorHeight());
-                director.setEyeColor(Asker.askDirectorEyeColor());
-                director.setHairColor(Asker.askDirectorHairColor());
-                director.setNationality(Asker.askDirectorCountry());
-                if (Asker.askLocation()){
-                    director.setLocation(new Location(Asker.askLocationX(),Asker.askLocationY(),Asker.askLocationZ(),Asker.askLocationName()));
-                } else {
-                    director.setLocation(null);
-                }
-            newMovie.setDirector(director);
-            } else {
-                newMovie.setDirector(null);
-            }
-        } else {
-            newMovie = GeneratingRandomInfo.generateOneObject();
-        }
+        Movie newMovie = Asker.askMovie();
         manager.addElement(newMovie);
         return true;
     }

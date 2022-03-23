@@ -1,13 +1,12 @@
 package util;
 
 import commands.*;
-import commands_for_script.AddIfMin_for_script;
-import commands_for_script.Add_for_script;
-import commands_for_script.UpdateByID_for_script;
+import commands_for_script.*;
 import exceptions.IncompleteData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -37,6 +36,8 @@ public class CommandManager {
     private final Add_for_script add_for_script;
     private final AddIfMin_for_script addIfMin_for_script;
     private final UpdateByID_for_script updateByID_for_script;
+    private final RemoveGreater_for_script removeGreater_for_script;
+    private final RemoveLower_for_script removeLower_for_script;
     private final CollectionManager collectionManager;
     private ArrayList<String> ScriptsStack = new ArrayList<>();
     private ArrayList<Scanner> scripts = new ArrayList<>();
@@ -53,8 +54,10 @@ public class CommandManager {
     public CommandManager() throws IOException {
         collectionManager = new CollectionManager();
         add = new Add("add", "добавить новый элемент в коллекцию", getCollectionManager());
-        addIfMin = new AddIfMin("add_if_min id", "добавить новый элемент в коллекцию, если его " +
-                "значение меньше, чем у наименьшего элемента этой коллекции (введите значение id в качестве аргумента)", getCollectionManager());
+        addIfMin = new AddIfMin("add_if_min", "добавить новый элемент в коллекцию, если его " +
+                "значение меньше, чем у наименьшего элемента этой коллекции. Объекты сравниваются по хэшкоду. Значение " +
+                "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", getCollectionManager());
         clear = new Clear("clear","очистить коллекцию",getCollectionManager());
         executeScript = new ExecuteScript("execute_script filename", "считать и исполнить скрипт из " +
                 "указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в " +
@@ -70,10 +73,14 @@ public class CommandManager {
                 "коллекции один элемент, значение поля director которого эквивалентно заданному (вводится имя режиссёра)", getCollectionManager());
         removeByID = new RemoveByID("remove_by_id id", "удалить элемент из коллекции по его id",
                 getCollectionManager());
-        removeGreater = new RemoveGreater("remove_greater id", "удалить из коллекции все элементы, " +
-                "превышающие заданный (элементы сравниваются по значению id)", getCollectionManager());
-        removeLower = new RemoveLower("remove_lower id", "удалить из коллекции все элементы, меньшие, " +
-                "чем заданный (элементы сравниваются по значению id)", getCollectionManager());
+        removeGreater = new RemoveGreater("remove_greater", "удалить из коллекции все элементы, " +
+                "превышающие заданный.  Объекты сравниваются по хэшкоду. Значение " +
+                "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", getCollectionManager());
+        removeLower = new RemoveLower("remove_lower", "удалить из коллекции все элементы, меньшие, " +
+                "чем заданный. Объекты сравниваются по хэшкоду. Значение " +
+                "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", getCollectionManager());
         save = new Save("save", "сохранить коллекцию в файл", getCollectionManager());
         show = new Show("show", "вывести в стандартный поток вывода все элементы коллекции в строковом " +
                 "представлении", getCollectionManager());
@@ -86,6 +93,14 @@ public class CommandManager {
                 "значение меньше, чем у наименьшего элемента этой коллекции (введите значение id в качестве аргумента)", getCollectionManager(), this);
         updateByID_for_script = new UpdateByID_for_script("update id", "обновить значение элемента коллекции, id которого " +
                 "равен заданному", getCollectionManager(), this);
+        removeGreater_for_script = new RemoveGreater_for_script("remove_greater", "удалить из коллекции все элементы, " +
+                "превышающие заданный.  Объекты сравниваются по хэшкоду. Значение " +
+                "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", getCollectionManager(), this);
+        removeLower_for_script = new RemoveLower_for_script("remove_lower", "удалить из коллекции все элементы, меньшие, " +
+                "чем заданный. Объекты сравниваются по хэшкоду. Значение " +
+                "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", getCollectionManager(), this);
     }
 
     /**
@@ -138,15 +153,15 @@ public class CommandManager {
                 break;
             }
             case(10):{
-                addIfMin.exec(data[1]);
+                addIfMin.exec("");
                 break;
             }
             case(11):{
-                removeGreater.exec(data[1]);
+                removeGreater.exec("");
                 break;
             }
             case(12):{
-                removeLower.exec(data[1]);
+                removeLower.exec("");
                 break;
             }
             case(13):{
@@ -259,15 +274,15 @@ public class CommandManager {
                     break;
                 }
                 case (10): {
-                    addIfMin_for_script.exec(data[1]);
+                    addIfMin_for_script.exec("");
                     break;
                 }
                 case (11): {
-                    removeGreater.exec(data[1]);
+                    removeGreater_for_script.exec("");
                     break;
                 }
                 case (12): {
-                    removeLower.exec(data[1]);
+                    removeLower_for_script.exec("");
                     break;
                 }
                 case (13): {
@@ -384,25 +399,29 @@ public class CommandManager {
      * @return возвращает массив строк, где 0й элемент - команда, 1й (если есть) - аргумент.
      */
     public String[] commandParser(String line) {
-        Scanner scanner = new Scanner(line);
-        if (!(line.indexOf(" ") == -1)) {
-            scanner.useDelimiter("\\s");
-            String command = scanner.next();
-            String data="";
-            if(scanner.hasNext()) {
-                data = scanner.next();
-            }
-            return new String[]{command, data};
-        } else {
-            String commandwodata = scanner.next();
-            return new String[]{commandwodata};
-        }
-    }
 
-    /**
-     * @param command принимает на вход команду, сопоставляет ей элемент из списка команд.
-     * @return возвращает порядковый номер элемента, который удалось сопоставить или -1, если не получилось.
-     */
+        try {
+            Scanner scanner = new Scanner(line);
+            if (!(line.indexOf(" ") == -1)) {
+                scanner.useDelimiter("\\s");
+                String command = scanner.next();
+                String data = "";
+                if (scanner.hasNext()) {
+                    data = scanner.next();
+                }
+                return new String[]{command, data};
+            } else {
+                String commandwodata = scanner.next();
+                return new String[]{commandwodata};
+            }
+        } catch (NoSuchElementException e){
+            return new String[]{"  "};
+        }
+        }
+        /**
+         * @param command принимает на вход команду, сопоставляет ей элемент из списка команд.
+         * @return возвращает порядковый номер элемента, который удалось сопоставить или -1, если не получилось.
+         */
     private int chooseCommand(String command){
         for (int i=0; i<commands.length; i++){
             if (command.equals(commands[i])){

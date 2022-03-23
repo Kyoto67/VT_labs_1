@@ -58,8 +58,8 @@ public class UpdateByID_for_script extends AbstractCommand {
             newMovie.setDirector(director);
             newMovie.setId(id);
             collectionManager.replaceElementByID(newMovie, id);
-        } catch (IncompleteData e){
-            System.out.println(e.getMessage()+" Skip update_by_id.");
+        } catch (IncompleteData e) {
+            System.out.println(e.getMessage() + " Skip update_by_id.");
             return false;
         } catch (Exception e) {
             System.out.println("Unreadable data. Skip add.");
