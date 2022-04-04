@@ -6,8 +6,10 @@ import client.commands_for_script.*;
 import client.data.Movie;
 import server.exceptions.IncompleteData;
 import server.util.CollectionManager;
+import server.util.ScriptManager;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -15,7 +17,7 @@ import java.util.Scanner;
 /**
  * Класс сущности, которая будет парсить все поступаемые команды и вызывать их выполнение.
  */
-public class CommandManager {
+public class CommandManager implements Serializable {
 
     /**
      * Поля, содержащие объекты команд.
@@ -41,30 +43,25 @@ public class CommandManager {
     private final UpdateByID_for_script updateByID_for_script;
     private final RemoveGreater_for_script removeGreater_for_script;
     private final RemoveLower_for_script removeLower_for_script;
-    private final CollectionManager collectionManager;
-    private ArrayList<String> ScriptsStack = new ArrayList<>();
-    private ArrayList<Scanner> scripts = new ArrayList<>();
-    private int scriptcounter=-1;
-    private String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
+    private final Client client;
+    private final ScriptManager scriptManager;
+    private final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
             "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
             "print_field_descending_oscars_count"};
-    private final Client client;
     /**
      * Конструктор менеджера. Автоматически инициализирует объекты всех команд при создании и менеджера коллекций.
      * @see CollectionManager
      * @throws IOException
      */
     public CommandManager(Client client) throws IOException {
-        collectionManager = new CollectionManager();
+        this.client=client;
+        scriptManager = new ScriptManager();
         add = new Add("add", "добавить новый элемент в коллекцию");
         addIfMin = new AddIfMin("add_if_min", "добавить новый элемент в коллекцию, если его " +
                 "значение меньше, чем у наименьшего элемента этой коллекции. Объекты сравниваются по хэшкоду. Значение " +
                 "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
                 "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ");
         clear = new Clear("clear","очистить коллекцию");
-        executeScript = new ExecuteScript("execute_script filename", "считать и исполнить скрипт из " +
-                "указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в " +
-                "интерактивном режиме.", this);
         info = new Info("info", "вывести в стандартный поток вывода информацию о коллекции (тип, дата " +
                 "инициализации, количество элементов и т.д.)");
         printFieldDescendingOscarsCount = new PrintFieldDescendingOscarsCount("print_field_descending_oscars_count"
@@ -88,21 +85,40 @@ public class CommandManager {
         updateByID = new UpdateByID("update id", "обновить значение элемента коллекции, id которого " +
                 "равен заданному");
         exit = new Exit("exit", "завершить программу (без сохранения в файл)");
-        help = new Help("help", "вывести справку по доступным командам", this);
-        add_for_script = new Add_for_script("add", "добавить новый элемент в коллекцию", this);
+        help = new Help("help", "вывести справку по доступным командам", add, addIfMin, clear,
+                //executeScript,
+                info, printFieldDescendingOscarsCount, removeAllByOscarsCount, removeAnyByDirector, removeByID, removeGreater, removeLower, save, show, updateByID, exit);
+        add_for_script = new Add_for_script("add", "добавить новый элемент в коллекцию", scriptManager);
         addIfMin_for_script = new AddIfMin_for_script("add_if_min id", "добавить новый элемент в коллекцию, если его " +
-                "значение меньше, чем у наименьшего элемента этой коллекции (введите значение id в качестве аргумента)", this);
+                "значение меньше, чем у наименьшего элемента этой коллекции (введите значение id в качестве аргумента)", scriptManager);
         updateByID_for_script = new UpdateByID_for_script("update id", "обновить значение элемента коллекции, id которого " +
-                "равен заданному", this);
+                "равен заданному", scriptManager);
         removeGreater_for_script = new RemoveGreater_for_script("remove_greater", "удалить из коллекции все элементы, " +
                 "превышающие заданный.  Объекты сравниваются по хэшкоду. Значение " +
                 "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
-                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", this);
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", scriptManager);
         removeLower_for_script = new RemoveLower_for_script("remove_lower", "удалить из коллекции все элементы, меньшие, " +
                 "чем заданный. Объекты сравниваются по хэшкоду. Значение " +
                 "хэшкода объекта формируется из суммы: длины имени фильма, координат с отбрасыванием дробной части, " +
-                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", this);
-        this.client=client;
+                "координат локации режиссёра с отбрасыванием дробной части, длины имени режиссёра. ", scriptManager);
+        executeScript = new ExecuteScript("execute_script filename", "считать и исполнить скрипт из " +
+                "указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в " +
+                "интерактивном режиме.", scriptManager);
+        scriptManager.setClear(clear);
+        scriptManager.setExecuteScript(executeScript);
+        scriptManager.setInfo(info);
+        scriptManager.setPrintFieldDescendingOscarsCount(printFieldDescendingOscarsCount);
+        scriptManager.setRemoveAllByOscarsCount(removeAllByOscarsCount);
+        scriptManager.setRemoveAnyByDirector(removeAnyByDirector);
+        scriptManager.setRemoveByID(removeByID);
+        scriptManager.setSave(save);
+        scriptManager.setShow(show);
+        scriptManager.setUpdateByID_for_script(updateByID_for_script);
+        scriptManager.setAdd_for_script(add_for_script);
+        scriptManager.setAddIfMin_for_script(addIfMin_for_script);
+        scriptManager.setRemoveGreater_for_script(removeGreater_for_script);
+        scriptManager.setRemoveLower_for_script(removeLower_for_script);
+
     }
 
     /**
@@ -183,7 +199,8 @@ public class CommandManager {
                 break;
             }
             case(8):{
-                executeScript.exec(data[1]);//?????????????????????????????????????????????????????????????????????????
+                client.uploadCommand(getExecuteScript());
+                client.uploadText(data[1]);
                 break;
             }
             case(9):{
@@ -219,7 +236,7 @@ public class CommandManager {
                             throw new NumberFormatException();
                         }
                         successParse = true;
-                    } catch(NumberFormatException e){
+                    } catch(NumberFormatException e) {
                         System.out.println("Введен неверный формат данных, повторите ввод.");
                         argForParse= Asker.askIDForExec();
                     }
@@ -244,127 +261,6 @@ public class CommandManager {
         }
     }
 
-    public String getNextLineFromScript() throws IncompleteData {
-        Scanner scanner = scripts.get(scriptcounter);
-        for (String c : commands) {
-            if (scanner.hasNext(c)) {
-                throw new IncompleteData("Данные объекта неполные.");
-            }
-            }
-        return scanner.next();
-    }
-
-    public void rollScriptForNextCommand(){
-        boolean rollComplete = false;
-        Scanner scanner = scripts.get(scriptcounter);
-        while (scanner.hasNext()){
-            for (String c : commands){
-                if (scanner.hasNext(c)){
-                    rollComplete=true;
-                    break;
-                }
-            }
-            if (!rollComplete){
-                scanner.next();
-            } else {
-                break;
-            }
-        }
-    }
-
-    public void scriptscounterIncrement(){
-        scriptcounter+=1;
-    }
-
-    public void scriptscounterDecrement(){
-        scripts.remove(scriptcounter);
-        scriptcounter-=1;
-        if (scriptcounter==-1){
-            ScriptsStack.removeAll(ScriptsStack);
-        }
-    }
-
-    /**
-     * Метод для запуска скрипта. Парсит его и по очереди запускает команды, тащит в себе дополнительные аргументы-строки, если нужны.
-     * @param script
-     * @throws IOException
-     */
-    public void managerWorkForScript(Scanner script) throws IOException {
-        scripts.add(script);
-        while (scripts.get(scriptcounter).hasNext()) {
-            String[] data = commandParser(scripts.get(scriptcounter).next());
-            switch (chooseCommand(data[0])) {
-                case (0): {
-                    help.exec("");
-                    break;
-                }
-                case (1): {
-                    info.exec("");
-                    break;
-                }
-                case (2): {
-                    show.exec("");
-                    break;
-                }
-                case (3): {
-                    add_for_script.exec("");
-                    break;
-                }
-                case (4): {
-                    updateByID_for_script.exec(data[1]);
-                    break;
-                }
-                case (5): {
-                    removeByID.exec(data[1]);
-                    break;
-                }
-                case (6): {
-                    clear.exec("");
-                    break;
-                }
-                case (7): {
-                    save.exec("");
-                    break;
-                }
-                case (8): {
-                    executeScript.exec(data[1]);
-                    break;
-                }
-                case (9): {
-                    exit.exec("");
-                    break;
-                }
-                case (10): {
-                    addIfMin_for_script.exec("");
-                    break;
-                }
-                case (11): {
-                    removeGreater_for_script.exec("");
-                    break;
-                }
-                case (12): {
-                    removeLower_for_script.exec("");
-                    break;
-                }
-                case (13): {
-                    removeAllByOscarsCount.exec(data[1]);
-                    break;
-                }
-                case (14): {
-                    removeAnyByDirector.exec(data[1]);
-                    break;
-                }
-                case (15): {
-                    printFieldDescendingOscarsCount.exec("");
-                    break;
-                }
-                case (-1): {
-                    System.out.println("Команда не распознана.");
-                    break;
-                }
-            }
-        }
-    }
 
     public Add getAdd() {
         return add;
@@ -430,37 +326,12 @@ public class CommandManager {
         return updateByID;
     }
 
-    public CollectionManager getCollectionManager() {
-        return collectionManager;
-    }
-
-    public ArrayList<String> getScriptsStack() {
-        return ScriptsStack;
-    }
-
-    public void setScriptsStack(ArrayList<String> scriptsStack) {
-        ScriptsStack = scriptsStack;
-    }
-
-     public void addScriptsStack(String newScriptFile){
-        ScriptsStack.add(newScriptFile);
-     }
-
-     public boolean checkLoopTry(String newScriptFile){
-        for (String s : ScriptsStack){
-            if (s.equals(newScriptFile)){
-                return true;
-            }
-        }
-        return false;
-     }
 
     /**
      * @param line получает на вход строку, разбивает её на пробелы, первое слово - команда, второе (если есть) - аргумент.
      * @return возвращает массив строк, где 0й элемент - команда, 1й (если есть) - аргумент.
      */
     public String[] commandParser(String line) {
-
         try {
             Scanner scanner = new Scanner(line);
             if (!(line.indexOf(" ") == -1)) {

@@ -3,10 +3,7 @@ package server.util;
 import client.data.Movie;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * класс, объект которого хранит в себе коллекцию и управляет ей.
@@ -72,6 +69,7 @@ public class CollectionManager {
      */
     public void addElement(Movie movie) {
         movie.setId(addID());
+        movie.setCreationDate(new Date());
         MoviesCollection.add(movie);
     }
 

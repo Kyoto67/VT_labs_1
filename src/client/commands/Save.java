@@ -7,6 +7,7 @@ import java.io.IOException;
 public class Save extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 16L;
 
     /**
      * конструктор

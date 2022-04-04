@@ -7,6 +7,7 @@ import java.io.IOException;
 public class PrintFieldDescendingOscarsCount extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 10L;
 
     /**
      * конструктор

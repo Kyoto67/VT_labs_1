@@ -1,6 +1,8 @@
 package client.data;
 
-public enum MpaaRating {
+import java.io.Serializable;
+
+public enum MpaaRating implements Serializable {
     PG,
     PG_13,
     R,

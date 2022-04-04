@@ -40,7 +40,8 @@ public class FileManager {
         boolean read = false;
         while (!read) {
             try {
-                Scanner scanner = scan(System.getenv().get(collectionFileEnv));
+                //Scanner scanner = scan(System.getenv().get(collectionFileEnv));
+                Scanner scanner = scan("/home/kyoto/git/VT_labs_1/Collection.json");
                 read = true;
                 scanner.next(); //первая "{"
                 while (scanner.hasNext()) {
@@ -90,9 +91,11 @@ public class FileManager {
         while (!read) {
             try {
                 if (OS.indexOf("win") >= 0) {
-                    scan = scan(System.getenv().get(scriptEnv) + "\\" + filename);
+                    //scan = scan(System.getenv().get(scriptEnv) + "\\" + filename);
+                    scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
                 } else {
-                    scan = scan(System.getenv().get(scriptEnv) + "/" + filename);
+                    //scan = scan(System.getenv().get(scriptEnv) + "/" + filename);
+                    scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
                 }
                 read = true;
             } catch (AccessDeniedException e) {
@@ -119,7 +122,8 @@ public class FileManager {
         boolean save = false;
         while (!save) {
             try {
-                FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
+                //FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
+                FileOutputStream fos = new FileOutputStream("/home/kyoto/git/VT_labs_1/Collection.json");
                 fos.write(buffer);
                 save = true;
             } catch (FileNotFoundException e) {
@@ -195,7 +199,6 @@ public class FileManager {
                         } catch (Exception e) {
                             throw new readMovieDataException("Нечитаемый id.");
                         }
-
                     } else if (argument.equals("moviename")) {
                         try {
                             movie.setName(data);

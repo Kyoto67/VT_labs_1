@@ -6,6 +6,7 @@ import server.util.CollectionManager;
 public class RemoveByID extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 13L;
 
     /**
      * конструктор

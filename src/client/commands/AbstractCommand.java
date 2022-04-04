@@ -8,6 +8,7 @@ import java.io.Serializable;
 public abstract class AbstractCommand implements Command, Serializable {
     private final String name;
     private final String description;
+    private static final long serialVersionUID = 1L;
 
     /**
      * конструктор

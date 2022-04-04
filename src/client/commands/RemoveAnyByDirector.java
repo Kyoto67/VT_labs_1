@@ -7,6 +7,7 @@ import java.io.IOException;
 public class RemoveAnyByDirector extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 12L;
 
     /**
      * конструктор

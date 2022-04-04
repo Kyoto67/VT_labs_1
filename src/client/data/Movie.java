@@ -1,8 +1,9 @@
 package client.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Movie {
+public class Movie implements Serializable {
 
     private long id;
     private String name;

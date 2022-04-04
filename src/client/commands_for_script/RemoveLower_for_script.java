@@ -2,9 +2,10 @@ package client.commands_for_script;
 
 import client.commands.AbstractCommand;
 import client.data.*;
-import client.exceptions.IncompleteData;
 import client.util.Asker;
-import client.util.CommandManager;
+import server.exceptions.IncompleteData;
+import server.util.CollectionManager;
+import server.util.ScriptManager;
 
 import java.io.IOException;
 import java.util.Date;
@@ -12,18 +13,18 @@ import java.util.Date;
 public class RemoveLower_for_script extends AbstractCommand {
 
     private CollectionManager collectionManager;
-    private final CommandManager commandManager;
+    private final ScriptManager scriptManager;
 
     /**
      * конструктор
      *
      * @param name
      * @param description
-     * @param commandManager    сущность, считывающая построчно данные из скрипта.
+     * @param scriptManager    сущность, считывающая построчно данные из скрипта.
      */
-    public RemoveLower_for_script(String name, String description, CommandManager commandManager) {
+    public RemoveLower_for_script(String name, String description, ScriptManager scriptManager) {
         super(name, description);
-        this.commandManager = commandManager;
+        this.scriptManager = scriptManager;
     }
 
     public void setCollectionManager(CollectionManager collectionManager) {
@@ -44,19 +45,19 @@ public class RemoveLower_for_script extends AbstractCommand {
     public boolean exec(String argument) throws IOException {
         try {
             Movie movieForCompare = new Movie();
-            movieForCompare.setName(commandManager.getNextLineFromScript());
-            movieForCompare.setGenre(MovieGenre.valueOf(commandManager.getNextLineFromScript()));
-            movieForCompare.setMpaaRating(MpaaRating.valueOf(commandManager.getNextLineFromScript()));
-            movieForCompare.setCoordinates(new Coordinates(Double.parseDouble(commandManager.getNextLineFromScript()), Integer.parseInt(commandManager.getNextLineFromScript())));
+            movieForCompare.setName(scriptManager.getNextLineFromScript());
+            movieForCompare.setGenre(MovieGenre.valueOf(scriptManager.getNextLineFromScript()));
+            movieForCompare.setMpaaRating(MpaaRating.valueOf(scriptManager.getNextLineFromScript()));
+            movieForCompare.setCoordinates(new Coordinates(Double.parseDouble(scriptManager.getNextLineFromScript()), Integer.parseInt(scriptManager.getNextLineFromScript())));
             movieForCompare.setCreationDate(new Date());
-            movieForCompare.setOscarsCount(Long.parseLong(commandManager.getNextLineFromScript()));
+            movieForCompare.setOscarsCount(Long.parseLong(scriptManager.getNextLineFromScript()));
             Person director = new Person();
-            director.setName(commandManager.getNextLineFromScript());
-            director.setHeight(Double.parseDouble(commandManager.getNextLineFromScript()));
-            director.setEyeColor(Color.valueOf(commandManager.getNextLineFromScript()));
-            director.setHairColor(Color.valueOf(commandManager.getNextLineFromScript()));
-            director.setNationality(Country.valueOf(commandManager.getNextLineFromScript()));
-            director.setLocation(new Location(Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), (commandManager.getNextLineFromScript())));
+            director.setName(scriptManager.getNextLineFromScript());
+            director.setHeight(Double.parseDouble(scriptManager.getNextLineFromScript()));
+            director.setEyeColor(Color.valueOf(scriptManager.getNextLineFromScript()));
+            director.setHairColor(Color.valueOf(scriptManager.getNextLineFromScript()));
+            director.setNationality(Country.valueOf(scriptManager.getNextLineFromScript()));
+            director.setLocation(new Location(Double.parseDouble(scriptManager.getNextLineFromScript()), Double.parseDouble(scriptManager.getNextLineFromScript()), Double.parseDouble(scriptManager.getNextLineFromScript()), (scriptManager.getNextLineFromScript())));
             movieForCompare.setDirector(director);
             collectionManager.removeAllGreater(movieForCompare);
         } catch (IncompleteData e) {
@@ -64,7 +65,7 @@ public class RemoveLower_for_script extends AbstractCommand {
             return false;
         } catch (Exception e) {
             System.out.println("Unreadable client.data. Skip remove_lower.");
-            commandManager.rollScriptForNextCommand();
+            scriptManager.rollScriptForNextCommand();
             return false;
         }
         return true;

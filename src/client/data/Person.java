@@ -1,6 +1,8 @@
 package client.data;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
     private String name;
     private double height;
     private Color eyeColor;

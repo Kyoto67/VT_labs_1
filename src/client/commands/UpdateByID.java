@@ -5,7 +5,9 @@ import client.util.Asker;
 import server.util.CollectionManager;
 
 public class UpdateByID extends AbstractCommand {
+
     private CollectionManager manager;
+    private static final long serialVersionUID = 18L;
 
     /**
      * конструктор

@@ -468,7 +468,6 @@ public class Asker {
             newMovie.setGenre(askGenre());
             newMovie.setMpaaRating(askRating());
             newMovie.setCoordinates(new Coordinates(askCoordinatesX(),askCoordinatesY()));
-            newMovie.setCreationDate(new Date());
             newMovie.setOscarsCount(askOscarsCount());
             if (askPerson()){
                 Person director = new Person();

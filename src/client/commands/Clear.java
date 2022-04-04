@@ -5,6 +5,7 @@ import server.util.CollectionManager;
 public class Clear extends  AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 4L;
 
     /**
      * конструктор
@@ -35,5 +36,9 @@ public class Clear extends  AbstractCommand{
     public boolean exec(String argument) {
         manager.removeAllElements();
         return true;
+    }
+
+    public CollectionManager getManager() {
+        return manager;
     }
 }

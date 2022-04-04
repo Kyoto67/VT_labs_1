@@ -1,6 +1,8 @@
 package client.data;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
     private Double x;
     private double y;
     private Double z;

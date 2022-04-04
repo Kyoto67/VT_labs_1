@@ -1,6 +1,8 @@
 package client.data;
 
-public enum Country {
+import java.io.Serializable;
+
+public enum Country implements Serializable {
     GERMANY,
     NORTH_KOREA,
     JAPAN;

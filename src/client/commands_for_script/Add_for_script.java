@@ -2,10 +2,10 @@ package client.commands_for_script;
 
 import client.commands.AbstractCommand;
 import client.data.*;
-import client.exceptions.IncompleteData;
 import client.util.Asker;
-import client.util.CommandManager;
+import server.exceptions.IncompleteData;
 import server.util.CollectionManager;
+import server.util.ScriptManager;
 
 import java.util.Date;
 
@@ -15,18 +15,17 @@ import java.util.Date;
 public class Add_for_script extends AbstractCommand {
 
     private CollectionManager collectionManager;
-    private final CommandManager commandManager;
+    private final ScriptManager scriptManager;
 
     /**
      * конструктор
      *
      * @param name
      * @param description
-     * @param commandManager    сущность, считывающая построчно данные из скрипта.
      */
-    public Add_for_script(String name, String description, CommandManager commandManager) {
+    public Add_for_script(String name, String description, ScriptManager scriptManager) {
         super(name, description);
-        this.commandManager = commandManager;
+        this.scriptManager = scriptManager;
     }
 
     public void setCollectionManager(CollectionManager collectionManager) {
@@ -45,19 +44,19 @@ public class Add_for_script extends AbstractCommand {
     public boolean exec(String argument) {
         try {
             Movie newMovie = new Movie();
-            newMovie.setName(commandManager.getNextLineFromScript());
-            newMovie.setGenre(MovieGenre.valueOf(commandManager.getNextLineFromScript()));
-            newMovie.setMpaaRating(MpaaRating.valueOf(commandManager.getNextLineFromScript()));
-            newMovie.setCoordinates(new Coordinates(Double.parseDouble(commandManager.getNextLineFromScript()), Integer.parseInt(commandManager.getNextLineFromScript())));
+            newMovie.setName(scriptManager.getNextLineFromScript());
+            newMovie.setGenre(MovieGenre.valueOf(scriptManager.getNextLineFromScript()));
+            newMovie.setMpaaRating(MpaaRating.valueOf(scriptManager.getNextLineFromScript()));
+            newMovie.setCoordinates(new Coordinates(Double.parseDouble(scriptManager.getNextLineFromScript()), Integer.parseInt(scriptManager.getNextLineFromScript())));
             newMovie.setCreationDate(new Date());
-            newMovie.setOscarsCount(Long.parseLong(commandManager.getNextLineFromScript()));
+            newMovie.setOscarsCount(Long.parseLong(scriptManager.getNextLineFromScript()));
             Person director = new Person();
-            director.setName(commandManager.getNextLineFromScript());
-            director.setHeight(Double.parseDouble(commandManager.getNextLineFromScript()));
-            director.setEyeColor(Color.valueOf(commandManager.getNextLineFromScript()));
-            director.setHairColor(Color.valueOf(commandManager.getNextLineFromScript()));
-            director.setNationality(Country.valueOf(commandManager.getNextLineFromScript()));
-            director.setLocation(new Location(Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), Double.parseDouble(commandManager.getNextLineFromScript()), (commandManager.getNextLineFromScript())));
+            director.setName(scriptManager.getNextLineFromScript());
+            director.setHeight(Double.parseDouble(scriptManager.getNextLineFromScript()));
+            director.setEyeColor(Color.valueOf(scriptManager.getNextLineFromScript()));
+            director.setHairColor(Color.valueOf(scriptManager.getNextLineFromScript()));
+            director.setNationality(Country.valueOf(scriptManager.getNextLineFromScript()));
+            director.setLocation(new Location(Double.parseDouble(scriptManager.getNextLineFromScript()), Double.parseDouble(scriptManager.getNextLineFromScript()), Double.parseDouble(scriptManager.getNextLineFromScript()), (scriptManager.getNextLineFromScript())));
             newMovie.setDirector(director);
             collectionManager.addElement(newMovie);
         } catch (IncompleteData e) {
@@ -65,9 +64,10 @@ public class Add_for_script extends AbstractCommand {
             return false;
         } catch (Exception e) {
             System.out.println("Unreadable client.data. Skip add.");
-            commandManager.rollScriptForNextCommand();
+            scriptManager.rollScriptForNextCommand();
             return false;
         }
+        System.out.println("Команда add выполнена.");
         return true;
     }
 }

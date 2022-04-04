@@ -1,6 +1,8 @@
 package client.data;
 
-public enum MovieGenre {
+import java.io.Serializable;
+
+public enum MovieGenre implements Serializable {
     ACTION,
     DRAMA,
     ADVENTURE;

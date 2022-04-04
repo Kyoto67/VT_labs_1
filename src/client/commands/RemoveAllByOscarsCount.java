@@ -8,6 +8,7 @@ import java.io.IOException;
 public class RemoveAllByOscarsCount extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 11L;
 
     /**
      * конструктор

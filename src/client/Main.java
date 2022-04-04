@@ -7,7 +7,7 @@ import java.io.IOException;
 //@author Kyoto67
 //@variant 3130
 
-public class oldmain {
+public class Main {
     /**
      * client.Main-класс, приветственное сообщение, инициализация менеджера команд, запуск цикла запроса команд от пользователя,
      * передача команд CommandManager'у.

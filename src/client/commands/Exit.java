@@ -3,6 +3,9 @@ package client.commands;
 import java.io.IOException;
 
 public class Exit extends AbstractCommand {
+
+    private static final long serialVersionUID = 7L;
+
     /**
      * конструктор
      * @param name

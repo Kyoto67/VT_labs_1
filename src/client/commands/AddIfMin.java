@@ -9,6 +9,7 @@ import java.io.IOException;
 public class AddIfMin extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 3L;
 
     /**
      * конструктор

@@ -1,6 +1,8 @@
 package client.data;
 
-public enum Color {
+import java.io.Serializable;
+
+public enum Color implements Serializable {
     BLUE,
     ORANGE,
     WHITE,

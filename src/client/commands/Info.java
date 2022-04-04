@@ -1,10 +1,13 @@
 package client.commands;
 
+import server.util.CollectionManager;
+
 import java.io.IOException;
 
 public class Info extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 9L;
 
     /**
      * конструктор

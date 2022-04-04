@@ -2,6 +2,7 @@ package server;
 
 import client.commands.AbstractCommand;
 import client.commands.Add;
+import client.data.Movie;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -25,14 +26,20 @@ public class Server {
         System.out.println("Клиент подключился к серверу.");
     }
 
-    public void downloadCommand() throws IOException, ClassNotFoundException {
+    public AbstractCommand downloadCommand() throws IOException, ClassNotFoundException {
         in = new ObjectInputStream(socket.getInputStream());
         AbstractCommand command = (AbstractCommand) in.readObject();
-        System.out.println("Команда: "+command.getName()+", описание: "+command.getDescription());
+        return command;
     }
 
-    public void downloadText() throws IOException {
-        BufferedReader inputText = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println(inputText.readLine());
+    public Movie downloadMovie() throws IOException, ClassNotFoundException {
+        in = new ObjectInputStream(socket.getInputStream());
+        Movie movie = (Movie) in.readObject();
+        return movie;
+    }
+    public String downloadText() throws IOException, ClassNotFoundException {
+        in = new ObjectInputStream(socket.getInputStream());
+        String inputText = (String) in.readObject();
+        return inputText;
     }
 }

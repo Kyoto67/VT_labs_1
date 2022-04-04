@@ -9,6 +9,7 @@ import java.io.IOException;
 public class RemoveLower extends AbstractCommand{
 
     private CollectionManager manager;
+    private static final long serialVersionUID = 15L;
 
     /**
      * конструктор

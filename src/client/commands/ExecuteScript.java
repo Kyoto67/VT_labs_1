@@ -1,26 +1,32 @@
 package client.commands;
+import client.commands_for_script.*;
 import client.util.Asker;
 import client.util.CommandManager;
+import server.util.CollectionManager;
 import server.util.FileManager;
+import server.util.ScriptManager;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ExecuteScript extends AbstractCommand{
 
-    private final CommandManager commandManager;
 
-    /**
-     * конструктор
-     * @param name
-     * @param description
-     * @param commandManager сущность, которая отвечает за распознавание и вызов выполнения всех команд.
-     */
-    public ExecuteScript(String name, String description, CommandManager commandManager){
+    private static final long serialVersionUID = 5L;
+    private final ScriptManager scriptManager;
+    private CollectionManager collectionManager;
+
+    public void setCollectionManager(CollectionManager collectionManager) {
+        this.collectionManager = collectionManager;
+    }
+
+    public ExecuteScript(String name, String description, ScriptManager scriptManager) {
         super(name, description);
-        this.commandManager=commandManager;
+        this.scriptManager=scriptManager;
+        scriptManager.setExecuteScript(this);
     }
 
     /**
@@ -35,26 +41,23 @@ public class ExecuteScript extends AbstractCommand{
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        boolean success=false;
         String filename=argument;
-        Scanner script=null;
-        while (!success){
-            try {
-                script = FileManager.openScriptFile(filename);
-                success=true;
-            } catch (NoSuchFileException e){
-                System.out.println("Файл не найден, повторите ввод имени файла.");
-                filename= Asker.askFilenameForExecuteScript();
+        Scanner script;
+        try {
+            script = FileManager.openScriptFile(filename);
+        } catch (NoSuchFileException e){
+                System.out.println("Файл не найден, скрипт не был запущен.");
+                return false;
             } catch (AccessDeniedException e) {
-                System.out.println("Недостаточно прав для доступа к файлу, повторите ввод имени файла.");
-                filename= Asker.askFilenameForExecuteScript();
+                System.out.println("Недостаточно прав для доступа к файлу, скрипт не был запущен.");
+                return false;
             }
-        }
-        if (!commandManager.checkLoopTry(filename)){
-            commandManager.addScriptsStack(filename);
-            commandManager.scriptscounterIncrement();
-            commandManager.managerWorkForScript(script);
-            commandManager.scriptscounterDecrement();
+        if (!scriptManager.checkLoopTry(filename)){
+            scriptManager.addScriptsStack(filename);
+            scriptManager.scriptscounterIncrement();
+            scriptManager.setCollectionManager(collectionManager);
+            scriptManager.managerWorkForScript(script);
+            scriptManager.scriptscounterDecrement();
         } else {
             System.out.println("Обнаружена попытка залупливания. Цикл прерван, скрипт завершён.");
         }
