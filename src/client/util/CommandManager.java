@@ -1,16 +1,15 @@
 package client.util;
 
 import client.Client;
-import client.commands.*;
-import client.commands_for_script.*;
-import client.data.Movie;
-import server.exceptions.IncompleteData;
-import server.util.CollectionManager;
+import common.commands.*;
+import common.data.Movie;
 import server.util.ScriptManager;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -50,7 +49,6 @@ public class CommandManager implements Serializable {
             "print_field_descending_oscars_count"};
     /**
      * Конструктор менеджера. Автоматически инициализирует объекты всех команд при создании и менеджера коллекций.
-     * @see CollectionManager
      * @throws IOException
      */
     public CommandManager(Client client) throws IOException {
@@ -85,9 +83,6 @@ public class CommandManager implements Serializable {
         updateByID = new UpdateByID("update id", "обновить значение элемента коллекции, id которого " +
                 "равен заданному");
         exit = new Exit("exit", "завершить программу (без сохранения в файл)");
-        help = new Help("help", "вывести справку по доступным командам", add, addIfMin, clear,
-                //executeScript,
-                info, printFieldDescendingOscarsCount, removeAllByOscarsCount, removeAnyByDirector, removeByID, removeGreater, removeLower, save, show, updateByID, exit);
         add_for_script = new Add_for_script("add", "добавить новый элемент в коллекцию", scriptManager);
         addIfMin_for_script = new AddIfMin_for_script("add_if_min id", "добавить новый элемент в коллекцию, если его " +
                 "значение меньше, чем у наименьшего элемента этой коллекции (введите значение id в качестве аргумента)", scriptManager);
@@ -104,6 +99,9 @@ public class CommandManager implements Serializable {
         executeScript = new ExecuteScript("execute_script filename", "считать и исполнить скрипт из " +
                 "указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в " +
                 "интерактивном режиме.", scriptManager);
+        help = new Help("help", "вывести справку по доступным командам", add, addIfMin, clear,
+                executeScript,
+                info, printFieldDescendingOscarsCount, removeAllByOscarsCount, removeAnyByDirector, removeByID, removeGreater, removeLower, save, show, updateByID, exit);
         scriptManager.setClear(clear);
         scriptManager.setExecuteScript(executeScript);
         scriptManager.setInfo(info);
@@ -127,25 +125,49 @@ public class CommandManager implements Serializable {
      * @see CommandManager#chooseCommand(String)
      * @throws IOException
      */
-    public void managerWork(String line) throws IOException {
+    public void managerWork(String line) throws IOException, ClassNotFoundException {
         String[] data = commandParser(line);
         switch(chooseCommand(data[0])){
             case(0):{
+                System.out.println("Запускаю команду "+getHelp().getName()+" ...");
                 client.uploadCommand(getHelp());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(1):{
+                System.out.println("Запускаю команду "+getInfo().getName()+" ...");
                 client.uploadCommand(getInfo());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(2):{
+                System.out.println("Запускаю команду "+getShow().getName()+" ...");
                 client.uploadCommand(getShow());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(3):{
                 Movie newMovie = Asker.askMovie();
+                System.out.println("Запускаю команду "+getAdd().getName()+" ...");
                 client.uploadCommand(getAdd());
                 client.uploadMovie(newMovie);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(4):{
@@ -166,8 +188,14 @@ public class CommandManager implements Serializable {
                 }
                 Movie newMovie = Asker.askMovie();
                 newMovie.setId(id);
+                System.out.println("Запускаю команду "+getUpdateByID().getName()+" ...");
                 client.uploadCommand(getUpdateByID());
                 client.uploadMovie(newMovie);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(5): {
@@ -186,43 +214,87 @@ public class CommandManager implements Serializable {
                         argForParse= Asker.askIDForExec();
                     }
                 }
+                System.out.println("Запускаю команду "+getRemoveByID().getName()+" ...");
                 client.uploadCommand(getRemoveByID());
                 client.uploadText(String.valueOf(id));
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(6):{
+                System.out.println("Запускаю команду "+getClear().getName()+" ...");
                 client.uploadCommand(getClear());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(7):{
+                System.out.println("Запускаю команду "+getSave().getName()+" ...");
                 client.uploadCommand(getSave());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(8):{
+                System.out.println("Запускаю команду "+getExecuteScript().getName()+" ...");
                 client.uploadCommand(getExecuteScript());
                 client.uploadText(data[1]);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(9):{
-                client.uploadCommand(getExit());
+                System.out.println("Запускаю команду "+getExit().getName()+" ...");
+                client.uploadCommand(getSave());
+                exit.exec("");
                 break;
             }
             case(10):{
                 Movie newMovie = Asker.askMovie();
+                System.out.println("Запускаю команду "+getAddIfMin().getName()+" ...");
                 client.uploadCommand(getAddIfMin());
                 client.uploadMovie(newMovie);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(11):{
                 Movie movieForCompare = Asker.askMovie();
+                System.out.println("Запускаю команду "+getRemoveGreater().getName()+" ...");
                 client.uploadCommand(getRemoveGreater());
                 client.uploadMovie(movieForCompare);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(12):{
                 Movie movieForCompare = Asker.askMovie();
+                System.out.println("Запускаю команду "+getRemoveLower().getName()+" ...");
                 client.uploadCommand(getRemoveLower());
                 client.uploadMovie(movieForCompare);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(13):{
@@ -241,17 +313,35 @@ public class CommandManager implements Serializable {
                         argForParse= Asker.askIDForExec();
                     }
                 }
+                System.out.println("Запускаю команду "+getRemoveAllByOscarsCount().getName()+" ...");
                 client.uploadCommand(getRemoveAllByOscarsCount());
                 client.uploadText(String.valueOf(OscarsCount));
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(14):{
+                System.out.println("Запускаю команду "+getRemoveAnyByDirector().getName()+" ...");
                 client.uploadCommand(getRemoveAnyByDirector());
                 client.uploadText(data[1]);
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(15):{
+                System.out.println("Запускаю команду "+getPrintFieldDescendingOscarsCount().getName()+" ...");
                 client.uploadCommand(getPrintFieldDescendingOscarsCount());
+                if(client.downloadResult()){
+                    System.out.println("Команда выполнена.");
+                } else {
+                    System.out.println("Произошла ошибка при выполнении команды.");
+                }
                 break;
             }
             case(-1):{
@@ -361,5 +451,25 @@ public class CommandManager implements Serializable {
             }
         }
         return -1;
+    }
+
+    private static Object byteBufferToObject(ByteBuffer byteBuffer)
+            throws Exception {
+        System.out.println(byteBuffer);
+        //byte[] bytes = new byte[byteBuffer.limit()];
+        byte[] bytes = byteBuffer.array();
+        for (byte b : bytes){
+            System.out.print(b);
+        }
+        System.out.print("\n");
+        Object object = deSerializer(bytes);
+        return object;
+    }
+
+    private static Object deSerializer(byte[] bytes) throws IOException,
+            ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(
+                new ByteArrayInputStream(bytes));
+        return objectInputStream.readObject();
     }
 }

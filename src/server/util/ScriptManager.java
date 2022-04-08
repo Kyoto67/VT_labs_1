@@ -1,8 +1,7 @@
 package server.util;
 
-import client.commands.*;
-import client.commands_for_script.*;
-import server.exceptions.IncompleteData;
+import common.commands.*;
+import common.exceptions.IncompleteData;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -119,71 +118,127 @@ public class ScriptManager implements Serializable {
             switch (chooseCommand(data[0])) {
                 case (0): {
                     info.setCollectionManager(collectionManager);
-                    info.exec("");
+                    if (info.exec("")) {
+                        System.out.println("Команда " + info.getName() + " выполнена.");
+                    } else {
+                        System.out.println(info.getName() + " failed.");
+                    }
                     break;
                 }
                 case (1): {
                     show.setCollectionManager(collectionManager);
-                    show.exec("");
+                    if (show.exec("")) {
+                        System.out.println("Команда " + show.getName() + " выполнена.");
+                    } else {
+                        System.out.println(show.getName() + " failed.");
+                    }
                     break;
                 }
                 case (2): {
                     add_for_script.setCollectionManager(collectionManager);
-                    add_for_script.exec("");
+                    if (add_for_script.exec("")) {
+                        System.out.println("Команда " + add_for_script.getName() + " выполнена.");
+                    } else {
+                        System.out.println(add_for_script.getName() + " failed.");
+                    }
                     break;
                 }
                 case (3): {
                     updateByID_for_script.setCollectionManager(collectionManager);
-                    updateByID_for_script.exec(data[1]);
+                    if (updateByID_for_script.exec(data[1])) {
+                        System.out.println("Команда " + updateByID_for_script.getName() + " выполнена.");
+                    } else {
+                        System.out.println(updateByID_for_script.getName() + " failed.");
+                    }
                     break;
                 }
                 case (4): {
                     removeByID.setCollectionManager(collectionManager);
-                    removeByID.exec(data[1]);
+                    if (removeByID.exec(data[1])) {
+                        System.out.println("Команда " + removeByID.getName() + " выполнена.");
+                    } else {
+                        System.out.println(removeByID.getName() + "failed.");
+                    }
                     break;
                 }
                 case (5): {
                     clear.setCollectionManager(collectionManager);
-                    clear.exec("");
+                    if (clear.exec("")) {
+                        System.out.println("Команда " + clear.getName() + " выполнена.");
+                    } else {
+                        System.out.println(clear.getName() + " failed.");
+                    }
                     break;
                 }
                 case (6): {
                     save.setCollectionManager(collectionManager);
-                    save.exec("");
+                    if (save.exec("")) {
+                        System.out.println("Команда " + save.getName() + " выполнена.");
+                    } else {
+                        System.out.println(save.getName() + " failed.");
+                    }
                     break;
                 }
                 case (7): {
-                    executeScript.exec(data[1]);
+                    if (executeScript.exec(data[1])) {
+                        System.out.println("Команда " + executeScript.getName() + " выполнена.");
+                    } else {
+                        System.out.println(executeScript.getName() + " failed.");
+                    }
                     break;
                 }
                 case (8): {
                     add_for_script.setCollectionManager(collectionManager);
-                    addIfMin_for_script.exec("");
+                    if (addIfMin_for_script.exec("")) {
+                        System.out.println("Команда " + addIfMin_for_script.getName() + " выполнена.");
+                    } else {
+                        System.out.println(addIfMin_for_script.getName() + " failed.");
+                    }
                     break;
                 }
                 case (9): {
                     removeGreater_for_script.setCollectionManager(collectionManager);
-                    removeGreater_for_script.exec("");
+                    if (removeGreater_for_script.exec("")) {
+                        System.out.println("Команда " + removeGreater_for_script.getName() + " выполнена.");
+                    } else {
+                        System.out.println(removeGreater_for_script.getName() + " failed.");
+                    }
                     break;
                 }
                 case (10): {
                     removeLower_for_script.setCollectionManager(collectionManager);
-                    removeLower_for_script.exec("");
+                    if (removeLower_for_script.exec("")) {
+                        System.out.println("Команда " + removeLower_for_script.getName() + " выполнена.");
+                    } else {
+                        System.out.println(removeLower_for_script.getName() + " failed.");
+                    }
                     break;
                 }
                 case (11): {
                     removeAllByOscarsCount.setCollectionManager(collectionManager);
-                    removeAllByOscarsCount.exec(data[1]);
+                    if (removeAllByOscarsCount.exec(data[1])) {
+                        System.out.println("Команда " + removeAllByOscarsCount.getName() + " выполнена.");
+                    } else {
+                        System.out.println(removeAllByOscarsCount.getName() + " failed.");
+                    }
                     break;
                 }
                 case (12): {
                     removeAnyByDirector.setCollectionManager(collectionManager);
-                    removeAnyByDirector.exec(data[1]);
+                    if(removeAnyByDirector.exec(data[1])){
+                        System.out.println("Команда "+removeAnyByDirector.getName()+" выполнена.");
+                    } else {
+                        System.out.println(removeAnyByDirector.getName()+" failed.");
+                    }
                     break;
                 }
                 case (13): {
                     printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
-                    printFieldDescendingOscarsCount.exec("");
+                    if(printFieldDescendingOscarsCount.exec("")){
+                        System.out.println("Команда "+printFieldDescendingOscarsCount.getName()+" выполнена.");
+                    } else {
+                        System.out.println(printFieldDescendingOscarsCount.getName()+" failed.");
+                    }
                     break;
                 }
                 case (-1): {

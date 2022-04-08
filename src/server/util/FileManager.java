@@ -1,7 +1,7 @@
 package server.util;
 
-import client.data.*;
-import server.exceptions.*;
+import common.data.*;
+import common.exceptions.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,9 +70,12 @@ public class FileManager {
                 System.out.println("Отсутствуют права доступа к файлу коллекции. Обновите права или измените переменную" +
                         " окружения \"LABA\" на другой файл. После исправления ошибки введите ENTER.");
                 System.in.read();
-            } catch (Exception e) {
-                System.out.println("Ошибка чтения файла с переменной окружения. Задайте новую и нажмите ENTER.");
+            } catch (NullPointerException e) {
+                System.out.println("Невозможно прочитать коллекцию из заданного файла. Задайте новый через переменную окружения и нажмите ENTER.");
                 System.in.read();
+            } catch (IndexOutOfBoundsException e){
+                System.out.println("WARNING! У вас пустая коллекция в файле.");
+                return new PriorityQueue<>(CollectionManager.idComparator);
             }
         }
         return MoviesCollection;
@@ -91,11 +94,11 @@ public class FileManager {
         while (!read) {
             try {
                 if (OS.indexOf("win") >= 0) {
-                    //scan = scan(System.getenv().get(scriptEnv) + "\\" + filename);
-                    scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
+                    scan = scan(System.getenv().get(scriptEnv) + "\\" + filename);
+                    //scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
                 } else {
-                    //scan = scan(System.getenv().get(scriptEnv) + "/" + filename);
-                    scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
+                    scan = scan(System.getenv().get(scriptEnv) + "/" + filename);
+                    //scan = scan("/home/kyoto/git/VT_labs_1/"+filename);
                 }
                 read = true;
             } catch (AccessDeniedException e) {

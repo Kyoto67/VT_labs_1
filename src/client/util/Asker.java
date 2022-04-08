@@ -1,8 +1,6 @@
 package client.util;
 
-import client.data.*;
-
-import java.util.Date;
+import common.data.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

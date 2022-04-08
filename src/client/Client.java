@@ -1,30 +1,40 @@
 package client;
 
-import client.commands.AbstractCommand;
-import client.data.Movie;
-import java.io.*;
-import java.net.Socket;
+import common.commands.AbstractCommand;
+import common.data.Movie;
 
-public class Client implements Serializable{
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+
+public class Client implements Serializable {
 
     private final String host;
     private final int port;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private final Socket socket;
+    private final SocketChannel client;
+    private ByteBuffer buffer;
+    private Socket socket;
 
     public Client(String host, int port) throws IOException {
         this.host = host;
         this.port = port;
-        socket = new Socket(host, port);
+        client = SocketChannel.open(new InetSocketAddress(host, 1337));
         System.out.println("Клиент подключился к серверу.");
-        //in = new ObjectInputStream(socket.getInputStream());
+        buffer = ByteBuffer.allocate(256);
     }
 
     public void uploadCommand(AbstractCommand command) throws IOException {
-        out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(command);
-        out.flush();
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(bytesOut);
+        outputStream.writeObject(command);
+        outputStream.flush();
+        ByteBuffer buffer = ByteBuffer.wrap(bytesOut.toByteArray());
+        client.write(buffer);
+        bytesOut.close();
     }
 
     public void uploadMovie(Movie movie) throws IOException {
@@ -34,8 +44,26 @@ public class Client implements Serializable{
     }
 
     public void uploadText(String text) throws IOException {
-        out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(text);
-        out.flush();
+        buffer = ByteBuffer.wrap(text.getBytes());
+        client.write(buffer);
+        buffer.clear();
+    }
+    //  out = new ObjectOutputStream(socket.getOutputStream());
+    // out.writeObject(text);
+    //out.flush();
+    //}
+
+    public boolean downloadResult() throws IOException, ClassNotFoundException {
+        buffer.clear();
+        client.read(buffer);
+        int flag = buffer.get(0);
+        if (flag == 1) {
+            return true;
+        } else {
+            return false;
+        }
+        //in = new ObjectInputStream(socket.getInputStream());
+        //boolean result = (boolean) in.readObject();
+        //return result;
     }
 }

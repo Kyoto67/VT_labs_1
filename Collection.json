@@ -1,106 +1,54 @@
 {
 	MovieCollection: [
 		{
-		"hashCode": "836"
+		"hashCode": "895"
 		"movieid": "1"
-		"moviename": "testname1"
+		"moviename": "cldrqufszf"
 		"coordinates": {
-			"coordinates_x": "1.1"
-			"coordinates_y": "2"
+			"coordinates_x": "490.75846835718465"
+			"coordinates_y": "18"
 			}
-		"creationDate": "1649084965227"
-		"oscarsCount": "123"
-		"genre": "ACTION"
-		"mpaaRating": "PG"
+		"creationDate": "1649101531410"
+		"oscarsCount": "5423"
+		"genre": "DRAMA"
+		"mpaaRating": "PG_13"
 		"director": {
-			"directorname": "directorTestName"
-			"height": "180.0"
-			"eyeColor": "BLUE"
-			"hairColor": "YELLOW"
-			"nationality": "JAPAN"
+			"directorname": "snskqkqvcz"
+			"height": "72.44073740053831"
+			"eyeColor": "BROWN"
+			"hairColor": "WHITE"
+			"nationality": "NORTH_KOREA"
 			"location": {
-				"location_x": "223.45456"
-				"location_y": "42.0"
-				"location_z": "543.423423"
-				"locationname": "testLocationName"
+				"location_x": "86.85292609348983"
+				"location_y": "81.96674839390458"
+				"location_z": "198.66352051126486"
+				"locationname": "jeqfdtsfgn"
 				}
 			}
 		},
 		{
-		"hashCode": "836"
+		"hashCode": "1878"
 		"movieid": "2"
-		"moviename": "testname2"
+		"moviename": "gyjwvozebb"
 		"coordinates": {
-			"coordinates_x": "1.1"
-			"coordinates_y": "2"
+			"coordinates_x": "949.4120469172658"
+			"coordinates_y": "16"
 			}
-		"creationDate": "1649084965228"
-		"oscarsCount": "123"
+		"creationDate": "1649101533116"
+		"oscarsCount": "2038"
 		"genre": "ACTION"
-		"mpaaRating": "PG"
+		"mpaaRating": "R"
 		"director": {
-			"directorname": "directorTestName"
-			"height": "180.0"
-			"eyeColor": "BLUE"
-			"hairColor": "YELLOW"
-			"nationality": "JAPAN"
+			"directorname": "daarpomlmg"
+			"height": "31.014075708910248"
+			"eyeColor": "BLACK"
+			"hairColor": "WHITE"
+			"nationality": "NORTH_KOREA"
 			"location": {
-				"location_x": "223.45456"
-				"location_y": "42.0"
-				"location_z": "543.423423"
-				"locationname": "testLocationName"
-				}
-			}
-		},
-		{
-		"hashCode": "836"
-		"movieid": "3"
-		"moviename": "testname3"
-		"coordinates": {
-			"coordinates_x": "1.1"
-			"coordinates_y": "2"
-			}
-		"creationDate": "1649084965228"
-		"oscarsCount": "123"
-		"genre": "ACTION"
-		"mpaaRating": "PG"
-		"director": {
-			"directorname": "directorTestName"
-			"height": "180.0"
-			"eyeColor": "BLUE"
-			"hairColor": "YELLOW"
-			"nationality": "JAPAN"
-			"location": {
-				"location_x": "223.45456"
-				"location_y": "42.0"
-				"location_z": "543.423423"
-				"locationname": "testLocationName"
-				}
-			}
-		},
-		{
-		"hashCode": "836"
-		"movieid": "4"
-		"moviename": "testname4"
-		"coordinates": {
-			"coordinates_x": "1.1"
-			"coordinates_y": "2"
-			}
-		"creationDate": "1649084965229"
-		"oscarsCount": "123"
-		"genre": "ACTION"
-		"mpaaRating": "PG"
-		"director": {
-			"directorname": "directorTestName"
-			"height": "180.0"
-			"eyeColor": "BLUE"
-			"hairColor": "YELLOW"
-			"nationality": "JAPAN"
-			"location": {
-				"location_x": "223.45456"
-				"location_y": "42.0"
-				"location_z": "543.423423"
-				"locationname": "testLocationName"
+				"location_x": "213.46598890547176"
+				"location_y": "85.54765536357999"
+				"location_z": "594.8017882563134"
+				"locationname": "xehdojrins"
 				}
 			}
 		}

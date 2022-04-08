@@ -1,6 +1,6 @@
 package server.util;
 
-import client.data.Movie;
+import common.data.Movie;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;

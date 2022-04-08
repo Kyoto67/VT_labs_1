@@ -1,6 +1,6 @@
 package client.util;
 
-import client.data.*;
+import common.data.*;
 import java.io.IOException;
 import java.util.Date;
 import java.util.PriorityQueue;
