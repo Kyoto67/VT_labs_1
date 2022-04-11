@@ -24,11 +24,11 @@
 ADDR:	WORD	0x5A1
 LEN:	WORD	0x0000
 FIRST:	WORD	0x0000
-SECOND:    WORD    0x0000
+SECOND: WORD    0x0000
 START:  LD      (ADDR)+
         AND     #0xFF
         ST      LEN
-L:       IN      7
+L:      IN      7
         AND     #0x40
         BEQ     L
         LD      LEN
