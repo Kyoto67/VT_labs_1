@@ -130,7 +130,7 @@ public class CommandManager implements Serializable {
         switch(chooseCommand(data[0])){
             case(0):{
                 System.out.println("Запускаю команду "+getHelp().getName()+" ...");
-                client.uploadCommand(getHelp());
+                client.uploadObject(getHelp());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -140,7 +140,7 @@ public class CommandManager implements Serializable {
             }
             case(1):{
                 System.out.println("Запускаю команду "+getInfo().getName()+" ...");
-                client.uploadCommand(getInfo());
+                client.uploadObject(getInfo());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -150,7 +150,7 @@ public class CommandManager implements Serializable {
             }
             case(2):{
                 System.out.println("Запускаю команду "+getShow().getName()+" ...");
-                client.uploadCommand(getShow());
+                client.uploadObject(getShow());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -161,8 +161,8 @@ public class CommandManager implements Serializable {
             case(3):{
                 Movie newMovie = Asker.askMovie();
                 System.out.println("Запускаю команду "+getAdd().getName()+" ...");
-                client.uploadCommand(getAdd());
-                client.uploadMovie(newMovie);
+                client.uploadObject(getAdd());
+                client.uploadObject(newMovie);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -189,8 +189,8 @@ public class CommandManager implements Serializable {
                 Movie newMovie = Asker.askMovie();
                 newMovie.setId(id);
                 System.out.println("Запускаю команду "+getUpdateByID().getName()+" ...");
-                client.uploadCommand(getUpdateByID());
-                client.uploadMovie(newMovie);
+                client.uploadObject(getUpdateByID());
+                client.uploadObject(newMovie);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -215,7 +215,7 @@ public class CommandManager implements Serializable {
                     }
                 }
                 System.out.println("Запускаю команду "+getRemoveByID().getName()+" ...");
-                client.uploadCommand(getRemoveByID());
+                client.uploadObject(getRemoveByID());
                 client.uploadText(String.valueOf(id));
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
@@ -226,7 +226,7 @@ public class CommandManager implements Serializable {
             }
             case(6):{
                 System.out.println("Запускаю команду "+getClear().getName()+" ...");
-                client.uploadCommand(getClear());
+                client.uploadObject(getClear());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -236,7 +236,7 @@ public class CommandManager implements Serializable {
             }
             case(7):{
                 System.out.println("Запускаю команду "+getSave().getName()+" ...");
-                client.uploadCommand(getSave());
+                client.uploadObject(getSave());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -246,7 +246,7 @@ public class CommandManager implements Serializable {
             }
             case(8):{
                 System.out.println("Запускаю команду "+getExecuteScript().getName()+" ...");
-                client.uploadCommand(getExecuteScript());
+                client.uploadObject(getExecuteScript());
                 client.uploadText(data[1]);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
@@ -257,15 +257,15 @@ public class CommandManager implements Serializable {
             }
             case(9):{
                 System.out.println("Запускаю команду "+getExit().getName()+" ...");
-                client.uploadCommand(getSave());
+                client.uploadObject(getSave());
                 exit.exec("");
                 break;
             }
             case(10):{
                 Movie newMovie = Asker.askMovie();
                 System.out.println("Запускаю команду "+getAddIfMin().getName()+" ...");
-                client.uploadCommand(getAddIfMin());
-                client.uploadMovie(newMovie);
+                client.uploadObject(getAddIfMin());
+                client.uploadObject(newMovie);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -276,8 +276,8 @@ public class CommandManager implements Serializable {
             case(11):{
                 Movie movieForCompare = Asker.askMovie();
                 System.out.println("Запускаю команду "+getRemoveGreater().getName()+" ...");
-                client.uploadCommand(getRemoveGreater());
-                client.uploadMovie(movieForCompare);
+                client.uploadObject(getRemoveGreater());
+                client.uploadObject(movieForCompare);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -288,8 +288,8 @@ public class CommandManager implements Serializable {
             case(12):{
                 Movie movieForCompare = Asker.askMovie();
                 System.out.println("Запускаю команду "+getRemoveLower().getName()+" ...");
-                client.uploadCommand(getRemoveLower());
-                client.uploadMovie(movieForCompare);
+                client.uploadObject(getRemoveLower());
+                client.uploadObject(movieForCompare);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {
@@ -314,7 +314,7 @@ public class CommandManager implements Serializable {
                     }
                 }
                 System.out.println("Запускаю команду "+getRemoveAllByOscarsCount().getName()+" ...");
-                client.uploadCommand(getRemoveAllByOscarsCount());
+                client.uploadObject(getRemoveAllByOscarsCount());
                 client.uploadText(String.valueOf(OscarsCount));
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
@@ -325,7 +325,7 @@ public class CommandManager implements Serializable {
             }
             case(14):{
                 System.out.println("Запускаю команду "+getRemoveAnyByDirector().getName()+" ...");
-                client.uploadCommand(getRemoveAnyByDirector());
+                client.uploadObject(getRemoveAnyByDirector());
                 client.uploadText(data[1]);
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
@@ -336,7 +336,7 @@ public class CommandManager implements Serializable {
             }
             case(15):{
                 System.out.println("Запускаю команду "+getPrintFieldDescendingOscarsCount().getName()+" ...");
-                client.uploadCommand(getPrintFieldDescendingOscarsCount());
+                client.uploadObject(getPrintFieldDescendingOscarsCount());
                 if(client.downloadResult()){
                     System.out.println("Команда выполнена.");
                 } else {

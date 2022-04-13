@@ -23,25 +23,28 @@ public class Client implements Serializable {
         this.host = host;
         this.port = port;
         client = SocketChannel.open(new InetSocketAddress(host, 1337));
+        socket = client.socket();
         System.out.println("Клиент подключился к серверу.");
         buffer = ByteBuffer.allocate(256);
     }
 
-    public void uploadCommand(AbstractCommand command) throws IOException {
+    public void uploadObject(Object object) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         ObjectOutputStream outputStream = new ObjectOutputStream(bytesOut);
-        outputStream.writeObject(command);
+        outputStream.writeObject(object);
         outputStream.flush();
-        ByteBuffer buffer = ByteBuffer.wrap(bytesOut.toByteArray());
-        client.write(buffer);
+        outputStream.close();
+        byte[] bytes = bytesOut.toByteArray();
         bytesOut.close();
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        client.write(buffer);
     }
-
-    public void uploadMovie(Movie movie) throws IOException {
-        out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(movie);
-        out.flush();
-    }
+//
+//    public void uploadMovie(Movie movie) throws IOException {
+//        out = new ObjectOutputStream(socket.getOutputStream());
+//        out.writeObject(movie);
+//        out.flush();
+//    }
 
     public void uploadText(String text) throws IOException {
         buffer = ByteBuffer.wrap(text.getBytes());

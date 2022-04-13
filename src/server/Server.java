@@ -3,8 +3,6 @@ package server;
 import common.commands.*;
 import common.data.Movie;
 import server.util.CollectionManager;
-import sun.awt.X11.XSystemTrayPeer;
-
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
@@ -35,7 +33,7 @@ public class Server {
         System.out.println("Сервер поднят.");
         server.configureBlocking(false);
         server.register(selector, SelectionKey.OP_ACCEPT);
-        buffer = ByteBuffer.allocate(4096);
+        buffer = ByteBuffer.allocate(10000);
     }
 
     public void Run() throws Exception {
@@ -56,28 +54,27 @@ public class Server {
                     if (key.isReadable()) {
                         SocketChannel client = (SocketChannel) key.channel();
                         int data = socketChannel.read(buffer);
-                        socketChannel.configureBlocking(false);
-                        if(!(data==-1)){
-                            command= (AbstractCommand) byteBufferToObject(buffer);
+                        client.configureBlocking(false);
+                        if (!(data == -1) && (!(data == 0))) {
+                            command = (AbstractCommand) byteBufferToObject(buffer);
+                            buffer =ByteBuffer.allocate(10000);
                             data = socketChannel.read(buffer);
-                            if(!(data==1)){
+                            if (!(data == -1) && (!(data == 0))) {
                                 argument = byteBufferToObject(buffer);
                             }
                         }
-                        buffer.clear();
-                        if(!(command==null)){
-                            if(Module.Run()){
-                                buffer= ByteBuffer.wrap(new byte[]{1});
-                                socketChannel.write(buffer);
-                            } else {
-                                buffer= ByteBuffer.wrap(new byte[]{0});
-                                socketChannel.write(buffer);
-                            }
-                        }
-                        System.out.println(new String(buffer.array()).trim() + data);
-                        buffer.clear();
-                        server.register(key.selector(), SelectionKey.OP_ACCEPT);
                     }
+                    if (!(command == null)) {
+                        if (Module.Run()) {
+                            buffer = ByteBuffer.wrap(new byte[]{1});
+                            socketChannel.write(buffer);
+                        } else {
+                            buffer = ByteBuffer.wrap(new byte[]{0});
+                            socketChannel.write(buffer);
+                        }
+                    }
+                    buffer =ByteBuffer.allocate(10000);
+                    server.register(key.selector(), SelectionKey.OP_ACCEPT);
                 }
             }
         }
@@ -87,7 +84,7 @@ public class Server {
         selector.close();
     }
 
-    public ByteBuffer getBuffer(){
+    public ByteBuffer getBuffer() {
         return buffer;
     }
 
@@ -101,7 +98,17 @@ public class Server {
             ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(
                 new ByteArrayInputStream(bytes));
-        return objectInputStream.readObject();
+        Object object = null;
+        boolean check = false;
+        while (!(check)) {
+            try {
+                object = objectInputStream.readObject();
+                check = true;
+            } catch (EOFException ex) {
+                check = false;
+            }
+        }
+        return object;
     }
 
     private static class Module {
@@ -120,121 +127,121 @@ public class Server {
                 switch (chooseCommand(actualCommand)) {
                     case (0): {
                         Help help = (Help) command;
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (help.exec(""));
                     }
                     case (1): {
                         Info info = (Info) command;
                         info.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (info.exec(""));
                     }
                     case (2): {
                         Show show = (Show) command;
                         show.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (show.exec(""));
                     }
                     case (3): {
                         Movie newMovie = (Movie) argument;
                         Add add = (Add) command;
                         add.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (add.exec(newMovie));
                     }
                     case (4): {
                         Movie newMovie = (Movie) argument;
                         UpdateByID updateByID = (UpdateByID) command;
                         updateByID.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (updateByID.exec(newMovie));
                     }
                     case (5): {
                         String id = (String) argument;
                         RemoveByID removeByID = (RemoveByID) command;
                         removeByID.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (removeByID.exec(id));
                     }
                     case (6): {
                         Clear clear = (Clear) command;
                         clear.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (clear.exec(""));
                     }
                     case (7): {
                         Save save = (Save) command;
                         save.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (save.exec(""));
                     }
                     case (8): {
                         String filename = (String) argument;
                         ExecuteScript executeScript = (ExecuteScript) command;
                         executeScript.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (executeScript.exec(filename));
                     }
                     case (9): {
                         Exit exit = (Exit) command;
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (exit.exec(""));
                     }
                     case (10): {
                         Movie newMovie = (Movie) argument;
                         AddIfMin addIfMin = (AddIfMin) command;
                         addIfMin.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (addIfMin.exec(newMovie));
                     }
                     case (11): {
                         Movie movieForCompare = (Movie) argument;
                         RemoveGreater removeGreater = (RemoveGreater) command;
                         removeGreater.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (removeGreater.exec(movieForCompare));
                     }
                     case (12): {
                         Movie movieForCompare = (Movie) argument;
                         RemoveLower removeLower = (RemoveLower) command;
                         removeLower.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (removeLower.exec(movieForCompare));
                     }
                     case (13): {
                         String oscarsCount = (String) argument;
                         RemoveAllByOscarsCount removeAllByOscarsCount = (RemoveAllByOscarsCount) command;
                         removeAllByOscarsCount.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (removeAllByOscarsCount.exec(oscarsCount));
                     }
                     case (14): {
                         String directorName = (String) argument;
                         RemoveAnyByDirector removeAnyByDirector = (RemoveAnyByDirector) command;
                         removeAnyByDirector.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (removeAnyByDirector.exec(directorName));
                     }
                     case (15): {
                         PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount = (PrintFieldDescendingOscarsCount) command;
                         printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
-                        command=null;
-                        argument=null;
+                        command = null;
+                        argument = null;
                         return (printFieldDescendingOscarsCount.exec(""));
                     }
                     case (-1): {
