@@ -35,20 +35,21 @@ L:      IN      7
         OUT     6
 BEGIN:	CLA
         LD      (ADDR)+
-        ST      SECOND
-        SWAB
         ST      FIRST
+        SWAB
+        ST      SECOND
 S1:     IN      7
         AND     #0x40
         BEQ     S1
         LD      FIRST
-        AND     #0xFF
         OUT     6
+        LOOP    LEN
+        JUMP    S2
+        JUMP    STOP
 S2:     IN      7
         AND     #0x40
         BEQ     S2
         LD      SECOND
-        AND     #0xFF
         OUT     6
         LOOP    LEN
         JUMP    BEGIN
@@ -61,61 +62,12 @@ STOP:	HLT
 \newpage
 
 \subsection{Основная:}
-\begin{center}
-    \begin{tabular}{|c|c|c|l|}
-        \hline
-        \textbf{Cell Address} & \textbf{Cell Content} & \textbf{Mnemonics} & \textbf{Comments}                                   \\
-        \hline
-        360                   & 05A1                  & ADDR               & Текущий адрес ячейки строки.                        \\
-        361                   & 0000                  & LEN                & Длина строки + итератор.                            \\
-        362                   & 0000                  & FIRST              & Переменная для хранения младшего байта слова.       \\
-        363                   & 0000                  & SECOND             & Переменная для хранения старшего байта слова.       \\
-        \hline
-        364                   & +AAFB                 & LD (-5)+           & Загрузка в аккумулятор длины строки с               \\
-        &                       &                    & постинкрементом адреса ячейки.                      \\
-        365                   & 2FFF                  & AND \#0xFF         & Выделение значащих младших 8 бит.                   \\
-        366                   & EEFA                  & ST (IP-6)          & Сохранение длины строки в ячейку итератора.         \\
-        367                   & 1207                  & IN 7               & Считывание SR.                                      \\
-        368                   & 2F40                  & AND #0x40          & Проверка 6го бита на "1".                           \\
-        369                   & F0FD                  & BEQ (-3)           & Возвращает на считывание SR, если кнопка            \\
-        &                       &                    & "Готов" не инициализирована.                        \\
-        36A                   & AEF6                  & LD (IP-10)         & Загрузка LEN в аккумулятор                          \\
-        36B                   & 1306                  & OUT 6              & Вывод значения аккумулятора в DR.                   \\
-        \hline
-        36C                   & 0200                  & CLA                & Очистка аккумулятора.                               \\
-        36D                   & AAF1                  & LD (-15)+          & Загрузка в аккумулятор текущей ячейки               \\
-        &                       &                    & массива с постинкрементом.                          \\
-        36E                   & EEF3                  & ST (IP-13)         & Сохранение старшего символа в FIRST.                \\
-        36F                   & 0680                  & SWAB               & Обмен байтами.                                      \\
-        370                   & EEF0                  & ST (-16)           & Сохраненение младшего слова в SECOND.               \\
-        \hline
-        371                   & 1207                  & IN 7               & Считывание SR.                                      \\
-        372                   & 2F40                  & AND \#0x40         & Проверка 6го бита на "1".                           \\
-        373                   & F0FD                  & BEQ (-3)           & Возвращает на считывание SR, если кнопка            \\
-        &                       &                    & "Готов" не инициализирована.                        \\
-        374                   & AEEC                  & LD (IP-20)         & Загрузка в аккумулятор старшее слово.               \\
-        375                   & 2FFF                  & AND \#0xFF         & Выделение младшего байта у загруженного значения.   \\
-        376                   & 1306                  & OUT 6              & Вывод значения аккумулятора в DR.                   \\
-        \hline
-        377                   & 1207                  & IN 7               & Считывание SR.                                      \\
-        378                   & 2F40                  & AND \#0x40         & Проверка 6го бита на "1".                           \\
-        379                   & F0FD                  & BEQ (IP-3)         & Возвращает на считывание SR, если кнопка            \\
-        &                       &                    & "Готов" не инициализирована.                        \\
-        37A                   & AEE7                  & LD (IP-33)         & Загружает в аккумулятор младшее слово.              \\
-        37B                   & 2FFF                  & AND \#0xFF         & Выделение младшего байта у значения в аккумуляторе. \\
-        37C                   & 1306                  & OUT 6              & Вывод значения в DR.                                \\
-        37D                   & 8EE2                  & LOOP (IP-38)       & LEN-1, проверка, что LEN $\geqslant$ 0.             \\
-        37E                   & CEED                  & JUMP (IP-19)       & Возвращение на начало цикла (в 367).                \\
-        37F                   & 0100                  & HLT                & Остановка.                                          \\
-        \hline
-
-    \end{tabular}
-\end{center}
 
 \subsection{Описание программы:}
 Вывод текста сохранённого в массиве в формате АДР0: ДЛИНА АДР1: СИМВ2 СИМВ1 АДР2: СИМВ4 СИМВ3 ... \\
 \footnotesize (выводит сначала количество символов, а потом символы в порядке возрастания: СИМВ1, СИМВ2, СИМВ3)\\
 \normalsize
+
 
 \section{Область представления данных и область допустимых значений}
 
@@ -132,14 +84,15 @@ STOP:	HLT
 \subsubsection{ADDR:}
 \begin{equation*}
     \begin{center}
-        $0 \leqslant ADDR \leqslant 2047$\\
+        $0_{16} \leqslant ADDR \leqslant 7FF_{16}$\\
     \end{center}
 \end{equation*}
 
 \subsubsection{LEN:}
 \begin{equation*}
     \begin{center}
-        $0 \leqslant LEN \leqslant 2047$\\
+        $0_{16} \leqslant LEN \leqslant FF_{16}$\\
+        (на самом деле там одз нет, потому что мы выделяем маской значащие биты)
     \end{center}
 \end{equation*}
 
@@ -147,10 +100,34 @@ STOP:	HLT
 \begin{equation*}
     \begin{center}
         $20_{16} \leqslant $M_{i}$ \leqslant FF_{16}$\\
+        (имеется ввиду ограничение на младший и старший байт элементов массива)
     \end{center}
 \end{equation*}
 
 
 \section{Расположение программы в памяти БЭВМ:}
-\noindent\textit{Программы - \textbf{360-37A} . \\
+\noindent\textit{Программы - \textbf{360-380} . \\
 Выводимая строка – \textbf{5A1-(5A1+LEN-1)} .  \\}
+
+
+\newpage
+
+
+\section{Исполнение.}
+
+\subsection{Выводимая строка:}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Symbol} & \textbf{ISO-8859-5} & \textbf{UTF-8} & \textbf{UTF-16} \\
+        \hline
+        В               & 0xB2                & 0xD092         & ?               \\
+        Е               & 0xB5                & 0xD095         & ?               \\
+        Т               & 0xC2                & 0xD0A2         & ?               \\
+        В               & 0xB2                & 0xD092         & ?               \\
+        Ь               & 0xCC                & 0xD0AC         & ?               \\
+        \hline
+
+
+    \end{tabular}
+\end{center}
