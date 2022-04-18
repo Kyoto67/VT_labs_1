@@ -18,12 +18,13 @@ public class Server {
 
     private final int port;
     private ServerSocketChannel server;
-    private SocketChannel socketChannel;
-    private ByteBuffer buffer;
+    private static SocketChannel socketChannel;
+    private static ByteBuffer buffer;
     private Selector selector;
     private static AbstractCommand command;
     private static Object argument;
     private static CollectionManager collectionManager;
+    private static int client_counter;
 
     public Server(int port) throws IOException {
         this.port = port;
@@ -34,8 +35,12 @@ public class Server {
         server.configureBlocking(false);
         server.register(selector, SelectionKey.OP_ACCEPT);
         buffer = ByteBuffer.allocate(10000);
+        client_counter=0;
     }
 
+    private void downloadCommand(){
+
+    }
     public void Run() throws Exception {
         while (true) {
             selector.select();
@@ -49,20 +54,22 @@ public class Server {
                         socketChannel = server.accept();
                         socketChannel.configureBlocking(false);
                         System.out.println("Новый клиент подключился к серверу.");
+                        client_counter+=1;
                         socketChannel.register(key.selector(), SelectionKey.OP_READ);
                     }
-                    if (key.isReadable()) {
-                        SocketChannel client = (SocketChannel) key.channel();
-                        int data = socketChannel.read(buffer);
-                        client.configureBlocking(false);
-                        if (!(data == -1) && (!(data == 0))) {
-                            command = (AbstractCommand) byteBufferToObject(buffer);
-                            buffer =ByteBuffer.allocate(10000);
-                            data = socketChannel.read(buffer);
+                    try {
+                        if (key.isReadable() && client_counter > 0) {
+                            SocketChannel client = (SocketChannel) key.channel();
+                            int data = client.read(buffer);
+                            client.configureBlocking(false);
+                            socketChannel.configureBlocking(false);
                             if (!(data == -1) && (!(data == 0))) {
-                                argument = byteBufferToObject(buffer);
+                                command = (AbstractCommand) byteBufferToObject(buffer);
+                                buffer = ByteBuffer.allocate(10000);
                             }
                         }
+                    } catch (IOException e) {
+                        //pass
                     }
                     if (!(command == null)) {
                         if (Module.Run()) {
@@ -117,7 +124,7 @@ public class Server {
                 "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
                 "print_field_descending_oscars_count"};
 
-        public static boolean Run() throws IOException {
+        public static boolean Run() throws Exception {
             String actualCommand = "hello";
             while (!(actualCommand.equals("save"))) {
                 actualCommand = command.getName();
@@ -146,6 +153,12 @@ public class Server {
                         return (show.exec(""));
                     }
                     case (3): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         Movie newMovie = (Movie) argument;
                         Add add = (Add) command;
                         add.setCollectionManager(collectionManager);
@@ -154,6 +167,12 @@ public class Server {
                         return (add.exec(newMovie));
                     }
                     case (4): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         Movie newMovie = (Movie) argument;
                         UpdateByID updateByID = (UpdateByID) command;
                         updateByID.setCollectionManager(collectionManager);
@@ -162,6 +181,12 @@ public class Server {
                         return (updateByID.exec(newMovie));
                     }
                     case (5): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         String id = (String) argument;
                         RemoveByID removeByID = (RemoveByID) command;
                         removeByID.setCollectionManager(collectionManager);
@@ -181,9 +206,16 @@ public class Server {
                         save.setCollectionManager(collectionManager);
                         command = null;
                         argument = null;
+                        client_counter-=1;
                         return (save.exec(""));
                     }
                     case (8): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         String filename = (String) argument;
                         ExecuteScript executeScript = (ExecuteScript) command;
                         executeScript.setCollectionManager(collectionManager);
@@ -198,6 +230,12 @@ public class Server {
                         return (exit.exec(""));
                     }
                     case (10): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         Movie newMovie = (Movie) argument;
                         AddIfMin addIfMin = (AddIfMin) command;
                         addIfMin.setCollectionManager(collectionManager);
@@ -206,6 +244,12 @@ public class Server {
                         return (addIfMin.exec(newMovie));
                     }
                     case (11): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         Movie movieForCompare = (Movie) argument;
                         RemoveGreater removeGreater = (RemoveGreater) command;
                         removeGreater.setCollectionManager(collectionManager);
@@ -214,6 +258,12 @@ public class Server {
                         return (removeGreater.exec(movieForCompare));
                     }
                     case (12): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         Movie movieForCompare = (Movie) argument;
                         RemoveLower removeLower = (RemoveLower) command;
                         removeLower.setCollectionManager(collectionManager);
@@ -230,6 +280,12 @@ public class Server {
                         return (removeAllByOscarsCount.exec(oscarsCount));
                     }
                     case (14): {
+                        while (argument == null){
+                            int data = socketChannel.read(buffer);
+                            if (!(data==-1) && (!(data==0))){
+                                argument=byteBufferToObject(buffer);
+                            }
+                        }
                         String directorName = (String) argument;
                         RemoveAnyByDirector removeAnyByDirector = (RemoveAnyByDirector) command;
                         removeAnyByDirector.setCollectionManager(collectionManager);

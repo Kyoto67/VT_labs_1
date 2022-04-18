@@ -1,10 +1,7 @@
 package server;
 
 import common.commands.*;
-import common.data.Movie;
 import server.util.CollectionManager;
-
-import java.io.*;
 import java.util.Scanner;
 
 public class App {

@@ -3,7 +3,7 @@ package common.data;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Movie implements Serializable {
+public class Movie implements Serializable, Comparable {
 
     private long id;
     private String name;
@@ -108,5 +108,10 @@ public class Movie implements Serializable {
         } else {
             return getCoordinates().hashCode() + getName().length();
         }
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.hashCode()-o.hashCode();
     }
 }

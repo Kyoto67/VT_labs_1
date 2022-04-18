@@ -1,9 +1,11 @@
 package server.util;
 
 import common.data.Movie;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * класс, объект которого хранит в себе коллекцию и управляет ей.
@@ -41,16 +43,6 @@ public class CollectionManager {
     }
 
     /**
-     * Метод, используемый для тестов, оставлен для возможных тестов в будущем.
-     * Загружает определённую коллекцию (обычно небольшую и с заранее забитыми данными).
-     *
-     * @param moviesCollection
-     */
-    public void loadTestCollection(PriorityQueue<Movie> moviesCollection) {
-        this.MoviesCollection = moviesCollection;
-    }
-
-    /**
      * Метод выполняет замену элемента с указанным id на новый (с тем же id)
      *
      * @param newMovie объект Movie, который необходимо добавить в коллекцию на замену старому.
@@ -59,7 +51,6 @@ public class CollectionManager {
     public void replaceElementByID(Movie newMovie, long id) {
         MoviesCollection.remove(findElementByID(id));
         MoviesCollection.add(newMovie);
-        sortCollection();
     }
 
     /**
@@ -101,11 +92,8 @@ public class CollectionManager {
      * @return Возвращает объект типа Movie, которому соответствует искомый ID. Если элемент не найден, вернёт null
      */
     public Movie findElementByID(long id) {
-        for (Movie m : MoviesCollection) {
-            Long mID = m.getId();
-            if (mID.equals(id)) {
-                return m;
-            }
+        if(MoviesCollection.stream().anyMatch((m) -> m.getId() == id)){
+            return MoviesCollection.stream().filter((m) -> m.getId() == id).findFirst().get();
         }
         return null;
     }
@@ -140,9 +128,9 @@ public class CollectionManager {
      */
     public void printCollection() {
         sortCollection();
-        for (Movie m : MoviesCollection) {
-            System.out.println(m.toString());
-        }
+//        for (Movie m : MoviesCollection) {
+//            System.out.println(m.toString());
+//        }
     }
 
     /**
@@ -375,24 +363,18 @@ public class CollectionManager {
     }
 
     public void sortCollection() {
-        PriorityQueue<Movie> sortedCollection = new PriorityQueue<>(idComparator);
-        for (long id : idList) {
-            sortedCollection.add(findElementByID(id));
+        PriorityQueue<Movie> sortedCoollection = MoviesCollection.stream().sorted(idComparator).collect(Collectors.toCollection(PriorityQueue<Movie>::new));
+        for (Movie m : sortedCoollection) {
+            System.out.println(m.toString());
         }
-        MoviesCollection = sortedCollection;
+        MoviesCollection = sortedCoollection;
     }
 
     public static Comparator<Movie> idComparator = new Comparator<Movie>() {
 
         @Override
         public int compare(Movie c1, Movie c2) {
-            if (c1.getId() > c2.getId()) {
-                return 1;
-            } else if (c1.getId() < c2.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return (int) (c1.getId() - c2.getId());
         }
     };
 }

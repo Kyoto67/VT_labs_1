@@ -38,7 +38,6 @@ public class Add extends AbstractCommand {
      *
      * @param argument не требует аргументов, передаётся пустая строка.
      * @return Возвращает True при выполнении.
-     * @see Asker
      */
     @Override
     public boolean exec(String argument) {
