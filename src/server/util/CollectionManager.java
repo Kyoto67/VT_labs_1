@@ -1,6 +1,7 @@
 package server.util;
 
 import common.data.Movie;
+import server.Server;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -58,10 +59,11 @@ public class CollectionManager {
      *
      * @param movie полуает на вход объект типа Movie, который необходимо добавить
      */
-    public void addElement(Movie movie) {
+    public String addElement(Movie movie) {
         movie.setId(addID());
         movie.setCreationDate(new Date());
         MoviesCollection.add(movie);
+        return "Добавление успешно.";
     }
 
     /**
@@ -124,8 +126,10 @@ public class CollectionManager {
     /**
      * Метод выводит по-очерёдно строковое представление объектов коллекции.
      */
-    public void printCollection() {
-        MoviesCollection.stream().forEach((M) -> System.out.println(M.toString()+"\n"));
+    public String printCollection() {
+        final String[] output = {""};
+        MoviesCollection.stream().forEach((M) -> output[0] +=M.toString()+"\n");
+        return output[0];
     }
 
     /**
@@ -268,10 +272,11 @@ public class CollectionManager {
     /**
      * Метод выводит информацию о коллекции: тип, дата инициализации, количество элементов и выполняет перебор всех элементов с выводом их номера ID
      */
-    public void printInfo() {
-        System.out.println("Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
-                + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: ");
-        MoviesCollection.stream().forEach((m) -> System.out.print(m.hashCode() + " "));
+    public String printInfo() {
+        final String[] output = {"Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
+                + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: "};
+        MoviesCollection.stream().forEach((m) -> output[0] +=m.hashCode() + " ");
+        return output[0];
     }
 
     /**

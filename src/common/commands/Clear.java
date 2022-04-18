@@ -1,5 +1,6 @@
 package common.commands;
 
+import server.Server;
 import server.util.CollectionManager;
 
 public class Clear extends  AbstractCommand{
@@ -35,10 +36,7 @@ public class Clear extends  AbstractCommand{
     @Override
     public boolean exec(String argument) {
         manager.removeAllElements();
+        Server.outputMessage="Коллекция очищена";
         return true;
-    }
-
-    public CollectionManager getManager() {
-        return manager;
     }
 }

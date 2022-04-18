@@ -1,5 +1,6 @@
 package common.commands;
 
+import server.Server;
 import server.util.CollectionManager;
 
 public class RemoveByID extends AbstractCommand{
@@ -40,9 +41,10 @@ public class RemoveByID extends AbstractCommand{
         long id = Long.valueOf(argument);
         if (manager.checkMatchingID(id)) {
             manager.removeElementByID(id);
+            Server.outputMessage="Объект с идентификатором "+id+" удалён.";
             return true;
         } else {
-            System.out.println("Объекта с таким ID нет в коллекции.");
+            Server.outputMessage="Объекта с таким ID нет в коллекции.";
             return false;
         }
     }

@@ -1,6 +1,7 @@
 package common.commands;
 
 import common.data.Movie;
+import server.Server;
 import server.util.CollectionManager;
 
 /**
@@ -45,7 +46,7 @@ public class Add extends AbstractCommand {
     }
 
     public boolean exec(Movie movie){
-        manager.addElement(movie);
+        Server.outputMessage=manager.addElement(movie);
         return true;
     }
 }

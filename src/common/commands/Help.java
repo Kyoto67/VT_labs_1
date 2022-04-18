@@ -1,5 +1,7 @@
 package common.commands;
 
+import server.Server;
+
 import java.io.IOException;
 
 public class Help extends AbstractCommand{
@@ -70,22 +72,15 @@ public class Help extends AbstractCommand{
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        System.out.println(getName()+": "+getDescription());
-        System.out.println(info.getName()+": "+info.getDescription());
-        System.out.println(show.getName()+": "+show.getDescription());
-        System.out.println(add.getName()+": "+add.getDescription());
-        System.out.println(updateByID.getName()+": "+updateByID.getDescription());
-        System.out.println(removeByID.getName()+": "+removeByID.getDescription());
-        System.out.println(clear.getName()+": "+clear.getDescription());
-        System.out.println(save.getName()+": "+save.getDescription()+" (доступна только на сервере после завершения клиентского приложения)");
-        System.out.println(executeScript.getName()+": "+executeScript.getDescription());
-        System.out.println(exit.getName()+": "+exit.getDescription());
-        System.out.println(addIfMin.getName()+": "+addIfMin.getDescription());
-        System.out.println(removeGreater.getName()+": "+removeGreater.getDescription());
-        System.out.println(removeLower.getName()+": "+removeLower.getDescription());
-        System.out.println(removeAllByOscarsCount.getName()+": "+removeAllByOscarsCount.getDescription());
-        System.out.println(removeAnyByDirector.getName()+": "+removeAnyByDirector.getDescription());
-        System.out.println(printFieldDescendingOscarsCount.getName()+": "+printFieldDescendingOscarsCount.getDescription());
+        Server.outputMessage+=getName()+": "+getDescription()+"\n"+info.getName()+": "+info.getDescription()+"\n"+
+                show.getName()+": "+show.getDescription()+"\n"+add.getName()+": "+add.getDescription()+"\n"+updateByID.getName()
+                +": "+updateByID.getDescription()+"\n"+removeByID.getName()+": "+removeByID.getDescription()+"\n"+clear.getName()+
+                ": "+clear.getDescription()+"\n"+save.getName()+": "+save.getDescription()+
+                " (доступна только на сервере после завершения клиентского приложения)"+"\n"+executeScript.getName()+": "+executeScript.getDescription()+
+                "\n"+exit.getName()+": "+exit.getDescription()+"\n"+addIfMin.getName()+": "+addIfMin.getDescription()+"\n"+
+                removeGreater.getName()+": "+removeGreater.getDescription()+"\n"+removeLower.getName()+": "+removeLower.getDescription()
+                +"\n"+removeAllByOscarsCount.getName()+": "+removeAllByOscarsCount.getDescription()+"\n"+removeAnyByDirector.getName()+
+                ": "+removeAnyByDirector.getDescription()+"\n"+printFieldDescendingOscarsCount.getName()+": "+printFieldDescendingOscarsCount.getDescription();
         return true;
     }
 }

@@ -1,6 +1,7 @@
 package common.commands;
 
 import common.data.Movie;
+import server.Server;
 import server.util.CollectionManager;
 
 public class UpdateByID extends AbstractCommand {
@@ -47,9 +48,10 @@ public class UpdateByID extends AbstractCommand {
         long id = movie.getId();
         if(manager.checkMatchingID(id)){
             manager.replaceElementByID(movie,id);
+            Server.outputMessage="Объёкт с идентификатором "+id+" обновлён.";
             return true;
         } else {
-            System.out.println("Отсутствует объект для замены.");
+            Server.outputMessage="Отсутствует объект для замены.";
             return false;
         }
     }

@@ -18,13 +18,14 @@ public class Server {
 
     private final int port;
     private ServerSocketChannel server;
-    private static SocketChannel socketChannel;
-    private static ByteBuffer buffer;
+    private SocketChannel client;
+    private ByteBuffer buffer;
     private Selector selector;
-    private static AbstractCommand command;
-    private static Object argument;
-    private static CollectionManager collectionManager;
-    private static int client_counter;
+    private AbstractCommand command;
+    private Object argument;
+    private CollectionManager collectionManager;
+    private int client_counter;
+    public static String outputMessage;
 
     public Server(int port) throws IOException {
         this.port = port;
@@ -35,13 +36,13 @@ public class Server {
         server.configureBlocking(false);
         server.register(selector, SelectionKey.OP_ACCEPT);
         buffer = ByteBuffer.allocate(10000);
-        client_counter=0;
+        client_counter = 0;
+        outputMessage="";
     }
 
-    private void downloadCommand(){
 
-    }
     public void Run() throws Exception {
+        SocketChannel socketChannel = null;
         while (true) {
             selector.select();
             Set<SelectionKey> keys = selector.selectedKeys();
@@ -54,33 +55,30 @@ public class Server {
                         socketChannel = server.accept();
                         socketChannel.configureBlocking(false);
                         System.out.println("Новый клиент подключился к серверу.");
-                        client_counter+=1;
+                        client_counter += 1;
                         socketChannel.register(key.selector(), SelectionKey.OP_READ);
                     }
                     try {
                         if (key.isReadable() && client_counter > 0) {
-                            SocketChannel client = (SocketChannel) key.channel();
-                            int data = client.read(buffer);
-                            client.configureBlocking(false);
-                            socketChannel.configureBlocking(false);
-                            if (!(data == -1) && (!(data == 0))) {
-                                command = (AbstractCommand) byteBufferToObject(buffer);
-                                buffer = ByteBuffer.allocate(10000);
-                            }
+                            client = (SocketChannel) key.channel();
+                            downloadCommand();
                         }
                     } catch (IOException e) {
                         //pass
                     }
                     if (!(command == null)) {
-                        if (Module.Run()) {
+                        if (execution()) {
                             buffer = ByteBuffer.wrap(new byte[]{1});
                             socketChannel.write(buffer);
+                            uploadObject(outputMessage);
+                            outputMessage="";
                         } else {
                             buffer = ByteBuffer.wrap(new byte[]{0});
                             socketChannel.write(buffer);
+                            uploadObject(outputMessage);
                         }
                     }
-                    buffer =ByteBuffer.allocate(10000);
+                    buffer = ByteBuffer.allocate(10000);
                     server.register(key.selector(), SelectionKey.OP_ACCEPT);
                 }
             }
@@ -95,13 +93,41 @@ public class Server {
         return buffer;
     }
 
-    private static Object byteBufferToObject(ByteBuffer byteBuffer)
+    public void uploadObject(Object object) throws IOException {
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(bytesOut);
+        outputStream.writeObject(object);
+        outputStream.flush();
+        outputStream.close();
+        byte[] bytes = bytesOut.toByteArray();
+        bytesOut.close();
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        client.write(buffer);
+    }
+
+    private void downloadArgument() throws Exception {
+        int data = client.read(buffer);
+        if (!(data == -1) && (!(data == 0))) {
+            argument = byteBufferToObject(buffer);
+        }
+        client.configureBlocking(false);
+    }
+    private void downloadCommand() throws Exception {
+        int data = client.read(buffer);
+        client.configureBlocking(false);
+        if (!(data == -1) && (!(data == 0))) {
+            command = (AbstractCommand) byteBufferToObject(buffer);
+            buffer = ByteBuffer.allocate(10000);
+        }
+    }
+
+    private Object byteBufferToObject(ByteBuffer byteBuffer)
             throws Exception {
         byte[] bytes = byteBuffer.array();
         return deSerializer(bytes);
     }
 
-    private static Object deSerializer(byte[] bytes) throws IOException,
+    private Object deSerializer(byte[] bytes) throws IOException,
             ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(
                 new ByteArrayInputStream(bytes));
@@ -118,208 +144,181 @@ public class Server {
         return object;
     }
 
-    private static class Module {
+    private final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
+            "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
+            "print_field_descending_oscars_count"};
 
-        private static final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "save", "execute_script",
-                "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
-                "print_field_descending_oscars_count"};
-
-        public static boolean Run() throws Exception {
-            String actualCommand = "hello";
-            while (!(actualCommand.equals("save"))) {
-                actualCommand = command.getName();
-                Scanner scanner = new Scanner(actualCommand);
-                scanner.useDelimiter("\\s");
-                actualCommand = scanner.next();
-                switch (chooseCommand(actualCommand)) {
-                    case (0): {
-                        Help help = (Help) command;
-                        command = null;
-                        argument = null;
-                        return (help.exec(""));
+    public boolean execution() throws Exception {
+        String actualCommand = "hello";
+        while (!(actualCommand.equals("save"))) {
+            actualCommand = command.getName();
+            Scanner scanner = new Scanner(actualCommand);
+            scanner.useDelimiter("\\s");
+            actualCommand = scanner.next();
+            switch (chooseCommand(actualCommand)) {
+                case (0): {
+                    Help help = (Help) command;
+                    command = null;
+                    argument = null;
+                    return (help.exec(""));
+                }
+                case (1): {
+                    Info info = (Info) command;
+                    info.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (info.exec(""));
+                }
+                case (2): {
+                    Show show = (Show) command;
+                    show.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (show.exec(""));
+                }
+                case (3): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (1): {
-                        Info info = (Info) command;
-                        info.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (info.exec(""));
+                    Movie newMovie = (Movie) argument;
+                    Add add = (Add) command;
+                    add.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (add.exec(newMovie));
+                }
+                case (4): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (2): {
-                        Show show = (Show) command;
-                        show.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (show.exec(""));
+                    Movie newMovie = (Movie) argument;
+                    UpdateByID updateByID = (UpdateByID) command;
+                    updateByID.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (updateByID.exec(newMovie));
+                }
+                case (5): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (3): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        Movie newMovie = (Movie) argument;
-                        Add add = (Add) command;
-                        add.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (add.exec(newMovie));
+                    String id = (String) argument;
+                    RemoveByID removeByID = (RemoveByID) command;
+                    removeByID.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (removeByID.exec(id));
+                }
+                case (6): {
+                    Clear clear = (Clear) command;
+                    clear.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (clear.exec(""));
+                }
+                case (7): {
+                    Save save = (Save) command;
+                    save.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    client_counter -= 1;
+                    return (save.exec(""));
+                }
+                case (8): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (4): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        Movie newMovie = (Movie) argument;
-                        UpdateByID updateByID = (UpdateByID) command;
-                        updateByID.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (updateByID.exec(newMovie));
+                    String filename = (String) argument;
+                    ExecuteScript executeScript = (ExecuteScript) command;
+                    executeScript.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (executeScript.exec(filename));
+                }
+                case (9): {
+                    Exit exit = (Exit) command;
+                    command = null;
+                    argument = null;
+                    return (exit.exec(""));
+                }
+                case (10): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (5): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        String id = (String) argument;
-                        RemoveByID removeByID = (RemoveByID) command;
-                        removeByID.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (removeByID.exec(id));
+                    Movie newMovie = (Movie) argument;
+                    AddIfMin addIfMin = (AddIfMin) command;
+                    addIfMin.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (addIfMin.exec(newMovie));
+                }
+                case (11): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (6): {
-                        Clear clear = (Clear) command;
-                        clear.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (clear.exec(""));
+                    Movie movieForCompare = (Movie) argument;
+                    RemoveGreater removeGreater = (RemoveGreater) command;
+                    removeGreater.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (removeGreater.exec(movieForCompare));
+                }
+                case (12): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (7): {
-                        Save save = (Save) command;
-                        save.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        client_counter-=1;
-                        return (save.exec(""));
+                    Movie movieForCompare = (Movie) argument;
+                    RemoveLower removeLower = (RemoveLower) command;
+                    removeLower.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (removeLower.exec(movieForCompare));
+                }
+                case (13): {
+                    String oscarsCount = (String) argument;
+                    RemoveAllByOscarsCount removeAllByOscarsCount = (RemoveAllByOscarsCount) command;
+                    removeAllByOscarsCount.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (removeAllByOscarsCount.exec(oscarsCount));
+                }
+                case (14): {
+                    while (argument == null) {
+                        downloadArgument();
                     }
-                    case (8): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        String filename = (String) argument;
-                        ExecuteScript executeScript = (ExecuteScript) command;
-                        executeScript.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (executeScript.exec(filename));
-                    }
-                    case (9): {
-                        Exit exit = (Exit) command;
-                        command = null;
-                        argument = null;
-                        return (exit.exec(""));
-                    }
-                    case (10): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        Movie newMovie = (Movie) argument;
-                        AddIfMin addIfMin = (AddIfMin) command;
-                        addIfMin.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (addIfMin.exec(newMovie));
-                    }
-                    case (11): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        Movie movieForCompare = (Movie) argument;
-                        RemoveGreater removeGreater = (RemoveGreater) command;
-                        removeGreater.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (removeGreater.exec(movieForCompare));
-                    }
-                    case (12): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        Movie movieForCompare = (Movie) argument;
-                        RemoveLower removeLower = (RemoveLower) command;
-                        removeLower.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (removeLower.exec(movieForCompare));
-                    }
-                    case (13): {
-                        String oscarsCount = (String) argument;
-                        RemoveAllByOscarsCount removeAllByOscarsCount = (RemoveAllByOscarsCount) command;
-                        removeAllByOscarsCount.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (removeAllByOscarsCount.exec(oscarsCount));
-                    }
-                    case (14): {
-                        while (argument == null){
-                            int data = socketChannel.read(buffer);
-                            if (!(data==-1) && (!(data==0))){
-                                argument=byteBufferToObject(buffer);
-                            }
-                        }
-                        String directorName = (String) argument;
-                        RemoveAnyByDirector removeAnyByDirector = (RemoveAnyByDirector) command;
-                        removeAnyByDirector.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (removeAnyByDirector.exec(directorName));
-                    }
-                    case (15): {
-                        PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount = (PrintFieldDescendingOscarsCount) command;
-                        printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
-                        command = null;
-                        argument = null;
-                        return (printFieldDescendingOscarsCount.exec(""));
-                    }
-                    case (-1): {
-                        System.out.println("Неизвестная ошибка.");
-                        return (false);
-                    }
+                    String directorName = (String) argument;
+                    RemoveAnyByDirector removeAnyByDirector = (RemoveAnyByDirector) command;
+                    removeAnyByDirector.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (removeAnyByDirector.exec(directorName));
+                }
+                case (15): {
+                    PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount = (PrintFieldDescendingOscarsCount) command;
+                    printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
+                    command = null;
+                    argument = null;
+                    return (printFieldDescendingOscarsCount.exec(""));
+                }
+                case (-1): {
+                    System.out.println("Неизвестная ошибка.");
+                    return (false);
                 }
             }
-            return false;
         }
+        return false;
+    }
 
-        private static int chooseCommand(String command) {
-            for (int i = 0; i < commands.length; i++) {
-                if (command.equals(commands[i])) {
-                    return i;
-                }
+    private int chooseCommand(String command) {
+        for (int i = 0; i < commands.length; i++) {
+            if (command.equals(commands[i])) {
+                return i;
             }
-            return -1;
         }
+        return -1;
     }
 
     public void setCollectionManager(CollectionManager collectionManager) {
-        Server.collectionManager = collectionManager;
+        this.collectionManager = collectionManager;
     }
 }

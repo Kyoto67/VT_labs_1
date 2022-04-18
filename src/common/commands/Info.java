@@ -1,5 +1,6 @@
 package common.commands;
 
+import server.Server;
 import server.util.CollectionManager;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class Info extends AbstractCommand{
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        manager.printInfo();
+        Server.outputMessage=manager.printInfo();
         return true;
     }
 }
