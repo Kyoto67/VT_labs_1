@@ -218,17 +218,9 @@ public class CollectionManager {
      */
     public void removeAllLower(Movie movie) {
         System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
-        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>(idComparator);
-        for (Movie m : MoviesCollection) {
-            if (m.hashCode() < movie.hashCode()) {
-                System.out.println("Удаляю объект с hashcode " + m.hashCode());
-                movieForDelete.add(m);
-            }
-        }
-        for (Movie m : movieForDelete) {
-            removeElement(m);
-        }
-        sortCollection();
+        MoviesCollection.stream().filter((Movie) -> Movie.hashCode()<movie.hashCode()).forEach((Movie) -> {
+            System.out.println("Удаляю объект с hashcode " + Movie.hashCode()); removeElement(Movie);
+        });
     }
 
     /**
@@ -238,17 +230,9 @@ public class CollectionManager {
      */
     public void removeAllGreater(Movie movie) {
         System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
-        PriorityQueue<Movie> movieForDelete = new PriorityQueue<>();
-        for (Movie m : MoviesCollection) {
-            if (m.hashCode() > movie.hashCode()) {
-                System.out.println("Удаляю объект с hashcode " + m.hashCode());
-                movieForDelete.add(m);
-            }
-        }
-        for (Movie m : movieForDelete) {
-            removeElement(m);
-        }
-        sortCollection();
+        MoviesCollection.stream().filter((Movie) -> Movie.hashCode()>movie.hashCode()).forEach((Movie) -> {
+            System.out.println("Удаляю объект с hashcode " + Movie.hashCode()); removeElement(Movie);
+        });
     }
 
     /**
@@ -257,13 +241,13 @@ public class CollectionManager {
      * @return Возвращает 0й элемент (минимальный)
      */
     public long getMinElement() {
-        int minEl = 999999999;
-        for (Movie m : MoviesCollection) {
-            if (m.hashCode() < minEl) {
-                minEl = m.hashCode();
+        final int[] minEl = {999999999};
+        MoviesCollection.stream().forEach((m) -> {
+            if (m.hashCode() < minEl[0]) {
+                minEl[0] = m.hashCode();
             }
-        }
-        return minEl;
+        });
+        return minEl[0];
     }
 
 
@@ -287,10 +271,7 @@ public class CollectionManager {
     public void printInfo() {
         System.out.println("Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
                 + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: ");
-        for (Movie m : MoviesCollection) {
-            System.out.print(m.hashCode() + " ");
-        }
-        System.out.println("\n");
+        MoviesCollection.stream().forEach((m) -> System.out.print(m.hashCode() + " "));
     }
 
     /**
@@ -300,13 +281,7 @@ public class CollectionManager {
      * @return Возвращает True, если объект найден, и False, если нет.
      */
     public boolean checkMatchingID(long id) {
-        for (Movie m : MoviesCollection) {
-            Long idObject = id;
-            if (idObject.equals(m.getId())) {
-                return true;
-            }
-        }
-        return false;
+        return MoviesCollection.stream().anyMatch((Movie) -> Movie.getId() == id);
     }
 
     /**
@@ -316,36 +291,7 @@ public class CollectionManager {
      * @return Возвращает True, если объект найден, и False, если нет.
      */
     public boolean checkMatchingDirectorName(String directorName) {
-        for (Movie m : MoviesCollection) {
-            if (directorName.equals(m.getDirector().getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Метод выполняет проверку, имеется ли объект с заданным oscarsCount в коллекции
-     *
-     * @param oscarsCount заданный номер oscarsCount
-     * @return Возвращает True, если объект найден, и False, если нет.
-     */
-    public boolean checkMatchingOscarsCount(long oscarsCount) {
-        for (Movie m : MoviesCollection) {
-            Long oscarsCountObject = oscarsCount;
-            if (oscarsCountObject.equals(m.getOscarsCount())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void sortCollection() {
-        PriorityQueue<Movie> sortedCoollection = MoviesCollection.stream().sorted(idComparator).collect(Collectors.toCollection(PriorityQueue<Movie>::new));
-        for (Movie m : sortedCoollection) {
-            System.out.println(m.toString());
-        }
-        MoviesCollection = sortedCoollection;
+        return MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName));
     }
 
     public static Comparator<Movie> idComparator = new Comparator<Movie>() {
