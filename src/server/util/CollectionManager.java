@@ -72,7 +72,6 @@ public class CollectionManager {
     public void removeElement(Movie movie) {
         removeID(movie);
         MoviesCollection.remove(movie);
-        sortCollection();
     }
 
     /**
@@ -82,7 +81,6 @@ public class CollectionManager {
      */
     public void removeElementByID(long id) {
         removeElement(findElementByID(id));
-        sortCollection();
     }
 
     /**
@@ -127,10 +125,7 @@ public class CollectionManager {
      * Метод выводит по-очерёдно строковое представление объектов коллекции.
      */
     public void printCollection() {
-        sortCollection();
-//        for (Movie m : MoviesCollection) {
-//            System.out.println(m.toString());
-//        }
+        MoviesCollection.stream().forEach((M) -> System.out.println(M.toString()+"\n"));
     }
 
     /**
@@ -140,11 +135,9 @@ public class CollectionManager {
      * @return Возвращает найденный объект типа Movie, если объект по заданному номеру не найден, вернёт null
      */
     public Movie findElementByOscarsCount(long count) {
-        for (Movie m : MoviesCollection) {
-            Long OscarsCount = m.getOscarsCount();
-            if (OscarsCount.equals(count)) {
-                return m;
-            }
+        Long Count = count;
+        if(MoviesCollection.stream().anyMatch((M) -> Count.equals(M.getOscarsCount()))){
+            return MoviesCollection.stream().filter((M) -> Count==M.getOscarsCount()).findFirst().get();
         }
         return null;
     }
@@ -158,7 +151,6 @@ public class CollectionManager {
         while (!(findElementByOscarsCount(count) == null)) {
             removeElement(findElementByOscarsCount(count));
         }
-        sortCollection();
     }
 
     /**
@@ -167,12 +159,7 @@ public class CollectionManager {
      * @param m объект, id которого нужно удалить
      */
     public void removeID(Movie m) {
-        for (Long id : idList) {
-            if (id.equals(m.getId())) {
-                idList.remove(id);
-                break;
-            }
-        }
+        idList.stream().filter((ID) -> ID.equals(m.getId())).forEach((ID) -> idList.remove(ID));
     }
 
     /**
@@ -198,14 +185,8 @@ public class CollectionManager {
      */
     public void printAllDescendingOscarsCount() {
         ArrayList<Long> longList = new ArrayList<>();
-        for (Movie m : MoviesCollection) {
-            longList.add(m.getOscarsCount());
-        }
-        Collections.sort(longList);
-        Collections.reverse(longList);
-        for (long l : longList) {
-            System.out.println(l);
-        }
+        MoviesCollection.stream().forEach((M) -> longList.add(M.getOscarsCount()));
+        longList.stream().sorted((o1, o2) -> (int) (o2-o1)).forEach(System.out::println);
     }
 
     /**
@@ -215,10 +196,8 @@ public class CollectionManager {
      * @return Возвращает объект, найденный по имени режиссёра. Если объект не найден, вернёт null
      */
     public Movie findElementByDirector(String directorName) {
-        for (Movie m : MoviesCollection) {
-            if (m.getDirector().getName().equals(directorName)) {
-                return m;
-            }
+        if(MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName))){
+            return MoviesCollection.stream().filter((Movie) -> Movie.getDirector().getName().equals(directorName)).findFirst().get();
         }
         return null;
     }
@@ -230,9 +209,8 @@ public class CollectionManager {
      */
     public void removeElementByDirectorName(String directorName) {
         removeElement(findElementByDirector(directorName));
-        sortCollection();
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Метод удаляет все элементы из коллекции, чей hashcode меньше заданного.
      *
