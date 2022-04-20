@@ -1,5 +1,7 @@
 package common.commands;
 
+import server.Server;
+
 import java.io.IOException;
 
 public class Exit extends AbstractCommand {
@@ -23,7 +25,7 @@ public class Exit extends AbstractCommand {
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        System.out.println("Завершаю программу.");
+        Server.outputMessage = "Завершаю программу.";
         return true;
     }
 }

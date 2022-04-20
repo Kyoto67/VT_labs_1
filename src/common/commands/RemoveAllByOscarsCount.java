@@ -1,5 +1,6 @@
 package common.commands;
 
+import server.Server;
 import server.util.CollectionManager;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class RemoveAllByOscarsCount extends AbstractCommand{
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        manager.removeByOscarsCount(Long.parseLong(argument));
+        Server.outputMessage = manager.removeByOscarsCount(Long.parseLong(argument));
         return true;
     }
 }

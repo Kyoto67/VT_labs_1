@@ -3,6 +3,7 @@ package server.util;
 import common.data.Movie;
 import server.Server;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -119,8 +120,19 @@ public class CollectionManager {
      * @throws IOException
      * @see FileManager#saveCollection(PriorityQueue)
      */
-    public void saveCollection() throws IOException {
-        FileManager.saveCollection(MoviesCollection);
+    public String saveCollection() throws IOException {
+        boolean save = false;
+        while (!save) {
+            try {
+                FileManager.saveCollection(MoviesCollection);
+                save = true;
+                return "Коллекция сохранена";
+            } catch (FileNotFoundException e) {
+                return "Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
+                        " переменную окружение \"LABA\" на другой файл и введите команду save на сервере";
+            }
+        }
+        return "Непредвиденная ошибка при сохранении файла";
     }
 
     /**
@@ -151,10 +163,13 @@ public class CollectionManager {
      *
      * @param count число oscarsCount, по которому нужно удалить объект
      */
-    public void removeByOscarsCount(long count) {
+    public String removeByOscarsCount(long count) {
+        int counter=0;
         while (!(findElementByOscarsCount(count) == null)) {
             removeElement(findElementByOscarsCount(count));
+            counter+=1;
         }
+        return "Удалено "+counter+" элементов.";
     }
 
     /**
@@ -187,10 +202,12 @@ public class CollectionManager {
     /**
      * Метод считывает все значения oscarsCount из объектов коллекции и записывает их в longList, сортирует и выводит в порядке убывания.
      */
-    public void printAllDescendingOscarsCount() {
+    public String printAllDescendingOscarsCount() {
+        final String[] output = {""};
         ArrayList<Long> longList = new ArrayList<>();
         MoviesCollection.stream().forEach((M) -> longList.add(M.getOscarsCount()));
-        longList.stream().sorted((o1, o2) -> (int) (o2-o1)).forEach(System.out::println);
+        longList.stream().sorted((o1, o2) -> (int) (o2-o1)).forEach((o) -> output[0] +=o+"\n");
+        return output[0];
     }
 
     /**
@@ -211,20 +228,21 @@ public class CollectionManager {
      *
      * @param directorName
      */
-    public void removeElementByDirectorName(String directorName) {
+    public String removeElementByDirectorName(String directorName) {
         removeElement(findElementByDirector(directorName));
+        return "Элемент удалён.";
     }
-/////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Метод удаляет все элементы из коллекции, чей hashcode меньше заданного.
      *
      * @param movie заданный объект, с хэшкодом которого сравниваются все объекты коллекции
      */
-    public void removeAllLower(Movie movie) {
-        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+    public String removeAllLower(Movie movie) {
+        final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". "};
         MoviesCollection.stream().filter((Movie) -> Movie.hashCode()<movie.hashCode()).forEach((Movie) -> {
-            System.out.println("Удаляю объект с hashcode " + Movie.hashCode()); removeElement(Movie);
+            output[0] +="Удаляю объект с hashcode " + Movie.hashCode(); removeElement(Movie);
         });
+        return output[0];
     }
 
     /**
@@ -232,11 +250,12 @@ public class CollectionManager {
      *
      * @param movie заданный movie с хэшкодом которого сравниваются объекты.
      */
-    public void removeAllGreater(Movie movie) {
-        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+    public String removeAllGreater(Movie movie) {
+        final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". \n"};
         MoviesCollection.stream().filter((Movie) -> Movie.hashCode()>movie.hashCode()).forEach((Movie) -> {
-            System.out.println("Удаляю объект с hashcode " + Movie.hashCode()); removeElement(Movie);
+            output[0] += "Удаляю объект с hashcode " + Movie.hashCode(); removeElement(Movie);
         });
+        return output[0];
     }
 
     /**
@@ -260,13 +279,15 @@ public class CollectionManager {
      *
      * @param movie объект, который нужно добавить.
      */
-    public void addElementIfLowerMin(Movie movie) {
-        System.out.println("Hashcode введённого объекта: " + movie.hashCode() + ". ");
+    public String addElementIfLowerMin(Movie movie) {
+        String output = "Hashcode введённого объекта: " + movie.hashCode() + ". \n";
         if (movie.hashCode() < getMinElement()) {
             addElement(movie);
+            output+="Добавлен новый объект.";
         } else {
-            System.out.println("Элемент не был добавлен.");
+            output+= "Объект не был добавлен.";
         }
+        return output;
     }
 
     /**

@@ -40,8 +40,8 @@ public class FileManager {
         boolean read = false;
         while (!read) {
             try {
-                //Scanner scanner = scan(System.getenv().get(collectionFileEnv));
-                Scanner scanner = scan("/home/kyoto/git/VT_labs_1/Collection.json");
+                Scanner scanner = scan(System.getenv().get(collectionFileEnv));
+//                Scanner scanner = scan("/home/kyoto/git/VT_labs_1/Collection.json");
                 read = true;
                 scanner.next(); //первая "{"
                 while (scanner.hasNext()) {
@@ -68,11 +68,11 @@ public class FileManager {
                 }
             } catch (AccessDeniedException e) {
                 System.out.println("Отсутствуют права доступа к файлу коллекции. Обновите права или измените переменную" +
-                        " окружения \"LABA\" на другой файл. После исправления ошибки введите ENTER.");
-                System.in.read();
+                        " окружения \"LABA\" на другой файл и перезапустите приложение. В память загружена пустая коллекция.");
+                return MoviesCollection;
             } catch (NullPointerException e) {
-                System.out.println("Невозможно прочитать коллекцию из заданного файла. Задайте новый через переменную окружения и нажмите ENTER.");
-                System.in.read();
+                System.out.println("Невозможно прочитать коллекцию из заданного файла. Задайте новый и перезапустите приложение. В память загружена" +
+                        "пустая коллекция.");
             } catch (IndexOutOfBoundsException e){
                 System.out.println("WARNING! У вас пустая коллекция в файле.");
                 return new PriorityQueue<>(CollectionManager.idComparator);
@@ -122,19 +122,9 @@ public class FileManager {
     public static void saveCollection(PriorityQueue<Movie> collection) throws IOException {
         String data = Parser.parseToJSON(collection);
         byte[] buffer = data.getBytes();
-        boolean save = false;
-        while (!save) {
-            try {
-                //FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
-                FileOutputStream fos = new FileOutputStream("/home/kyoto/git/VT_labs_1/Collection.json");
+                FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
+//                FileOutputStream fos = new FileOutputStream("/home/kyoto/git/VT_labs_1/Collection.json");
                 fos.write(buffer);
-                save = true;
-            } catch (FileNotFoundException e) {
-                System.out.println("Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
-                        " переменную окружение \"LABA\" на другой файл. После обновления ошибки введите ENTER.");
-                System.in.read();
-            }
-        }
     }
 
     /**

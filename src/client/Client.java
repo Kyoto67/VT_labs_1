@@ -13,19 +13,15 @@ public class Client implements Serializable {
 
     private final String host;
     private final int port;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
     private final SocketChannel client;
     private ByteBuffer buffer;
-    private Socket socket;
 
-    public Client(String host, int port) throws IOException {
-        this.host = host;
-        this.port = port;
-        client = SocketChannel.open(new InetSocketAddress(host, 1337));
-        socket = client.socket();
+    public Client(String h, int p) throws IOException {
+        this.host = h;
+        this.port = p;
+        client = SocketChannel.open(new InetSocketAddress(host, p));
         System.out.println("Клиент подключился к серверу.");
-        buffer = ByteBuffer.allocate(256);
+        buffer = ByteBuffer.allocate(1000000);
     }
 
     public void uploadObject(Object object) throws IOException {
@@ -39,34 +35,58 @@ public class Client implements Serializable {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         client.write(buffer);
     }
-//
-//    public void uploadMovie(Movie movie) throws IOException {
-//        out = new ObjectOutputStream(socket.getOutputStream());
-//        out.writeObject(movie);
-//        out.flush();
-//    }
 
     public void uploadText(String text) throws IOException {
         buffer = ByteBuffer.wrap(text.getBytes());
         client.write(buffer);
         buffer.clear();
     }
-    //  out = new ObjectOutputStream(socket.getOutputStream());
-    // out.writeObject(text);
-    //out.flush();
-    //}
 
-    public boolean downloadResult() throws IOException, ClassNotFoundException {
+    public boolean downloadResult() throws IOException {
         buffer.clear();
         client.read(buffer);
         int flag = buffer.get(0);
+        buffer = ByteBuffer.allocate(1000000);
         if (flag == 1) {
             return true;
         } else {
             return false;
         }
-        //in = new ObjectInputStream(socket.getInputStream());
-        //boolean result = (boolean) in.readObject();
-        //return result;
+    }
+
+    public String downloadAnswer() throws Exception {
+        String answer = null;
+        while (answer == null) {
+            int data = client.read(buffer);
+            if (!(data == -1) && (!(data == 0))) {
+                Object o = byteBufferToObject(buffer);
+                answer = (String) o;
+                buffer = ByteBuffer.allocate(1000000);
+            }
+        }
+        return answer;
+    }
+
+    private Object byteBufferToObject(ByteBuffer byteBuffer)
+            throws Exception {
+        byte[] bytes = byteBuffer.array();
+        return deSerializer(bytes);
+    }
+
+    private Object deSerializer(byte[] bytes) throws IOException,
+            ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(
+                new ByteArrayInputStream(bytes));
+        Object object = null;
+        boolean check = false;
+        while (!(check)) {
+            try {
+                object = objectInputStream.readObject();
+                check = true;
+            } catch (EOFException ex) {
+                check = false;
+            }
+        }
+        return object;
     }
 }

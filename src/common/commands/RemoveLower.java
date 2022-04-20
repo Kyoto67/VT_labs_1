@@ -1,6 +1,7 @@
 package common.commands;
 
 import common.data.Movie;
+import server.Server;
 import server.util.CollectionManager;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class RemoveLower extends AbstractCommand{
     }
 
     public boolean exec(Movie movie){
-        manager.removeAllLower(movie);
+        Server.outputMessage = manager.removeAllLower(movie);
         return true;
     }
 }

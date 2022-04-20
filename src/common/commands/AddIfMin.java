@@ -1,6 +1,7 @@
 package common.commands;
 
 import common.data.Movie;
+import server.Server;
 import server.util.CollectionManager;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class AddIfMin extends AbstractCommand{
     }
 
     public boolean exec(Movie movie){
-        manager.addElementIfLowerMin(movie);
+        Server.outputMessage = manager.addElementIfLowerMin(movie);
         return true;
     }
 }

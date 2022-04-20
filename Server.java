@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
 public class Server {
 
     private ServerSocketChannel server;
-    private ByteBuffer buffer = ByteBuffer.allocate(10000);
+    private ByteBuffer buffer = ByteBuffer.allocate(1000000);
     private SocketChannel socketChannel;
     public Boolean isBusy = false;
 

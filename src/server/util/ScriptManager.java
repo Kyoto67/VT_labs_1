@@ -2,6 +2,7 @@ package server.util;
 
 import common.commands.*;
 import common.exceptions.IncompleteData;
+import server.Server;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -32,6 +33,7 @@ public class ScriptManager implements Serializable {
             "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
             "print_field_descending_oscars_count"};
     private CollectionManager collectionManager;
+    private String result;
 
     public void setCollectionManager(CollectionManager collectionManager) {
         this.collectionManager = collectionManager;
@@ -98,7 +100,7 @@ public class ScriptManager implements Serializable {
     }
 
     public ScriptManager() {
-
+        this.result = "";
     }
 
     public void setExecuteScript(ExecuteScript executeScript) {
@@ -119,18 +121,26 @@ public class ScriptManager implements Serializable {
                 case (0): {
                     info.setCollectionManager(collectionManager);
                     if (info.exec("")) {
-                        System.out.println("Команда " + info.getName() + " выполнена.");
+                        result+= Server.outputMessage;
+                        Server.outputMessage="";
+                        result+="Команда " + info.getName() + " выполнена.";
                     } else {
-                        System.out.println(info.getName() + " failed.");
+                        result+= Server.outputMessage;
+                        Server.outputMessage="";
+                        result+=info.getName() + " failed.";
                     }
                     break;
                 }
                 case (1): {
                     show.setCollectionManager(collectionManager);
                     if (show.exec("")) {
-                        System.out.println("Команда " + show.getName() + " выполнена.");
+                        result+= Server.outputMessage;
+                        Server.outputMessage="";
+                        result+="Команда " + show.getName() + " выполнена.";
                     } else {
-                        System.out.println(show.getName() + " failed.");
+                        result+= Server.outputMessage;
+                        Server.outputMessage="";
+                        result+=show.getName() + " failed.";
                     }
                     break;
                 }
@@ -225,19 +235,19 @@ public class ScriptManager implements Serializable {
                 }
                 case (12): {
                     removeAnyByDirector.setCollectionManager(collectionManager);
-                    if(removeAnyByDirector.exec(data[1])){
-                        System.out.println("Команда "+removeAnyByDirector.getName()+" выполнена.");
+                    if (removeAnyByDirector.exec(data[1])) {
+                        System.out.println("Команда " + removeAnyByDirector.getName() + " выполнена.");
                     } else {
-                        System.out.println(removeAnyByDirector.getName()+" failed.");
+                        System.out.println(removeAnyByDirector.getName() + " failed.");
                     }
                     break;
                 }
                 case (13): {
                     printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
-                    if(printFieldDescendingOscarsCount.exec("")){
-                        System.out.println("Команда "+printFieldDescendingOscarsCount.getName()+" выполнена.");
+                    if (printFieldDescendingOscarsCount.exec("")) {
+                        System.out.println("Команда " + printFieldDescendingOscarsCount.getName() + " выполнена.");
                     } else {
-                        System.out.println(printFieldDescendingOscarsCount.getName()+" failed.");
+                        System.out.println(printFieldDescendingOscarsCount.getName() + " failed.");
                     }
                     break;
                 }

@@ -1,5 +1,6 @@
 package common.commands;
 
+import server.Server;
 import server.util.CollectionManager;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class Save extends AbstractCommand{
      */
     @Override
     public boolean exec(String argument) throws IOException {
-        manager.saveCollection();
+        Server.outputMessage = manager.saveCollection();
         return true;
     }
 }

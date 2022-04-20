@@ -43,6 +43,26 @@ public class Asker {
         return MovieName;
     }
 
+    public static int askPort(){
+        boolean success = false;
+        int port = 0;
+        System.out.println("Введите порт подключения.");
+        while ((!success)){
+            try{
+                Scanner scanner = new Scanner(System.in);
+                port = Integer.parseInt(scanner.nextLine());
+                if(!(port>=1000 && port<30000)){
+                    throw new RuntimeException("Неверный порт, повторите ввод.");
+                }
+                success=true;
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        System.out.println(port);
+        return port;
+    }
+
     /**
      * Запрашивает у пользователя команду
      * @return Возвращает введённую пользователем строку
