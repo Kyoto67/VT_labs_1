@@ -1,92 +1,65 @@
 package client;
 
-import common.commands.AbstractCommand;
-import common.data.Movie;
-
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-public class Client implements Serializable {
+public class Client {
 
-    private final String host;
-    private final int port;
-    private final SocketChannel client;
+    private String host;
+    private int port;
+    private SocketChannel client;
+    private Serializer serializer;
+    private Deserializer deserializer;
     private ByteBuffer buffer;
 
     public Client(String h, int p) throws IOException {
         this.host = h;
         this.port = p;
-        client = SocketChannel.open(new InetSocketAddress(host, p));
-        System.out.println("Клиент подключился к серверу.");
-        buffer = ByteBuffer.allocate(1000000);
+        serializer = new Serializer();
+        deserializer = new Deserializer();
+        buffer = ByteBuffer.allocate(100000);
     }
 
-    public void uploadObject(Object object) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        ObjectOutputStream outputStream = new ObjectOutputStream(bytesOut);
-        outputStream.writeObject(object);
-        outputStream.flush();
-        outputStream.close();
-        byte[] bytes = bytesOut.toByteArray();
-        bytesOut.close();
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        client.write(buffer);
-    }
-
-    public void uploadText(String text) throws IOException {
-        buffer = ByteBuffer.wrap(text.getBytes());
-        client.write(buffer);
-        buffer.clear();
-    }
-
-    public boolean downloadResult() throws IOException {
-        buffer.clear();
-        client.read(buffer);
-        int flag = buffer.get(0);
-        buffer = ByteBuffer.allocate(1000000);
-        if (flag == 1) {
-            return true;
-        } else {
-            return false;
+    public String run(Object o1){
+        String out="";
+        try {
+            connect();
+            sendObject(o1);
+            out = (String) getObject();
+            close();
+        } catch (IOException e){
+            return "Отсутствует связь с сервером.";
         }
+        return out;
     }
 
-    public String downloadAnswer() throws Exception {
-        String answer = null;
-        while (answer == null) {
-            int data = client.read(buffer);
-            if (!(data == -1) && (!(data == 0))) {
-                Object o = byteBufferToObject(buffer);
-                answer = (String) o;
-                buffer = ByteBuffer.allocate(1000000);
-            }
-        }
-        return answer;
+    private void connect() throws IOException {
+        client = SocketChannel.open(new InetSocketAddress(host, port));
     }
 
-    private Object byteBufferToObject(ByteBuffer byteBuffer)
-            throws Exception {
-        byte[] bytes = byteBuffer.array();
-        return deSerializer(bytes);
+    private void sendObject(Object object) throws IOException {
+        client.write(serializer.serialize(object));
     }
 
-    private Object deSerializer(byte[] bytes) throws IOException,
-            ClassNotFoundException {
-        ObjectInputStream objectInputStream = new ObjectInputStream(
-                new ByteArrayInputStream(bytes));
-        Object object = null;
-        boolean check = false;
-        while (!(check)) {
+    private Object getObject() {
+        while (true) {
             try {
-                object = objectInputStream.readObject();
-                check = true;
-            } catch (EOFException ex) {
-                check = false;
+                client.read(buffer);
+                Object o = deserializer.deserialize(buffer);
+                buffer = ByteBuffer.allocate(100000);
+                return o;
+            } catch (Exception e) {
+//                e.printStackTrace();
             }
         }
-        return object;
     }
+
+    private void close() throws IOException {
+        client.close();
+    }
+
+
+
 }
