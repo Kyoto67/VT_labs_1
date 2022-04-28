@@ -15,6 +15,7 @@ public class Connect extends AbstractCommand{
 
     @Override
     public boolean exec() throws IOException {
+        System.out.println("Новый клиент подключился к серверу.");
         return true;
     }
 }
