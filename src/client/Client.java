@@ -41,6 +41,7 @@ public class Client {
 
     private void connect() throws IOException {
         client = SocketChannel.open(new InetSocketAddress(host, port));
+        client.configureBlocking(false);
     }
 
     private void sendObject(Object object) throws IOException {
