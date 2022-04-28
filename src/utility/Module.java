@@ -11,7 +11,7 @@ public class Module {
     private static String outputMessage="";
     private static final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "execute_script",
             "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
-            "print_field_descending_oscars_count"};
+            "print_field_descending_oscars_count","connect"};
 
 
     public static boolean running(AbstractCommand command) throws IOException {
@@ -95,6 +95,10 @@ public class Module {
                 PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount = (PrintFieldDescendingOscarsCount) command;
                 printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
                 return (printFieldDescendingOscarsCount.exec());
+            }
+            case(15): {
+                Connect connect= (Connect) command;
+                return (connect.exec());
             }
             case (-1): {
                 System.out.println("Неизвестная ошибка.");

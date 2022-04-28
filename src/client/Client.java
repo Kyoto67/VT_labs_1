@@ -1,5 +1,8 @@
 package client;
 
+import commands.Connect;
+import exceptions.Disconnect;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -14,12 +17,13 @@ public class Client {
     private Deserializer deserializer;
     private ByteBuffer buffer;
 
-    public Client(String h, int p) throws IOException {
+    public Client(String h, int p) throws Disconnect {
         this.host = h;
         this.port = p;
         serializer = new Serializer();
         deserializer = new Deserializer();
         buffer = ByteBuffer.allocate(100000);
+        findServer();
     }
 
     public String run(Object o1){
@@ -60,6 +64,14 @@ public class Client {
         client.close();
     }
 
+    private void findServer() throws Disconnect {
+        System.out.println("Подключаюсь к серверу...");
+        String result = run(new Connect("connect","подключение к серверу."));
+        if(!(result.equals("Выполнение успешно.\n"))) {
+            throw new Disconnect("Подключение не установлено");
+        }
+        System.out.println(result);
+    }
 
 
 }

@@ -47,7 +47,7 @@ public class Server {
             }
             boolean result = Module.running(command);
             if (result) {
-                Module.addMessage("Команда выполнена.");
+                Module.addMessage("Выполнение успешно.");
             } else {
                 Module.addMessage("Выполнить команду не удалось.");
             }
