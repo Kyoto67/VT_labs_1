@@ -3,6 +3,7 @@ package client;
 import exceptions.Disconnect;
 import utility.Asker;
 import utility.CommandManager;
+import utility.DataBaseHandler;
 
 import java.io.IOException;
 
