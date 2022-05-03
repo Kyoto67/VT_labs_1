@@ -3,12 +3,10 @@ package utility;
 import data.*;
 import exceptions.DatabaseHandlingException;
 
-import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.PriorityQueue;
 
@@ -95,7 +93,7 @@ public class DataBaseCollectionManager {
     private DataBaseHandler databaseHandler;
     private DataBaseUserManager databaseUserManager;
 
-    public DataBaseCollectionManager(DataBaseHandler databaseHandler, DatabaseUserManager databaseUserManager) {
+    public DataBaseCollectionManager(DataBaseHandler databaseHandler, DataBaseUserManager databaseUserManager) {
         this.databaseHandler = databaseHandler;
         this.databaseUserManager = databaseUserManager;
     }
@@ -220,8 +218,8 @@ public class DataBaseCollectionManager {
     }
 
     /**
-     * @param marineRaw Marine raw.
-     * @param marineId  Id of Marine.
+     * @param newMovie movie raw.
+     * @param movieId  Id of Movie.
      * @throws DatabaseHandlingException When there's exception inside.
      */
     public void updateMovieById(long movieId, Movie newMovie) throws DatabaseHandlingException {
@@ -371,22 +369,19 @@ public class DataBaseCollectionManager {
     /**
      * Delete Marine by id.
      *
-     * @param marineId Id of Marine.
+     * @param movieId Id of Movie.
      * @throws DatabaseHandlingException When there's exception inside.
      */
-    public void deleteMarineById(long marineId) throws DatabaseHandlingException {
-        // TODO: Если делаем орден уникальным, тут че-то много всего менять
-        PreparedStatement preparedDeleteChapterByIdStatement = null;
+    public void deleteMovieById(long movieId) throws DatabaseHandlingException {
+        PreparedStatement preparedDeleteMovieByIdStatement = null;
         try {
-            preparedDeleteChapterByIdStatement = databaseHandler.getPreparedStatement(DELETE_CHAPTER_BY_ID, false);
-            preparedDeleteChapterByIdStatement.setLong(1, getChapterIdByMarineId(marineId));
-            if (preparedDeleteChapterByIdStatement.executeUpdate() == 0) Outputer.println(3);
-            App.logger.info("Выполнен запрос DELETE_CHAPTER_BY_ID.");
+            preparedDeleteMovieByIdStatement = databaseHandler.getPreparedStatement(DELETE_MOVIE_BY_ID, false);
+            preparedDeleteMovieByIdStatement.setLong(1, movieId);
+            if (preparedDeleteMovieByIdStatement.executeUpdate() == 0) throw new DatabaseHandlingException();
         } catch (SQLException exception) {
-            App.logger.error("Произошла ошибка при выполнении запроса DELETE_CHAPTER_BY_ID!");
             throw new DatabaseHandlingException();
         } finally {
-            databaseHandler.closePreparedStatement(preparedDeleteChapterByIdStatement);
+            databaseHandler.closePreparedStatement(preparedDeleteMovieByIdStatement);
         }
     }
 
@@ -398,20 +393,18 @@ public class DataBaseCollectionManager {
      * @return Is everything ok.
      * @throws DatabaseHandlingException When there's exception inside.
      */
-    public boolean checkMarineUserId(long marineId, User user) throws DatabaseHandlingException {
-        PreparedStatement preparedSelectMarineByIdAndUserIdStatement = null;
+    public boolean checkMarineUserId(long movieId, User user) throws DatabaseHandlingException {
+        PreparedStatement preparedSelectMovieByIdAndUserIdStatement = null;
         try {
-            preparedSelectMarineByIdAndUserIdStatement = databaseHandler.getPreparedStatement(SELECT_MARINE_BY_ID_AND_USER_ID, false);
-            preparedSelectMarineByIdAndUserIdStatement.setLong(1, marineId);
-            preparedSelectMarineByIdAndUserIdStatement.setLong(2, databaseUserManager.getUserIdByUsername(user));
-            ResultSet resultSet = preparedSelectMarineByIdAndUserIdStatement.executeQuery();
-            App.logger.info("Выполнен запрос SELECT_MARINE_BY_ID_AND_USER_ID.");
+            preparedSelectMovieByIdAndUserIdStatement = databaseHandler.getPreparedStatement(SELECT_MOVIE_BY_ID_AND_USER_ID, false);
+            preparedSelectMovieByIdAndUserIdStatement.setLong(1, movieId);
+            preparedSelectMovieByIdAndUserIdStatement.setLong(2, databaseUserManager.getUserIdByUsername(user));
+            ResultSet resultSet = preparedSelectMovieByIdAndUserIdStatement.executeQuery();
             return resultSet.next();
         } catch (SQLException exception) {
-            App.logger.error("Произошла ошибка при выполнении запроса SELECT_MARINE_BY_ID_AND_USER_ID!");
             throw new DatabaseHandlingException();
         } finally {
-            databaseHandler.closePreparedStatement(preparedSelectMarineByIdAndUserIdStatement);
+            databaseHandler.closePreparedStatement(preparedSelectMovieByIdAndUserIdStatement);
         }
     }
 
@@ -421,9 +414,9 @@ public class DataBaseCollectionManager {
      * @throws DatabaseHandlingException When there's exception inside.
      */
     public void clearCollection() throws DatabaseHandlingException {
-        NavigableSet<SpaceMarine> marineList = getCollection();
-        for (SpaceMarine marine : marineList) {
-            deleteMarineById(marine.getId());
+        PriorityQueue<Movie> moviesCollection = getCollection();
+        for (Movie movie : moviesCollection) {
+            deleteMovieById(movie.getId());
         }
     }
 }
