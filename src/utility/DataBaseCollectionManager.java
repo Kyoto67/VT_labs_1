@@ -388,7 +388,7 @@ public class DataBaseCollectionManager {
     /**
      * Checks Marine user id.
      *
-     * @param marineId Id of Marine.
+     * @param movieId Id of Marine.
      * @param user     Owner of marine.
      * @return Is everything ok.
      * @throws DatabaseHandlingException When there's exception inside.
