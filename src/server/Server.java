@@ -2,8 +2,8 @@ package server;
 
 import commands.AbstractCommand;
 import commands.Save;
-import utility.CollectionManager;
-import utility.Module;
+import exceptions.DatabaseHandlingException;
+import utility.*;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,7 +18,7 @@ public class Server {
     private ObjectOutputStream outputStream;
     private InputStream stream;
 
-    public Server() {
+    public Server() throws DatabaseHandlingException {
         this.port = 2022;
         boolean connect = false;
         while (!connect) {
@@ -31,7 +31,10 @@ public class Server {
             }
         }
         stream = System.in;
-        Module.setCollectionManager(new CollectionManager());
+        DataBaseHandler dataBaseHandler = new DataBaseHandler("localhost", 1337,"s336759", "wes537");
+        DataBaseUserManager dataBaseUserManager = new DataBaseUserManager(dataBaseHandler);
+        DataBaseCollectionManager dataBaseCollectionManager = new DataBaseCollectionManager(dataBaseHandler, dataBaseUserManager);
+        Module.setCollectionManager(new CollectionManager(dataBaseCollectionManager));
     }
 
     public void run() {
@@ -42,7 +45,7 @@ public class Server {
                 try {
                     command = (AbstractCommand) getObject();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                     
                 }
             }
             boolean result = Module.running(command);
@@ -53,7 +56,7 @@ public class Server {
             }
             sendObject(Module.messageFlush());
         } catch (Exception e) {
-            e.printStackTrace();
+             
         }
         try {
             if (stream.available() > 0) {
@@ -66,7 +69,7 @@ public class Server {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+             
         }
     }
 

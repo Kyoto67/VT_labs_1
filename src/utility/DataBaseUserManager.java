@@ -21,8 +21,9 @@ public class DataBaseUserManager {
 
     private DataBaseHandler databaseHandler;
 
-    public DataBaseUserManager(DataBaseHandler databaseHandler) {
+    public DataBaseUserManager(DataBaseHandler databaseHandler) throws DatabaseHandlingException {
         this.databaseHandler = databaseHandler;
+        insertUser(new User("s336759", "wes537"));
     }
 
     /**
@@ -95,6 +96,7 @@ public class DataBaseUserManager {
             } else userId = -1;
             return userId;
         } catch (SQLException exception) {
+            exception.printStackTrace();
             throw new DatabaseHandlingException();
         } finally {
             databaseHandler.closePreparedStatement(preparedSelectUserByUsernameStatement);

@@ -19,6 +19,7 @@ public class CollectionManager {
     private final String type;
     private final LocalDateTime initTime;
     private ArrayList<Long> idList;
+    private final DataBaseCollectionManager dataBaseCollectionManager;
 
     /**
      * Конструктор класса. Автоматически создаёт коллекцию, заполненную рандомными значениями, сохраняет её в файл и загружает из файла (потому что так сказано в задании).
@@ -27,11 +28,12 @@ public class CollectionManager {
      *
      * @throws IOException
      */
-    public CollectionManager() {
+    public CollectionManager(DataBaseCollectionManager dataBaseCollectionManager) {
         loadCollection();
         idList = FileManager.getIdList();
         type = "PriorityQueue";
         initTime = LocalDateTime.now();
+        this.dataBaseCollectionManager = dataBaseCollectionManager;
     }
 
     /**
@@ -65,9 +67,14 @@ public class CollectionManager {
             movie.setId(addID());
             movie.setCreationDate(new Date());
         } catch (Exception e){
-            e.printStackTrace();
+             
         }
         MoviesCollection.add(movie);
+        try {
+            dataBaseCollectionManager.insertMovie(movie, new User("s336759", "wes537"));
+        } catch (Exception e){
+             
+        }
         return "Добавление успешно.";
     }
 
@@ -141,7 +148,10 @@ public class CollectionManager {
      */
     public String printCollection() {
         final String[] output = {""};
-        MoviesCollection.stream().forEach((M) -> output[0] +=M.toString()+"\n");
+        try {
+            dataBaseCollectionManager.getCollection().stream().forEach((M) -> output[0] += M.toString() + "\n");
+        } catch (Exception e){
+        }
         return output[0];
     }
 

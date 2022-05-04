@@ -16,7 +16,7 @@ public class App {
             try {
                 Console.run(commandManager);
             } catch (Exception e) {
-                e.printStackTrace();
+                 
             }
         } catch (Disconnect e) {
             System.out.println(e.getMessage());

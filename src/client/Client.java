@@ -56,7 +56,7 @@ public class Client {
                 buffer = ByteBuffer.allocate(100000);
                 return o;
             } catch (Exception e) {
-//                e.printStackTrace();
+//                 
             }
         }
     }

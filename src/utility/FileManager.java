@@ -501,7 +501,7 @@ private static class Parser {
         } catch (IncorrectData e) {
             System.out.printf(e.getMessage() + " Объект не будет добавлен в коллекцию.");
         } catch (Exception e) {
-            e.printStackTrace();
+             
             clearAll();
         }
     }

@@ -6,7 +6,6 @@ import exceptions.DatabaseHandlingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.PriorityQueue;
 
@@ -38,8 +37,8 @@ public class DataBaseCollectionManager {
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN + ", " +
-            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (?, ?, ?, ?::astartes_category," +
-            "?::weapon, ?::melee_weapon, ?, ?)";
+            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String DELETE_MOVIE_BY_ID = "DELETE FROM " + DataBaseHandler.MOVIE_TABLE +
             " WHERE " + DataBaseHandler.MOVIE_TABLE_ID_COLUMN + " = ?";
     private final String UPDATE_MOVIE_NAME_BY_ID = "UPDATE " + DataBaseHandler.MOVIE_TABLE + " SET " +
@@ -150,6 +149,7 @@ public class DataBaseCollectionManager {
                 moviesCollection.add(createMovie(resultSet));
             }
         } catch (SQLException exception) {
+            exception.printStackTrace();
             throw new DatabaseHandlingException();
         } finally {
             databaseHandler.closePreparedStatement(preparedSelectAllStatement);
@@ -172,7 +172,7 @@ public class DataBaseCollectionManager {
             Date creationTime = new Date();
             preparedInsertMovieStatement = databaseHandler.getPreparedStatement(INSERT_MOVIE, true);
             preparedInsertMovieStatement.setString(1, newMovie.getName());
-            preparedInsertMovieStatement.setTimestamp(2, Timestamp.valueOf(String.valueOf(newMovie.getCreationDate().getTime())));
+            preparedInsertMovieStatement.setLong(2, newMovie.getCreationDate().getTime());
             preparedInsertMovieStatement.setLong(3, newMovie.getOscarsCount());
             preparedInsertMovieStatement.setString(4, newMovie.getGenre().toString());
             preparedInsertMovieStatement.setString(5, newMovie.getMpaaRating().toString());
@@ -209,6 +209,7 @@ public class DataBaseCollectionManager {
             databaseHandler.commit();
             return movie;
         } catch (SQLException exception) {
+            exception.printStackTrace();
             databaseHandler.rollback();
             throw new DatabaseHandlingException();
         } finally {
