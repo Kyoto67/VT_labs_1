@@ -3,58 +3,87 @@
 
 
 \section{Задание}
-По выданному преподавателем варианту разработать программу асинхронного обмена данными с внешним устройством. При помощи
-программы осуществить ввод или вывод информации, используя в качестве подтверждения данных сигнал (кнопку) готовности ВУ.
+По выданному преподавателем варианту разработать и исследовать работу комплекса программ обмена данными в режиме
+прерывания программы. Основная программа должна изменять содержимое заданной ячейки памяти (Х), которое должно быть
+представлено как знаковое число. Область допустимых значений изменения Х должна быть ограничена заданной функцией F(X)
+и конструктивными особенностями регистра данных ВУ (8-ми битное знаковое представление). Программа обработки прерывания
+должна выводить на ВУ модифицированное значение Х в соответствии с вариантом задания, а также игнорировать все необрабатываемые прерывания.\\
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.35]{img/variant}
+    \includegraphics[scale=0.3]{img/variant}
 \end{figure}
 
 
 \section{Программа}
-
 \subsection{Assembler}
-
 \begin{center}
     \begin{tabular}{c}
-        \begin{lstlisting}[basicstyle=\ttfamily]
-        ORG     0x360
-ADDR:	WORD	0x5A1
-LEN:	WORD	0x0000
-FIRST:	WORD	0x0000
-SECOND: WORD    0x0000
-START:  LD      (ADDR)+
-        AND     #0xFF
-        ST      LEN
-L:      IN      7
-        AND     #0x40
-        BEQ     L
-        LD      LEN
-        OUT     6
-BEGIN:	CLA
-        LD      (ADDR)+
-        ST      FIRST
-        SWAB
-        ST      SECOND
-S1:     IN      7
-        AND     #0x40
-        BEQ     S1
-        LD      FIRST
-        OUT     6
-        LOOP    LEN
-        JUMP    S2
-        JUMP    STOP
-S2:     IN      7
-        AND     #0x40
-        BEQ     S2
-        LD      SECOND
-        OUT     6
-        LOOP    LEN
-        JUMP    BEGIN
-STOP:	HLT
-
+        \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+        ORG     0x0
+V0:     WORD    $DEF, 0x180
+V1:     WORD    $INT1, 0x180
+V2:     WORD    $INT2, 0x180
+V3:     WORD    $DEF, 0x180
+V4:     WORD    $DEF, 0x180
+V5:     WORD    $DEF, 0x180
+V6:     WORD    $DEF, 0x180
+V7:     WORD    $DEF, 0x180
+        ORG     0x2E
+X:      WORD    0x0
+LB:     WORD    0xFFD7
+HB:     WORD    0x2C
+DEF:    IRET
+START:  DI
+        CLA
+        OUT     0x1
+        OUT     0x7
+        OUT     0xB
+        OUT     0xF
+        OUT     0x13
+        OUT     0x17
+        OUT     0x1B
+        OUT     0x1F
+        LD      #0x9
+        OUT     0x3
+        LD      #0xA
+        OUT     0x5
+        EI
+MAIN:   DI
+        LD      $X
+        INC
+        CALL    $CHECK
+        ST      $X
+        EI
+        JUMP    $MAIN
+CHECK:  CMP     $LB
+        BPL     PART2
+        JUMP    LOAD
+PART2:  CMP     $HB
+        BMI     RETN
+LOAD:   LD      LB
+RETN:   RET
+INT2:   DI
+        NOP
+        IN      4
+        AND     #0xF
+        AND     $X
+        ST      $X
+        NOP
+        EI
+        IRET
+INT1:   DI
+        NOP
+        LD      $X
+        ASL
+        ADD     $X
+        SUB     #0x5
+        OUT     2
+        LD      $X
+        NOP
+        EI
+        IRET
         \end{lstlisting}
     \end{tabular}
 \end{center}
@@ -65,7 +94,6 @@ STOP:	HLT
 Вывод текста сохранённого в массиве в формате АДР0: ДЛИНА АДР1: СИМВ2 СИМВ1 АДР2: СИМВ4 СИМВ3 ... \\
 \footnotesize (выводит сначала количество символов, а потом символы в порядке возрастания: СИМВ1, СИМВ2, СИМВ3)\\
 \normalsize
-
 
 \section{Область представления данных и область допустимых значений}
 
