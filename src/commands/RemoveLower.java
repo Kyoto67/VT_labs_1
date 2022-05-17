@@ -3,6 +3,7 @@ package commands;
 import data.*;
 import utility.Module;
 import utility.CollectionManager;
+import utility.User;
 
 import java.io.IOException;
 
@@ -10,6 +11,7 @@ public class RemoveLower extends AbstractCommand {
 
     private CollectionManager collectionManager;
     private Movie argument;
+    private User user;
 
 
     /**
@@ -30,6 +32,10 @@ public class RemoveLower extends AbstractCommand {
         this.argument = argument;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     /**
      * Метод конвертирует переданный id в числовой формат, при неверно введённом аргументе запрашивает повторный ввод.
      * Вызывает удаление всех элементов коллекции, чей id меньше переданного в качестве аргумента программе.
@@ -39,7 +45,7 @@ public class RemoveLower extends AbstractCommand {
      */
     @Override
     public boolean exec() throws IOException {
-        Module.addMessage(collectionManager.removeAllLower(argument));
+        Module.addMessage(collectionManager.removeAllLower(argument, user));
         return true;
     }
 }

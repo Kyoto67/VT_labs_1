@@ -25,7 +25,7 @@ public class Client {
         this.user = u;
         serializer = new Serializer();
         deserializer = new Deserializer();
-        buffer = ByteBuffer.allocate(100000);
+        buffer = ByteBuffer.allocate(1024*100);
         findServer();
     }
 
@@ -56,7 +56,8 @@ public class Client {
             try {
                 client.read(buffer);
                 Object o = deserializer.deserialize(buffer);
-                buffer = ByteBuffer.allocate(100000);
+                buffer = ByteBuffer.allocate(1024*100);
+                buffer.position(0);
                 return o;
             } catch (Exception e) {
 //                 
@@ -77,5 +78,9 @@ public class Client {
                 "Выполнение завершено.\n"))) {
             throw new Disconnect("Подключение не установлено");
         }
+    }
+
+    public User getUser() {
+        return user;
     }
 }

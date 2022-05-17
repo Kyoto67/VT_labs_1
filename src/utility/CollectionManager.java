@@ -1,6 +1,8 @@
 package utility;
 
 import data.Movie;
+import sun.security.x509.ExtendedKeyUsageExtension;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -52,9 +54,14 @@ public class CollectionManager {
      * @param newMovie объект Movie, который необходимо добавить в коллекцию на замену старому.
      * @param id       id элемента, который нужно заменить
      */
-    public void replaceElementByID(Movie newMovie, long id) {
-        MoviesCollection.remove(findElementByID(id));
-        MoviesCollection.add(newMovie);
+    public void replaceElementByID(Movie newMovie, long id, User user) {
+        try {
+            dataBaseCollectionManager.deleteMovieById(id);
+            MoviesCollection.remove(findElementByID(id));
+            MoviesCollection.add(dataBaseCollectionManager.insertMovie(newMovie, user));
+        } catch (Exception ignore) {
+            //pass
+        }
     }
 
     /**
@@ -62,15 +69,14 @@ public class CollectionManager {
      *
      * @param movie полуает на вход объект типа Movie, который необходимо добавить
      */
-    public String addElement(Movie movie) {
+    public String addElement(Movie movie, User user) {
         try {
             movie.setId(addID());
             movie.setCreationDate(new Date());
-            dataBaseCollectionManager.insertMovie(movie, new User("s336759", "wes537"));
-            MoviesCollection.add(movie);
+            MoviesCollection.add(dataBaseCollectionManager.insertMovie(movie, user));
             return "Добавление успешно.";
-        } catch (Exception e){
-            return "Произошла ошибка при добавлении элемента.";
+        } catch (Exception e) {
+            return "Произошла неизвестная ошибка при добавлении элемента.";
         }
     }
 
@@ -80,8 +86,13 @@ public class CollectionManager {
      * @param movie объект, который нужно удалить из коллекции.
      */
     public void removeElement(Movie movie) {
-        removeID(movie);
-        MoviesCollection.remove(movie);
+        try {
+            dataBaseCollectionManager.deleteMovieById(movie.getId());
+            removeID(movie);
+            MoviesCollection.remove(movie);
+        } catch (Exception ignore) {
+            Module.addMessage("Произошла неизвестная ошибка при удалении элемента.");
+        }
     }
 
     /**
@@ -100,7 +111,7 @@ public class CollectionManager {
      * @return Возвращает объект типа Movie, которому соответствует искомый ID. Если элемент не найден, вернёт null
      */
     public Movie findElementByID(long id) {
-        if(MoviesCollection.stream().anyMatch((m) -> m.getId() == id)){
+        if (MoviesCollection.stream().anyMatch((m) -> m.getId() == id)) {
             return MoviesCollection.stream().filter((m) -> m.getId() == id).findFirst().get();
         }
         return null;
@@ -128,15 +139,15 @@ public class CollectionManager {
      * @see FileManager#saveCollection(PriorityQueue)
      */
     public String saveCollection() throws IOException {
-            try {
-                FileManager.saveCollection(MoviesCollection);
-                return "Коллекция сохранена";
-            } catch (FileNotFoundException e) {
-                return "Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
-                        " переменную окружение \"LABA\" на другой файл и введите команду save на сервере";
-            } catch (Exception e){
-                return "Непредвиденная ошибка при сохранении файла";
-            }
+        try {
+            FileManager.saveCollection(MoviesCollection);
+            return "Коллекция сохранена";
+        } catch (FileNotFoundException e) {
+            return "Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
+                    " переменную окружение \"LABA\" на другой файл и введите команду save на сервере";
+        } catch (Exception e) {
+            return "Непредвиденная ошибка при сохранении файла";
+        }
     }
 
     /**
@@ -146,7 +157,7 @@ public class CollectionManager {
         final String[] output = {""};
         try {
             dataBaseCollectionManager.getCollection().stream().forEach((M) -> output[0] += M.toString() + "\n");
-        } catch (Exception e){
+        } catch (Exception e) {
         }
         return output[0];
     }
@@ -159,8 +170,8 @@ public class CollectionManager {
      */
     public Movie findElementByOscarsCount(long count) {
         Long Count = count;
-        if(MoviesCollection.stream().anyMatch((M) -> Count.equals(M.getOscarsCount()))){
-            return MoviesCollection.stream().filter((M) -> Count==M.getOscarsCount()).findFirst().get();
+        if (MoviesCollection.stream().anyMatch((M) -> Count.equals(M.getOscarsCount()))) {
+            return MoviesCollection.stream().filter((M) -> Count == M.getOscarsCount()).findFirst().get();
         }
         return null;
     }
@@ -170,13 +181,13 @@ public class CollectionManager {
      *
      * @param count число oscarsCount, по которому нужно удалить объект
      */
-    public String removeByOscarsCount(long count) {
-        int counter=0;
-        while (!(findElementByOscarsCount(count) == null)) {
-            removeElement(findElementByOscarsCount(count));
-            counter+=1;
-        }
-        return "Удалено "+counter+" элементов.";
+    public String removeByOscarsCount(long count, User user) {
+        final int[] counter = {0};
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().equals(user.getUsername())).filter((Movie) -> Movie.getOscarsCount() == count).forEach((m) -> {
+            removeElement(m);
+            counter[0] += 1;
+        });
+        return "Удалено " + counter[0] + " элементов.";
     }
 
     /**
@@ -213,7 +224,7 @@ public class CollectionManager {
         final String[] output = {""};
         ArrayList<Long> longList = new ArrayList<>();
         MoviesCollection.stream().forEach((M) -> longList.add(M.getOscarsCount()));
-        longList.stream().sorted((o1, o2) -> (int) (o2-o1)).forEach((o) -> output[0] +=o+"\n");
+        longList.stream().sorted((o1, o2) -> (int) (o2 - o1)).forEach((o) -> output[0] += o + "\n");
         return output[0];
     }
 
@@ -224,7 +235,7 @@ public class CollectionManager {
      * @return Возвращает объект, найденный по имени режиссёра. Если объект не найден, вернёт null
      */
     public Movie findElementByDirector(String directorName) {
-        if(MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName))){
+        if (MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName))) {
             return MoviesCollection.stream().filter((Movie) -> Movie.getDirector().getName().equals(directorName)).findFirst().get();
         }
         return null;
@@ -239,15 +250,17 @@ public class CollectionManager {
         removeElement(findElementByDirector(directorName));
         return "Элемент удалён.";
     }
+
     /**
      * Метод удаляет все элементы из коллекции, чей hashcode меньше заданного.
      *
      * @param movie заданный объект, с хэшкодом которого сравниваются все объекты коллекции
      */
-    public String removeAllLower(Movie movie) {
+    public String removeAllLower(Movie movie, User user) {
         final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". "};
-        MoviesCollection.stream().filter((Movie) -> Movie.hashCode()<movie.hashCode()).forEach((Movie) -> {
-            output[0] +="Удаляю объект с hashcode " + Movie.hashCode(); removeElement(Movie);
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).filter((Movie) -> Movie.hashCode() < movie.hashCode()).forEach((Movie) -> {
+            output[0] += "Удаляю объект с hashcode " + Movie.hashCode();
+            removeElement(Movie);
         });
         return output[0];
     }
@@ -257,10 +270,11 @@ public class CollectionManager {
      *
      * @param movie заданный movie с хэшкодом которого сравниваются объекты.
      */
-    public String removeAllGreater(Movie movie) {
+    public String removeAllGreater(Movie movie, User user) {
         final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". \n"};
-        MoviesCollection.stream().filter((Movie) -> Movie.hashCode()>movie.hashCode()).forEach((Movie) -> {
-            output[0] += "Удаляю объект с hashcode " + Movie.hashCode(); removeElement(Movie);
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).filter((Movie) -> Movie.hashCode() > movie.hashCode()).forEach((Movie) -> {
+            output[0] += "Удаляю объект с hashcode " + Movie.hashCode();
+            removeElement(Movie);
         });
         return output[0];
     }
@@ -286,13 +300,12 @@ public class CollectionManager {
      *
      * @param movie объект, который нужно добавить.
      */
-    public String addElementIfLowerMin(Movie movie) {
+    public String addElementIfLowerMin(Movie movie, User user) {
         String output = "Hashcode введённого объекта: " + movie.hashCode() + ". \n";
         if (movie.hashCode() < getMinElement()) {
-            addElement(movie);
-            output+="Добавлен новый объект.";
+            output += addElement(movie, user);
         } else {
-            output+= "Объект не был добавлен.";
+            output += "Объект не был добавлен.";
         }
         return output;
     }
@@ -303,7 +316,7 @@ public class CollectionManager {
     public String printInfo() {
         final String[] output = {"Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
                 + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: "};
-        MoviesCollection.stream().forEach((m) -> output[0] +=m.hashCode() + " ");
+        MoviesCollection.stream().forEach((m) -> output[0] += m.hashCode() + " ");
         return output[0];
     }
 
@@ -329,6 +342,10 @@ public class CollectionManager {
      */
     public boolean checkMatchingDirectorName(String directorName) {
         return MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName));
+    }
+
+    public boolean checkMatchingOwnerName(User user) {
+        return MoviesCollection.stream().anyMatch((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername()));
     }
 
     public static Comparator<Movie> idComparator = new Comparator<Movie>() {

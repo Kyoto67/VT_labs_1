@@ -4,6 +4,7 @@ package commands;
 import data.*;
 import utility.Module;
 import utility.CollectionManager;
+import utility.User;
 
 /**
  * Команда добавления объекта в коллекцию.
@@ -12,6 +13,7 @@ public class Add extends AbstractCommand {
 
     private CollectionManager collectionManager;
     private Movie argument;
+    private User user;
 
     /**
      * конструктор
@@ -32,6 +34,10 @@ public class Add extends AbstractCommand {
         this.argument = argument;
     }
 
+    public void setUser(User user){
+        this.user=user;
+    }
+
     /**
      * Метод создаёт объект типа Movie, спрашивает у пользователя, хочет ли он ввести данные самостоятельно или заполнить случайными значениями.
      * Запрашивает данные, если пользователь решает ввести самостоятельно
@@ -40,7 +46,7 @@ public class Add extends AbstractCommand {
      */
     @Override
     public boolean exec() {
-            Module.addMessage(collectionManager.addElement(argument));
+            Module.addMessage(collectionManager.addElement(argument,user));
             return true;
     }
 }

@@ -93,5 +93,6 @@ public class Server {
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.writeObject(o);
         outputStream.flush();
+        outputStream.close();
     }
 }

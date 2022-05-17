@@ -2,19 +2,22 @@ package commands;
 
 import utility.Module;
 import utility.CollectionManager;
+import utility.User;
 
-public class RemoveByID extends AbstractCommand{
+public class RemoveByID extends AbstractCommand {
 
     private CollectionManager manager;
     private Long argument;
+    private User user;
 
 
     /**
      * конструктор
+     *
      * @param name
      * @param description
      */
-    public RemoveByID(String name, String description){
+    public RemoveByID(String name, String description) {
         super(name, description);
     }
 
@@ -26,10 +29,15 @@ public class RemoveByID extends AbstractCommand{
         this.argument = argument;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     /**
      * Метод конвертирует переданный id в числовой формат, при неверно введённом аргументе запрашивает повторный ввод.
      * Если элемент с введённым ID отсутствует в коллекции, запрашивает повторный ввод.
      * Вызывает удаление элемента из коллекции по номеру id
+     *
      * @return Возвращает True при выполнении
      * @see CollectionManager#checkMatchingID(long)
      * @see CollectionManager#removeElementByID(long)
@@ -38,9 +46,14 @@ public class RemoveByID extends AbstractCommand{
     public boolean exec() {
         long id = argument;
         if (manager.checkMatchingID(id)) {
-            manager.removeElementByID(id);
-            Module.addMessage("Объект с идентификатором "+id+" удалён.");
-            return true;
+            if(manager.checkMatchingOwnerName(user)) {
+                manager.removeElementByID(id);
+                Module.addMessage("Объект с идентификатором " + id + " удалён.");
+                return true;
+            } else {
+                Module.addMessage("Пользователь не является хозяином объекта.");
+                return false;
+            }
         } else {
             Module.addMessage("Объекта с таким ID нет в коллекции.");
             return false;

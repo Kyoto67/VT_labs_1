@@ -4,6 +4,7 @@ package commands;
 import data.*;
 import utility.Module;
 import utility.CollectionManager;
+import utility.User;
 
 import java.io.IOException;
 
@@ -11,6 +12,8 @@ public class AddIfMin extends AbstractCommand {
 
     private CollectionManager collectionManager;
     private Movie argument;
+
+    private User user;
 
 
     /**
@@ -30,6 +33,9 @@ public class AddIfMin extends AbstractCommand {
     public void setArgument(Movie argument) {
         this.argument = argument;
     }
+    public void setUser(User user){
+        this.user=user;
+    }
 
     /**
      * Метод считывает id, передаваемый в качестве аргумента. Если id введён неверно, запрашивает повторное введение, пока не сможет распознать данные.
@@ -41,7 +47,7 @@ public class AddIfMin extends AbstractCommand {
      */
     @Override
     public boolean exec() throws IOException {
-            Module.addMessage(collectionManager.addElementIfLowerMin(argument));
+            Module.addMessage(collectionManager.addElementIfLowerMin(argument, user));
             return true;
     }
 }

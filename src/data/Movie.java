@@ -47,6 +47,10 @@ public class Movie implements Serializable, Comparable {
         this.owner=owner;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     public Movie() {
     }
 
@@ -59,7 +63,9 @@ public class Movie implements Serializable, Comparable {
         return "Идентификатор: " + getId() + ". \n" + "Название фильма: " + getName() + ". \n" + "Координаты: " + coordinates + ". \n" + "Дата создания: " + creationDate + ". \n"
                 + "Количество оскаров: " + oscarsCount + ". \n" + "Жанр: " + genre + ". \n" + "Возрастной рейтинг: " + mpaaRating + ". \n"
                 + "Режиссёр: \n" + director + "\n"
-                + "hashCode: " + this.hashCode() + ". ";
+                + "hashCode: " + this.hashCode() + "\n"
+                + "Владелец объекта: " + this.owner.getUsername()
+                + ". \n";
     }
 
     public String getName() {

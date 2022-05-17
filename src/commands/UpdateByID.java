@@ -3,11 +3,13 @@ package commands;
 import data.*;
 import utility.Module;
 import utility.CollectionManager;
+import utility.User;
 
 public class UpdateByID extends AbstractCommand {
 
     private CollectionManager collectionManager;
     private Movie argument;
+    private User user;
 
     /**
      * конструктор
@@ -27,6 +29,10 @@ public class UpdateByID extends AbstractCommand {
         this.argument = argument;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     /**
      * Метод конвертирует аргумент в номер id элемента, который нужно обновить. Если номер введён неверно или в коллекции нет элемента с таким id, запрашивает повторный ввод.
      * Запрашивает у пользователя данные обновлённого объекта, если он хочет ввести их вручную, или заполняет автоматически случайными значениями.
@@ -34,14 +40,14 @@ public class UpdateByID extends AbstractCommand {
      *
      * @return Возвращает True при выполнении.
      * @see CollectionManager#checkMatchingID(long)
-     * @see CollectionManager#replaceElementByID(Movie, long)
+     * @see CollectionManager#replaceElementByID(Movie, long, User)
      */
 
     @Override
     public boolean exec() {
         long id = argument.getId();
-        if (collectionManager.checkMatchingID(id)) {
-            collectionManager.replaceElementByID(argument, id);
+        if (collectionManager.checkMatchingID(id) && collectionManager.checkMatchingOwnerName(user)) {
+            collectionManager.replaceElementByID(argument, id, user);
             Module.addMessage("Объёкт с идентификатором " + id + " обновлён.");
             return true;
         } else {
