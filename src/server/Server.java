@@ -1,15 +1,12 @@
 package server;
 
 import commands.AbstractCommand;
-import commands.Connect;
-import commands.Save;
 import exceptions.DatabaseHandlingException;
 import utility.*;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 

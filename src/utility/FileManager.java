@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * класс, взаимодействующий с файлами
@@ -20,7 +20,7 @@ public class FileManager {
     /**
      * остальные поля нужны для сборки коллекции из данных, полученных с файла
      */
-    private static PriorityQueue<Movie> MoviesCollection;
+    private static PriorityBlockingQueue<Movie> MoviesCollection;
     private static Person director;
     private static Coordinates coordinates;
     private static Movie movie;
@@ -53,10 +53,10 @@ public class FileManager {
     /**
      * Метод читает коллекцию из файла
      *
-     * @return Возвращает готовую коллекцию типа PriorityQueue<Movie>
+     * @return Возвращает готовую коллекцию типа PriorityBlockingQueue<Movie>
      * @throws IOException
      */
-    public static PriorityQueue<Movie> readCollection() {
+    public static PriorityBlockingQueue<Movie> readCollection() {
         boolean read = false;
         while (!read) {
             try {
@@ -71,17 +71,17 @@ public class FileManager {
             } catch (AccessDeniedException e) {
                 System.out.println("Отсутствуют права доступа к файлу коллекции. Обновите права или измените переменную" +
                         " окружения \"LABA\" на другой файл и перезапустите приложение. В память загружена пустая коллекция.");
-                return new PriorityQueue<>(CollectionManager.idComparator);
+                return new PriorityBlockingQueue<>();
             } catch (NullPointerException e) {
                 System.out.println("Невозможно прочитать коллекцию из заданного файла. Задайте новый и перезапустите приложение. В память загружена" +
                         "пустая коллекция.");
-                return new PriorityQueue<>(CollectionManager.idComparator);
+                return new PriorityBlockingQueue<>();
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("WARNING! У вас пустая коллекция в файле.");
-                return new PriorityQueue<>(CollectionManager.idComparator);
+                return new PriorityBlockingQueue<>();
             } catch (Exception e) {
                 System.out.println("Ваш файлик не JSON.... Загружена пустая коллекция.");
-                return new PriorityQueue<>(CollectionManager.idComparator);
+                return new PriorityBlockingQueue<>();
             }
         }
         return MoviesCollection;
@@ -111,7 +111,7 @@ public class FileManager {
      * @param collection принимает коллекцию, которую нужно сохранить
      * @throws IOException
      */
-    public static void saveCollection(PriorityQueue<Movie> collection) throws IOException {
+    public static void saveCollection(PriorityBlockingQueue<Movie> collection) throws IOException {
         String data = Parser.parseToJSON(collection);
         byte[] buffer = data.getBytes();
         FileOutputStream fos = new FileOutputStream(System.getenv().get(collectionFileEnv));
@@ -154,7 +154,7 @@ private static class Parser {
         int caser = whatNeedToDo(elements);
         switch (caser) {
             case (1): {
-                MoviesCollection = new PriorityQueue<>();
+                MoviesCollection = new PriorityBlockingQueue<>();
                 clearAll();
                 break;
             }
@@ -390,7 +390,7 @@ private static class Parser {
      * @param collection получает на вход коллекцию, которую необходимо сконвертировать
      * @return Возвращает строку String, которая содержит данные коллекции в формате JSON
      */
-    private static String parseToJSON(PriorityQueue<Movie> collection) {
+    private static String parseToJSON(PriorityBlockingQueue<Movie> collection) {
         String data = "";
         data += "{\n\tMovieCollection: [";
         for (Movie m : collection) {

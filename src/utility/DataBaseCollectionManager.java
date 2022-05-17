@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Operates the database collection itself.
@@ -147,8 +147,8 @@ public class DataBaseCollectionManager {
      * @return List of Marines.
      * @throws DatabaseHandlingException When there's exception inside.
      */
-    public PriorityQueue<Movie> getCollection() {
-        PriorityQueue<Movie> moviesCollection = new PriorityQueue<>();
+    public PriorityBlockingQueue<Movie> getCollection() {
+        PriorityBlockingQueue<Movie> moviesCollection = new PriorityBlockingQueue<>();
         PreparedStatement preparedSelectAllStatement = null;
         try {
             preparedSelectAllStatement = databaseHandler.getPreparedStatement(SELECT_ALL_MOVIES, false);
@@ -413,7 +413,7 @@ public class DataBaseCollectionManager {
      * @throws DatabaseHandlingException When there's exception inside.
      */
     public void clearCollection() throws DatabaseHandlingException {
-        PriorityQueue<Movie> moviesCollection = getCollection();
+        PriorityBlockingQueue<Movie> moviesCollection = getCollection();
         for (Movie movie : moviesCollection) {
             deleteMovieById(movie.getId());
         }

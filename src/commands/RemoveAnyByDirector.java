@@ -39,20 +39,16 @@ public class RemoveAnyByDirector extends AbstractCommand {
      *
      * @return Возвращает True при выполнении
      * @throws IOException
-     * @see CollectionManager#checkMatchingDirectorName(String)
+     * @see CollectionManager#checkMatchingDirectorName(String, User)
      * @see CollectionManager#removeElementByDirectorName(String)
      */
     @Override
     public boolean exec() throws IOException {
         String directorName = argument;
-        if (!manager.checkMatchingDirectorName(directorName)) {
-            Module.addMessage("Режиссёра с таким именем не найдено.");
+        if (!manager.checkMatchingDirectorName(directorName, user)) {
+            Module.addMessage("Режиссёра с таким именем в зоне действия ваших прав не найдено.");
             return false;
         } else {
-            if(!(manager.checkMatchingOwnerName(user))){
-                Module.addMessage("Пользователь не является хозяином объекта.");
-                return false;
-            }
             Module.addMessage(manager.removeElementByDirectorName(directorName));
             return true;
         }

@@ -39,23 +39,18 @@ public class RemoveByID extends AbstractCommand {
      * Вызывает удаление элемента из коллекции по номеру id
      *
      * @return Возвращает True при выполнении
-     * @see CollectionManager#checkMatchingID(long)
+     * @see CollectionManager#checkMatchingID(long, User)
      * @see CollectionManager#removeElementByID(long)
      */
     @Override
     public boolean exec() {
         long id = argument;
-        if (manager.checkMatchingID(id)) {
-            if(manager.checkMatchingOwnerName(user)) {
+        if (manager.checkMatchingID(id, user)) {
                 manager.removeElementByID(id);
                 Module.addMessage("Объект с идентификатором " + id + " удалён.");
                 return true;
-            } else {
-                Module.addMessage("Пользователь не является хозяином объекта.");
-                return false;
-            }
         } else {
-            Module.addMessage("Объекта с таким ID нет в коллекции.");
+            Module.addMessage("Объекта, принадлежащего вам, с таким ID нет в коллекции.");
             return false;
         }
     }

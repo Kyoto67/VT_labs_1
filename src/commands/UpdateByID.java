@@ -39,19 +39,19 @@ public class UpdateByID extends AbstractCommand {
      * Вызывает у пользователя замену элемента по номеру ID.
      *
      * @return Возвращает True при выполнении.
-     * @see CollectionManager#checkMatchingID(long)
+     * @see CollectionManager#checkMatchingID(long, User)
      * @see CollectionManager#replaceElementByID(Movie, long, User)
      */
 
     @Override
     public boolean exec() {
         long id = argument.getId();
-        if (collectionManager.checkMatchingID(id) && collectionManager.checkMatchingOwnerName(user)) {
+        if (collectionManager.checkMatchingID(id,user)) {
             collectionManager.replaceElementByID(argument, id, user);
             Module.addMessage("Объёкт с идентификатором " + id + " обновлён.");
             return true;
         } else {
-            Module.addMessage("Отсутствует объект для замены.");
+            Module.addMessage("В зоне действия ваших прав отсутствует объект для замены.");
             return false;
         }
     }

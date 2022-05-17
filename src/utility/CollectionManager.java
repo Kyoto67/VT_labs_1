@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * класс, объект которого хранит в себе коллекцию и управляет ей.
@@ -15,7 +16,7 @@ import java.util.*;
 
 public class CollectionManager {
 
-    private PriorityQueue<Movie> MoviesCollection = new PriorityQueue<>(idComparator);
+    private PriorityBlockingQueue<Movie> MoviesCollection = new PriorityBlockingQueue<>();
     private final String type;
     private final LocalDateTime initTime;
     private ArrayList<Long> idList;
@@ -32,7 +33,7 @@ public class CollectionManager {
         this.dataBaseCollectionManager = dataBaseCollectionManager;
         loadCollection();
         idList = FileManager.getIdList();
-        type = "PriorityQueue";
+        type = "PriorityBlockingQueue";
         initTime = LocalDateTime.now();
     }
 
@@ -43,7 +44,7 @@ public class CollectionManager {
      * @see FileManager#readCollection()
      */
     public synchronized void loadCollection() {
-        MoviesCollection = (PriorityQueue<Movie>) Collections.synchronizedCollection(dataBaseCollectionManager.getCollection());
+        MoviesCollection = (dataBaseCollectionManager.getCollection());
     }
 
     /**
@@ -69,9 +70,11 @@ public class CollectionManager {
      */
     public synchronized String addElement(Movie movie, User user) {
         try {
-            movie.setId(addID());
-            movie.setCreationDate(new Date());
-            MoviesCollection.add(dataBaseCollectionManager.insertMovie(movie, user));
+            Movie newMovie = movie;
+            newMovie.setCreationDate(new Date());
+            newMovie = dataBaseCollectionManager.insertMovie(newMovie, user);
+            addID(newMovie);
+            MoviesCollection.add(newMovie);
             return "Добавление успешно.";
         } catch (Exception e) {
             return "Произошла неизвестная ошибка при добавлении элемента.";
@@ -118,7 +121,7 @@ public class CollectionManager {
     /**
      * @return геттер на коллекцию
      */
-    public synchronized PriorityQueue<Movie> getMoviesCollection() {
+    public synchronized PriorityBlockingQueue<Movie> getMoviesCollection() {
         return MoviesCollection;
     }
 
@@ -135,7 +138,7 @@ public class CollectionManager {
      * Метод генерирует имя файла для сохранения, передаёт его и имеющуюся коллекцию Файл-Менеджеру
      *
      * @throws IOException
-     * @see FileManager#saveCollection(PriorityQueue)
+     * @see FileManager#saveCollection(PriorityBlockingQueue)
      */
 //    public synchronized String saveCollection() throws IOException {
 //        try {
@@ -183,8 +186,8 @@ public class CollectionManager {
     public synchronized String removeByOscarsCount(long count, User user) {
         LinkedList<Movie> listForRemove = new LinkedList<>();
         int counter;
-        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().equals(user.getUsername())).filter((Movie) -> Movie.getOscarsCount() == count).forEach(listForRemove::add);
-        counter=listForRemove.size();
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).filter((Movie) -> Movie.getOscarsCount() == count).forEach(listForRemove::add);
+        counter = listForRemove.size();
         listForRemove.forEach(this::removeElement);
         return "Удалено " + counter + " элементов.";
     }
@@ -203,17 +206,8 @@ public class CollectionManager {
      *
      * @return и возвращает добавленное значение
      */
-    public synchronized long addID() {
-        long id = 1;
-        while (id > 0) {
-            if (!(checkMatchingID(id))) {
-                idList.add(id);
-                break;
-            } else {
-                id += 1;
-            }
-        }
-        return id;
+    public synchronized void addID(Movie movie) {
+        idList.add(movie.getId());
     }
 
     /**
@@ -329,11 +323,11 @@ public class CollectionManager {
      * @param id заданный ID
      * @return Возвращает True, если объект найден, и False, если нет.
      */
-    public synchronized boolean checkMatchingID(long id) {
+    public synchronized boolean checkMatchingID(long id, User user) {
         if (MoviesCollection.isEmpty()) {
             return false;
         } else {
-            return MoviesCollection.stream().anyMatch((Movie) -> Movie.getId() == id);
+            return MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).anyMatch((Movie) -> Movie.getId() == id);
         }
     }
 
@@ -343,21 +337,15 @@ public class CollectionManager {
      * @param directorName заданный directorName
      * @return Возвращает True, если объект найден, и False, если нет.
      */
-    public synchronized boolean checkMatchingDirectorName(String directorName) {
-        return MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName));
-    }
-
-    public synchronized boolean checkMatchingOwnerName(User user) {
-        return MoviesCollection.stream().anyMatch((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername()));
-    }
-
-    public static Comparator<Movie> idComparator = new Comparator<Movie>() {
-
-        @Override
-        public int compare(Movie c1, Movie c2) {
-            return (int) (c1.getId() - c2.getId());
+    public synchronized boolean checkMatchingDirectorName(String directorName, User user) {
+        for (Movie m : MoviesCollection){
+            if(m.getDirector().getName().equals(directorName) && m.getOwner().getUsername().equals(user.getUsername())){
+                return true;
+            }
         }
-    };
+        return false;
+    }
+
 }
 
 

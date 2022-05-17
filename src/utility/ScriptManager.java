@@ -26,7 +26,6 @@ public class ScriptManager implements Serializable {
     private final RemoveByID removeByID;
     private final RemoveGreater removeGreater;
     private final RemoveLower removeLower;
-    private final Save save;
     private final Show show;
     private final UpdateByID updateByID;
     private final Exit exit;
@@ -43,7 +42,7 @@ public class ScriptManager implements Serializable {
         this.collectionManager = collectionManager;
     }
 
-    public ScriptManager(Add add, AddIfMin addIfMin, Clear clear, ExecuteScript executeScript, Info info, PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount, RemoveAllByOscarsCount removeAllByOscarsCount, RemoveAnyByDirector removeAnyByDirector, RemoveByID removeByID, RemoveGreater removeGreater, RemoveLower removeLower, Save save, Show show, UpdateByID updateByID, Exit exit, Help help) {
+    public ScriptManager(Add add, AddIfMin addIfMin, Clear clear, ExecuteScript executeScript, Info info, PrintFieldDescendingOscarsCount printFieldDescendingOscarsCount, RemoveAllByOscarsCount removeAllByOscarsCount, RemoveAnyByDirector removeAnyByDirector, RemoveByID removeByID, RemoveGreater removeGreater, RemoveLower removeLower, Show show, UpdateByID updateByID, Exit exit, Help help) {
         this.add = add;
         this.addIfMin = addIfMin;
         this.clear = clear;
@@ -55,7 +54,6 @@ public class ScriptManager implements Serializable {
         this.removeByID = removeByID;
         this.removeGreater = removeGreater;
         this.removeLower = removeLower;
-        this.save = save;
         this.show = show;
         this.updateByID = updateByID;
         this.exit = exit;
@@ -124,8 +122,7 @@ public class ScriptManager implements Serializable {
                     break;
                 }
                 case (6): {
-                    save.setCollectionManager(collectionManager);
-                    save.exec();
+                    Module.addMessage("Команда удалена.");
                     break;
                 }
                 case (7): {
