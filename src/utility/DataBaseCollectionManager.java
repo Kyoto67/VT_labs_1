@@ -2,6 +2,7 @@ package utility;
 
 import data.*;
 import exceptions.DatabaseHandlingException;
+import exceptions.IncorrectData;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ public class DataBaseCollectionManager {
             DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + " = ?";
     private final String INSERT_MOVIE = "INSERT INTO " +
             DataBaseHandler.MOVIE_TABLE + " (" +
-            DataBaseHandler.MOVIE_TABLE_ID_COLUMN + ", " +
+//            DataBaseHandler.MOVIE_TABLE_ID_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_NAME_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_CREATION_DATE_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_OSCARSCOUNT_COLUMN + ", " +
@@ -38,7 +39,9 @@ public class DataBaseCollectionManager {
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN + ", " +
-            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (?, ?, ?, ?, ?, " +
+            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (" +
+//            "?," +
+            " ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String DELETE_MOVIE_BY_ID = "DELETE FROM " + DataBaseHandler.MOVIE_TABLE +
             " WHERE " + DataBaseHandler.MOVIE_TABLE_ID_COLUMN + " = ?";
@@ -173,32 +176,40 @@ public class DataBaseCollectionManager {
             databaseHandler.setCommitMode();
             databaseHandler.setSavepoint();
             preparedInsertMovieStatement = databaseHandler.getPreparedStatement(INSERT_MOVIE, true);
-            preparedInsertMovieStatement.setLong(1, newMovie.getId());
-            preparedInsertMovieStatement.setString(2, newMovie.getName());
-            preparedInsertMovieStatement.setLong(3, newMovie.getCreationDate().getTime());
-            preparedInsertMovieStatement.setLong(4, newMovie.getOscarsCount());
-            preparedInsertMovieStatement.setString(5, newMovie.getGenre().toString());
-            preparedInsertMovieStatement.setString(6, newMovie.getMpaaRating().toString());
-            preparedInsertMovieStatement.setDouble(7, newMovie.getCoordinates().getX());
-            preparedInsertMovieStatement.setInt(8, newMovie.getCoordinates().getY());
-            preparedInsertMovieStatement.setString(9, newMovie.getDirector().getName());
-            preparedInsertMovieStatement.setDouble(10, newMovie.getDirector().getHeight());
-            preparedInsertMovieStatement.setString(11, String.valueOf(newMovie.getDirector().getEyeColor()));
-            preparedInsertMovieStatement.setString(12, String.valueOf(newMovie.getDirector().getHairColor()));
-            preparedInsertMovieStatement.setString(13, String.valueOf(newMovie.getDirector().getNationality()));
-            preparedInsertMovieStatement.setDouble(14, newMovie.getDirector().getLocation().getX());
-            preparedInsertMovieStatement.setDouble(15, newMovie.getDirector().getLocation().getY());
-            preparedInsertMovieStatement.setDouble(16, newMovie.getDirector().getLocation().getZ());
-            preparedInsertMovieStatement.setString(17, newMovie.getDirector().getLocation().getName());
-            preparedInsertMovieStatement.setLong(18, databaseUserManager.getUserIdByUsername(user));
+//            preparedInsertMovieStatement.setLong(1, newMovie.getId());
+            preparedInsertMovieStatement.setString(1, newMovie.getName());
+            preparedInsertMovieStatement.setLong(2, newMovie.getCreationDate().getTime());
+            preparedInsertMovieStatement.setLong(3, newMovie.getOscarsCount());
+            preparedInsertMovieStatement.setString(4, newMovie.getGenre().toString());
+            preparedInsertMovieStatement.setString(5, newMovie.getMpaaRating().toString());
+            preparedInsertMovieStatement.setDouble(6, newMovie.getCoordinates().getX());
+            preparedInsertMovieStatement.setInt(7, newMovie.getCoordinates().getY());
+            preparedInsertMovieStatement.setString(8, newMovie.getDirector().getName());
+            preparedInsertMovieStatement.setDouble(9, newMovie.getDirector().getHeight());
+            preparedInsertMovieStatement.setString(10, String.valueOf(newMovie.getDirector().getEyeColor()));
+            preparedInsertMovieStatement.setString(11, String.valueOf(newMovie.getDirector().getHairColor()));
+            preparedInsertMovieStatement.setString(12, String.valueOf(newMovie.getDirector().getNationality()));
+            preparedInsertMovieStatement.setDouble(13, newMovie.getDirector().getLocation().getX());
+            preparedInsertMovieStatement.setDouble(14, newMovie.getDirector().getLocation().getY());
+            preparedInsertMovieStatement.setDouble(15, newMovie.getDirector().getLocation().getZ());
+            preparedInsertMovieStatement.setString(16, newMovie.getDirector().getLocation().getName());
+            preparedInsertMovieStatement.setLong(17, databaseUserManager.getUserIdByUsername(user));
             if (preparedInsertMovieStatement.executeUpdate() == 0) throw new SQLException();
+            ResultSet generatedMoviekeys = preparedInsertMovieStatement.getGeneratedKeys();
+            long movieID;
+            if(generatedMoviekeys.next()){
+                movieID = generatedMoviekeys.getLong(1);
+            } else throw new SQLException();
             databaseHandler.commit();
             newMovie.setOwner(user);
+            newMovie.setId(movieID);
             return newMovie;
         } catch (SQLException exception) {
             exception.printStackTrace();
             databaseHandler.rollback();
             throw new DatabaseHandlingException();
+        } catch (IncorrectData e) {
+            throw new RuntimeException(e);
         } finally {
             databaseHandler.closePreparedStatement(preparedInsertMovieStatement);
             databaseHandler.setNormalMode();

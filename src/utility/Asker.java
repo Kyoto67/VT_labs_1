@@ -5,6 +5,9 @@ import data.*;
 import exceptions.IncorrectData;
 import exceptions.NonRealisticData;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -523,7 +526,15 @@ public class Asker {
         Scanner in = new Scanner(System.in);
         String username = in.nextLine();
         System.out.print("Введите пароль: ");
-        String password = in.nextLine();
-        return new User(username, password);
+        String rawPassword = in.nextLine();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashedPass = md.digest(rawPassword.getBytes(StandardCharsets.UTF_8));
+            String password = hashedPass.toString();
+            return new User(username, password);
+        } catch (NoSuchAlgorithmException ignored){
+            //pass
+        }
+        return null;
     }
 }

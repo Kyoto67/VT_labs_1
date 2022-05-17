@@ -10,6 +10,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 public class Server {
 
@@ -19,6 +21,7 @@ public class Server {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private InputStream stream;
+    private AbstractCommand c = null;
 
     public Server() throws DatabaseHandlingException {
         this.port = 2022;
@@ -38,46 +41,100 @@ public class Server {
         Module.setDataBaseUserManager(dataBaseUserManager);
         DataBaseCollectionManager dataBaseCollectionManager = new DataBaseCollectionManager(dataBaseHandler, dataBaseUserManager);
         Module.setCollectionManager(new CollectionManager(dataBaseCollectionManager));
-        }
+    }
 
-    public void run() {
-        try {
-            connect();
-            AbstractCommand command = null;
-            while (command == null) {
-                try {
-                    command = (AbstractCommand) getObject();
-                } catch (Exception ignored) {
+    class A implements Runnable {
 
+        @Override
+        public void run() {
+            ForkJoinPool pool = ForkJoinPool.commonPool();
+            try {
+                AbstractCommand command = null;
+                pool.invoke(new ForkJoinTask<Object>() {
+                    @Override
+                    public Object getRawResult() {
+                        return null;
+                    }
+
+                    @Override
+                    protected void setRawResult(Object value) {
+
+                    }
+
+                    @Override
+                    protected boolean exec() {
+                        while (c == null) {
+                            try {
+                                c = (AbstractCommand) getObject();
+                            } catch (Exception e) {
+                                //pass
+                            }
+                        }
+                        return true;
+                    }
+
+                    private Object getObject() throws Exception {
+                        inputStream = new ObjectInputStream(socket.getInputStream());
+                        return inputStream.readObject();
+                    }
+                });
+
+
+                command = c;
+                c = null;
+                boolean result = Module.running(command);
+                if (result) {
+                    Module.addMessage("Выполнение завершено.");
+                } else {
+                    Module.addMessage("Выполнить команду не удалось.");
                 }
-            }
-            boolean result = Module.running(command);
-            if (result) {
-                Module.addMessage("Выполнение завершено.");
-            } else {
-                Module.addMessage("Выполнить команду не удалось.");
-            }
-            sendObject(Module.messageFlush());
-        } catch (Exception e) {
 
-        }
-        try {
-            if (stream.available() > 0) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                if (reader.readLine().equals("save")) {
-                    Save save = new Save("save", "desc");
-                    save.setCollectionManager(Module.getCollectionManager());
-                    save.exec();
-                    System.out.println("Коллекция сохранена.");
-                }
-            }
-        } catch (IOException ignored) {
 
+                pool.invoke(new ForkJoinTask<Object>() {
+                    @Override
+                    public Object getRawResult() {
+                        return null;
+                    }
+
+                    @Override
+                    protected void setRawResult(Object value) {
+
+                    }
+
+                    @Override
+                    protected boolean exec() {
+                        try {
+                            sendObject(Module.messageFlush());
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
+                    }
+
+                    private void sendObject(Object o) throws IOException {
+                        outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        outputStream.writeObject(o);
+                        outputStream.flush();
+                        outputStream.close();
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void connect() throws IOException {
-        socket = server.accept();
+    public void run() {
+        connect();
+        new Thread(new A()).start();
+    }
+
+    private void connect() {
+        try {
+            socket = server.accept();
+        } catch (IOException ignored) {
+            //pass
+        }
     }
 
     private Object getObject() throws Exception {

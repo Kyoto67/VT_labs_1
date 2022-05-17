@@ -1,15 +1,13 @@
 package utility;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import data.Movie;
 import sun.security.x509.ExtendedKeyUsageExtension;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * класс, объект которого хранит в себе коллекцию и управляет ей.
@@ -44,8 +42,8 @@ public class CollectionManager {
      * @throws IOException
      * @see FileManager#readCollection()
      */
-    public void loadCollection() {
-        MoviesCollection = dataBaseCollectionManager.getCollection();
+    public synchronized void loadCollection() {
+        MoviesCollection = (PriorityQueue<Movie>) Collections.synchronizedCollection(dataBaseCollectionManager.getCollection());
     }
 
     /**
@@ -54,7 +52,7 @@ public class CollectionManager {
      * @param newMovie объект Movie, который необходимо добавить в коллекцию на замену старому.
      * @param id       id элемента, который нужно заменить
      */
-    public void replaceElementByID(Movie newMovie, long id, User user) {
+    public synchronized void replaceElementByID(Movie newMovie, long id, User user) {
         try {
             dataBaseCollectionManager.deleteMovieById(id);
             MoviesCollection.remove(findElementByID(id));
@@ -69,7 +67,7 @@ public class CollectionManager {
      *
      * @param movie полуает на вход объект типа Movie, который необходимо добавить
      */
-    public String addElement(Movie movie, User user) {
+    public synchronized String addElement(Movie movie, User user) {
         try {
             movie.setId(addID());
             movie.setCreationDate(new Date());
@@ -85,7 +83,7 @@ public class CollectionManager {
      *
      * @param movie объект, который нужно удалить из коллекции.
      */
-    public void removeElement(Movie movie) {
+    public synchronized void removeElement(Movie movie) {
         try {
             dataBaseCollectionManager.deleteMovieById(movie.getId());
             removeID(movie);
@@ -100,7 +98,7 @@ public class CollectionManager {
      *
      * @param id ID объекта, который нужно удалить
      */
-    public void removeElementByID(long id) {
+    public synchronized void removeElementByID(long id) {
         removeElement(findElementByID(id));
     }
 
@@ -110,7 +108,7 @@ public class CollectionManager {
      * @param id ID элемента, который нужно найти
      * @return Возвращает объект типа Movie, которому соответствует искомый ID. Если элемент не найден, вернёт null
      */
-    public Movie findElementByID(long id) {
+    public synchronized Movie findElementByID(long id) {
         if (MoviesCollection.stream().anyMatch((m) -> m.getId() == id)) {
             return MoviesCollection.stream().filter((m) -> m.getId() == id).findFirst().get();
         }
@@ -120,16 +118,17 @@ public class CollectionManager {
     /**
      * @return геттер на коллекцию
      */
-    public PriorityQueue<Movie> getMoviesCollection() {
+    public synchronized PriorityQueue<Movie> getMoviesCollection() {
         return MoviesCollection;
     }
 
     /**
      * Метод удаляет все элементы в коллекции и все элементы в idList
      */
-    public void removeAllElements() {
-        idList.removeAll(idList);
-        MoviesCollection.removeAll(MoviesCollection);
+    public synchronized void removeAllElements(User user) {
+        LinkedList<Movie> listForRemove = new LinkedList<>();
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).forEach(listForRemove::add);
+        listForRemove.forEach(this::removeElement);
     }
 
     /**
@@ -138,22 +137,22 @@ public class CollectionManager {
      * @throws IOException
      * @see FileManager#saveCollection(PriorityQueue)
      */
-    public String saveCollection() throws IOException {
-        try {
-            FileManager.saveCollection(MoviesCollection);
-            return "Коллекция сохранена";
-        } catch (FileNotFoundException e) {
-            return "Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
-                    " переменную окружение \"LABA\" на другой файл и введите команду save на сервере";
-        } catch (Exception e) {
-            return "Непредвиденная ошибка при сохранении файла";
-        }
-    }
+//    public synchronized String saveCollection() throws IOException {
+//        try {
+//            FileManager.saveCollection(MoviesCollection);
+//            return "Коллекция сохранена";
+//        } catch (FileNotFoundException e) {
+//            return "Отсутствуют права доступа к файлу для записи коллекции. Обновите права или измените" +
+//                    " переменную окружение \"LABA\" на другой файл и введите команду save на сервере";
+//        } catch (Exception e) {
+//            return "Непредвиденная ошибка при сохранении файла";
+//        }
+//    }
 
     /**
      * Метод выводит по-очерёдно строковое представление объектов коллекции.
      */
-    public String printCollection() {
+    public synchronized String printCollection() {
         final String[] output = {""};
         try {
             dataBaseCollectionManager.getCollection().stream().forEach((M) -> output[0] += M.toString() + "\n");
@@ -168,7 +167,7 @@ public class CollectionManager {
      * @param count число, в соответствие которому нужно найти объект коллекции
      * @return Возвращает найденный объект типа Movie, если объект по заданному номеру не найден, вернёт null
      */
-    public Movie findElementByOscarsCount(long count) {
+    public synchronized Movie findElementByOscarsCount(long count) {
         Long Count = count;
         if (MoviesCollection.stream().anyMatch((M) -> Count.equals(M.getOscarsCount()))) {
             return MoviesCollection.stream().filter((M) -> Count == M.getOscarsCount()).findFirst().get();
@@ -181,13 +180,13 @@ public class CollectionManager {
      *
      * @param count число oscarsCount, по которому нужно удалить объект
      */
-    public String removeByOscarsCount(long count, User user) {
-        final int[] counter = {0};
-        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().equals(user.getUsername())).filter((Movie) -> Movie.getOscarsCount() == count).forEach((m) -> {
-            removeElement(m);
-            counter[0] += 1;
-        });
-        return "Удалено " + counter[0] + " элементов.";
+    public synchronized String removeByOscarsCount(long count, User user) {
+        LinkedList<Movie> listForRemove = new LinkedList<>();
+        int counter;
+        MoviesCollection.stream().filter((Movie) -> Movie.getOwner().equals(user.getUsername())).filter((Movie) -> Movie.getOscarsCount() == count).forEach(listForRemove::add);
+        counter=listForRemove.size();
+        listForRemove.forEach(this::removeElement);
+        return "Удалено " + counter + " элементов.";
     }
 
     /**
@@ -195,7 +194,7 @@ public class CollectionManager {
      *
      * @param m объект, id которого нужно удалить
      */
-    public void removeID(Movie m) {
+    public synchronized void removeID(Movie m) {
         idList.remove(m.getId());
     }
 
@@ -204,7 +203,7 @@ public class CollectionManager {
      *
      * @return и возвращает добавленное значение
      */
-    public long addID() {
+    public synchronized long addID() {
         long id = 1;
         while (id > 0) {
             if (!(checkMatchingID(id))) {
@@ -220,7 +219,7 @@ public class CollectionManager {
     /**
      * Метод считывает все значения oscarsCount из объектов коллекции и записывает их в longList, сортирует и выводит в порядке убывания.
      */
-    public String printAllDescendingOscarsCount() {
+    public synchronized String printAllDescendingOscarsCount() {
         final String[] output = {""};
         ArrayList<Long> longList = new ArrayList<>();
         MoviesCollection.stream().forEach((M) -> longList.add(M.getOscarsCount()));
@@ -234,7 +233,7 @@ public class CollectionManager {
      * @param directorName имя режиссёра, по которому нужно найти объект
      * @return Возвращает объект, найденный по имени режиссёра. Если объект не найден, вернёт null
      */
-    public Movie findElementByDirector(String directorName) {
+    public synchronized Movie findElementByDirector(String directorName) {
         if (MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName))) {
             return MoviesCollection.stream().filter((Movie) -> Movie.getDirector().getName().equals(directorName)).findFirst().get();
         }
@@ -246,7 +245,7 @@ public class CollectionManager {
      *
      * @param directorName
      */
-    public String removeElementByDirectorName(String directorName) {
+    public synchronized String removeElementByDirectorName(String directorName) {
         removeElement(findElementByDirector(directorName));
         return "Элемент удалён.";
     }
@@ -256,12 +255,14 @@ public class CollectionManager {
      *
      * @param movie заданный объект, с хэшкодом которого сравниваются все объекты коллекции
      */
-    public String removeAllLower(Movie movie, User user) {
+    public synchronized String removeAllLower(Movie movie, User user) {
+        LinkedList<Movie> listForRemove = new LinkedList<>();
         final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". "};
         MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).filter((Movie) -> Movie.hashCode() < movie.hashCode()).forEach((Movie) -> {
             output[0] += "Удаляю объект с hashcode " + Movie.hashCode();
-            removeElement(Movie);
+            listForRemove.add(Movie);
         });
+        listForRemove.forEach(this::removeElement);
         return output[0];
     }
 
@@ -270,12 +271,14 @@ public class CollectionManager {
      *
      * @param movie заданный movie с хэшкодом которого сравниваются объекты.
      */
-    public String removeAllGreater(Movie movie, User user) {
+    public synchronized String removeAllGreater(Movie movie, User user) {
+        LinkedList<Movie> listForRemove = new LinkedList<>();
         final String[] output = {"Hashcode введённого объекта: " + movie.hashCode() + ". \n"};
         MoviesCollection.stream().filter((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername())).filter((Movie) -> Movie.hashCode() > movie.hashCode()).forEach((Movie) -> {
             output[0] += "Удаляю объект с hashcode " + Movie.hashCode();
-            removeElement(Movie);
+            listForRemove.add(Movie);
         });
+        listForRemove.forEach(this::removeElement);
         return output[0];
     }
 
@@ -284,9 +287,9 @@ public class CollectionManager {
      *
      * @return Возвращает 0й элемент (минимальный)
      */
-    public long getMinElement() {
+    public synchronized long getMinElement() {
         final int[] minEl = {999999999};
-        MoviesCollection.stream().forEach((m) -> {
+        MoviesCollection.forEach((m) -> {
             if (m.hashCode() < minEl[0]) {
                 minEl[0] = m.hashCode();
             }
@@ -300,7 +303,7 @@ public class CollectionManager {
      *
      * @param movie объект, который нужно добавить.
      */
-    public String addElementIfLowerMin(Movie movie, User user) {
+    public synchronized String addElementIfLowerMin(Movie movie, User user) {
         String output = "Hashcode введённого объекта: " + movie.hashCode() + ". \n";
         if (movie.hashCode() < getMinElement()) {
             output += addElement(movie, user);
@@ -313,7 +316,7 @@ public class CollectionManager {
     /**
      * Метод выводит информацию о коллекции: тип, дата инициализации, количество элементов и выполняет перебор всех элементов с выводом их номера ID
      */
-    public String printInfo() {
+    public synchronized String printInfo() {
         final String[] output = {"Тип коллекции: " + type + ". \n" + "Дата инициализации: " + initTime + ". \n" + "Количество элементов: "
                 + MoviesCollection.size() + ". \n" + "Элементы коллекции по хэшкодам: "};
         MoviesCollection.stream().forEach((m) -> output[0] += m.hashCode() + " ");
@@ -326,7 +329,7 @@ public class CollectionManager {
      * @param id заданный ID
      * @return Возвращает True, если объект найден, и False, если нет.
      */
-    public boolean checkMatchingID(long id) {
+    public synchronized boolean checkMatchingID(long id) {
         if (MoviesCollection.isEmpty()) {
             return false;
         } else {
@@ -340,11 +343,11 @@ public class CollectionManager {
      * @param directorName заданный directorName
      * @return Возвращает True, если объект найден, и False, если нет.
      */
-    public boolean checkMatchingDirectorName(String directorName) {
+    public synchronized boolean checkMatchingDirectorName(String directorName) {
         return MoviesCollection.stream().anyMatch((Movie) -> Movie.getDirector().getName().equals(directorName));
     }
 
-    public boolean checkMatchingOwnerName(User user) {
+    public synchronized boolean checkMatchingOwnerName(User user) {
         return MoviesCollection.stream().anyMatch((Movie) -> Movie.getOwner().getUsername().equals(user.getUsername()));
     }
 

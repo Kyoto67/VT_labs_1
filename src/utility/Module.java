@@ -4,6 +4,7 @@ import commands.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Module {
@@ -11,6 +12,7 @@ public class Module {
     private static CollectionManager collectionManager;
     private static String outputMessage = "";
     private static DataBaseUserManager dataBaseUserManager;
+    private static ArrayList<User> users = new ArrayList<>();
     private static final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "execute_script",
             "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
             "print_field_descending_oscars_count", "connect"};
@@ -63,9 +65,7 @@ public class Module {
             }
             case (8): {
                 Exit exit = (Exit) command;
-                exit.getSave().setCollectionManager(collectionManager);
-                exit.getSave().exec();
-                System.out.println(messageFlush());
+                users.removeIf(u -> u.getUsername().equals(exit.getUser().getUsername()));
                 return (exit.exec());
             }
             case (9): {
@@ -100,9 +100,16 @@ public class Module {
             }
             case (15): {
                 Connect connect = (Connect) command;
+                for (User u : users){
+                    if(u.getUsername().equals(connect.getUser().getUsername())){
+                        addMessage("Данный пользователь уже работает с базой данных.");
+                        return false;
+                    }
+                }
                 try {
                     if (dataBaseUserManager.checkUserByUsernameAndPassword(connect.getUser())) {
                         addMessage("Авторизация успешна.");
+                        users.add(connect.getUser());
                         return true;
                     } else {
                         try {
@@ -111,6 +118,7 @@ public class Module {
                             return false;
                         } catch (SQLException e) {
                             dataBaseUserManager.insertUser(connect.getUser());
+                            users.add(connect.getUser());
                             addMessage("Зарегистрирован новый пользователь.");
                             return true;
                         }

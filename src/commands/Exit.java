@@ -2,15 +2,17 @@ package commands;
 
 
 import utility.Module;
+import utility.User;
 
 import java.io.IOException;
 
 public class Exit extends AbstractCommand {
 
-    private Save save;
+    private User user;
 
     /**
      * конструктор
+     *
      * @param name
      * @param description
      */
@@ -18,16 +20,17 @@ public class Exit extends AbstractCommand {
         super(name, description);
     }
 
-    public void setSave(Save save) {
-        this.save = save;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Save getSave() {
-        return save;
+    public User getUser() {
+        return user;
     }
 
     /**
      * Метод выводит сообщение о завершении программы. Сама программа завершается автоматически после выполнения цикла в методе client.client.Main с введённой командой exit.
+     *
      * @return Возвращает True после выполнения
      * @throws IOException
      */
