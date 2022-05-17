@@ -2,6 +2,7 @@ package client;
 
 import commands.Connect;
 import exceptions.Disconnect;
+import utility.User;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,10 +17,12 @@ public class Client {
     private Serializer serializer;
     private Deserializer deserializer;
     private ByteBuffer buffer;
+    private User user;
 
-    public Client(String h, int p) throws Disconnect {
+    public Client(String h, int p, User u) throws Disconnect {
         this.host = h;
         this.port = p;
+        this.user = u;
         serializer = new Serializer();
         deserializer = new Deserializer();
         buffer = ByteBuffer.allocate(100000);
@@ -67,12 +70,12 @@ public class Client {
 
     private void findServer() throws Disconnect {
         System.out.println("Подключаюсь к серверу...");
-        String result = run(new Connect("connect","подключение к серверу."));
-        if(!(result.equals("Выполнение успешно.\n"))) {
+        String result = run(new Connect("connect","подключение к серверу.", user));
+        System.out.println(result);
+        if(!(result.equals("Авторизация успешна.\n" +
+                "Выполнение завершено.\n") | result.equals("Зарегистрирован новый пользователь.\n" +
+                "Выполнение завершено.\n"))) {
             throw new Disconnect("Подключение не установлено");
         }
-        System.out.println(result);
     }
-
-
 }

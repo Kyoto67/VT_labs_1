@@ -16,14 +16,16 @@ public class DataBaseUserManager {
             DataBaseHandler.USER_TABLE_PASSWORD_COLUMN + " = ?";
     private final String INSERT_USER = "INSERT INTO " +
             DataBaseHandler.USER_TABLE + " (" +
+            DataBaseHandler.USER_TABLE_ID_COLUMN + ", " +
             DataBaseHandler.USER_TABLE_USERNAME_COLUMN + ", " +
-            DataBaseHandler.USER_TABLE_PASSWORD_COLUMN + ") VALUES (?, ?)";
+            DataBaseHandler.USER_TABLE_PASSWORD_COLUMN + ") VALUES (?, ?, ?)";
+
+    private final String GET_USER_COUNT = "SELECT COUNT(1) FROM " + DataBaseHandler.USER_TABLE;
 
     private DataBaseHandler databaseHandler;
 
     public DataBaseUserManager(DataBaseHandler databaseHandler) throws DatabaseHandlingException {
         this.databaseHandler = databaseHandler;
-        insertUser(new User("s336759", "wes537"));
     }
 
     /**
@@ -38,6 +40,28 @@ public class DataBaseUserManager {
             preparedSelectUserByIdStatement =
                     databaseHandler.getPreparedStatement(SELECT_USER_BY_ID, false);
             preparedSelectUserByIdStatement.setLong(1, userId);
+            ResultSet resultSet = preparedSelectUserByIdStatement.executeQuery();
+            if (resultSet.next()) {
+                user = new User(
+                        resultSet.getString(DataBaseHandler.USER_TABLE_USERNAME_COLUMN),
+                        resultSet.getString(DataBaseHandler.USER_TABLE_PASSWORD_COLUMN)
+                );
+            } else throw new SQLException();
+        } catch (SQLException exception) {
+            throw new SQLException(exception);
+        } finally {
+            databaseHandler.closePreparedStatement(preparedSelectUserByIdStatement);
+        }
+        return user;
+    }
+
+    public User getUserByUsername(String username) throws SQLException {
+        User user;
+        PreparedStatement preparedSelectUserByIdStatement = null;
+        try {
+            preparedSelectUserByIdStatement =
+                    databaseHandler.getPreparedStatement(SELECT_USER_BY_USERNAME, false);
+            preparedSelectUserByIdStatement.setString(1, username);
             ResultSet resultSet = preparedSelectUserByIdStatement.executeQuery();
             if (resultSet.next()) {
                 user = new User(
@@ -96,7 +120,6 @@ public class DataBaseUserManager {
             } else userId = -1;
             return userId;
         } catch (SQLException exception) {
-            exception.printStackTrace();
             throw new DatabaseHandlingException();
         } finally {
             databaseHandler.closePreparedStatement(preparedSelectUserByUsernameStatement);
@@ -114,10 +137,17 @@ public class DataBaseUserManager {
         PreparedStatement preparedInsertUserStatement = null;
         try {
             if (getUserIdByUsername(user) != -1) return false;
+            PreparedStatement preparedGetUserCount = databaseHandler.getPreparedStatement(GET_USER_COUNT, false);
+            ResultSet resultSet = preparedGetUserCount.executeQuery();
+            Integer userId = 1;
+            if(resultSet.next()){
+                userId=resultSet.getInt("count")+1;
+            }
             preparedInsertUserStatement =
                     databaseHandler.getPreparedStatement(INSERT_USER, false);
-            preparedInsertUserStatement.setString(1, user.getUsername());
-            preparedInsertUserStatement.setString(2, user.getPassword());
+            preparedInsertUserStatement.setInt(1, userId);
+            preparedInsertUserStatement.setString(2, user.getUsername());
+            preparedInsertUserStatement.setString(3, user.getPassword());
             if (preparedInsertUserStatement.executeUpdate() == 0) throw new SQLException();
             return true;
         } catch (SQLException exception) {

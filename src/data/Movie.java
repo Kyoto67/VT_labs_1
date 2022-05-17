@@ -1,6 +1,7 @@
 package data;
 
 import exceptions.IncorrectData;
+import utility.User;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +16,20 @@ public class Movie implements Serializable, Comparable {
     private MovieGenre genre;
     private MpaaRating mpaaRating;
     private Person director;
+    private User owner;
+
+    public Movie(long id, String name, Coordinates coordinates, Date creationDate, long oscarsCount,
+                 MovieGenre genre, MpaaRating mpaaRating, Person director, User owner) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.creationDate = creationDate;
+        this.oscarsCount = oscarsCount;
+        this.genre = genre;
+        this.mpaaRating = mpaaRating;
+        this.director = director;
+        this.owner = owner;
+    }
 
     public Movie(long id, String name, Coordinates coordinates, Date creationDate, long oscarsCount,
                  MovieGenre genre, MpaaRating mpaaRating, Person director) {
@@ -26,6 +41,10 @@ public class Movie implements Serializable, Comparable {
         this.genre = genre;
         this.mpaaRating = mpaaRating;
         this.director = director;
+    }
+
+    public void setOwner(User owner){
+        this.owner=owner;
     }
 
     public Movie() {

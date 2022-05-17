@@ -63,7 +63,6 @@ public class Asker {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println(port);
         return port;
     }
 
@@ -517,5 +516,14 @@ public class Asker {
             newMovie = GeneratingRandomInfo.generateOneObject();
         }
         return newMovie;
+    }
+
+    public static User askUser(){
+        System.out.print("Введите имя пользователя: ");
+        Scanner in = new Scanner(System.in);
+        String username = in.nextLine();
+        System.out.print("Введите пароль: ");
+        String password = in.nextLine();
+        return new User(username, password);
     }
 }

@@ -3,15 +3,17 @@ package utility;
 import commands.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Module {
 
     private static CollectionManager collectionManager;
-    private static String outputMessage="";
+    private static String outputMessage = "";
+    private static DataBaseUserManager dataBaseUserManager;
     private static final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "execute_script",
             "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
-            "print_field_descending_oscars_count","connect"};
+            "print_field_descending_oscars_count", "connect"};
 
 
     public static boolean running(AbstractCommand command) throws IOException {
@@ -96,9 +98,27 @@ public class Module {
                 printFieldDescendingOscarsCount.setCollectionManager(collectionManager);
                 return (printFieldDescendingOscarsCount.exec());
             }
-            case(15): {
-                Connect connect= (Connect) command;
-                return (connect.exec());
+            case (15): {
+                Connect connect = (Connect) command;
+                try {
+                    if (dataBaseUserManager.checkUserByUsernameAndPassword(connect.getUser())) {
+                        addMessage("Авторизация успешна.");
+                        return true;
+                    } else {
+                        try {
+                            dataBaseUserManager.getUserByUsername(connect.getUser().getUsername());
+                            addMessage("Неверный пароль");
+                            return false;
+                        } catch (SQLException e) {
+                            dataBaseUserManager.insertUser(connect.getUser());
+                            addMessage("Зарегистрирован новый пользователь.");
+                            return true;
+                        }
+                    }
+                } catch (Exception ignored) {
+                    //pass
+                    return false;
+                }
             }
             case (-1): {
                 System.out.println("Неизвестная ошибка.");
@@ -108,14 +128,14 @@ public class Module {
         return false;
     }
 
-    public static String messageFlush(){
+    public static String messageFlush() {
         String output = Module.outputMessage;
-        Module.outputMessage="";
+        Module.outputMessage = "";
         return output;
     }
 
-    public static void addMessage(String s){
-        outputMessage+=s+"\n";
+    public static void addMessage(String s) {
+        outputMessage += s + "\n";
     }
 
     private static int chooseCommand(String command) {
@@ -133,5 +153,9 @@ public class Module {
 
     public static CollectionManager getCollectionManager() {
         return collectionManager;
+    }
+
+    public static void setDataBaseUserManager(DataBaseUserManager dataBaseUserManager) {
+        Module.dataBaseUserManager = dataBaseUserManager;
     }
 }

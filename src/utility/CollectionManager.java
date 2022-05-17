@@ -29,11 +29,11 @@ public class CollectionManager {
      * @throws IOException
      */
     public CollectionManager(DataBaseCollectionManager dataBaseCollectionManager) {
+        this.dataBaseCollectionManager = dataBaseCollectionManager;
         loadCollection();
         idList = FileManager.getIdList();
         type = "PriorityQueue";
         initTime = LocalDateTime.now();
-        this.dataBaseCollectionManager = dataBaseCollectionManager;
     }
 
     /**
@@ -43,7 +43,7 @@ public class CollectionManager {
      * @see FileManager#readCollection()
      */
     public void loadCollection() {
-        MoviesCollection = FileManager.readCollection();
+        MoviesCollection = dataBaseCollectionManager.getCollection();
     }
 
     /**
@@ -66,16 +66,12 @@ public class CollectionManager {
         try {
             movie.setId(addID());
             movie.setCreationDate(new Date());
-        } catch (Exception e){
-             
-        }
-        MoviesCollection.add(movie);
-        try {
             dataBaseCollectionManager.insertMovie(movie, new User("s336759", "wes537"));
+            MoviesCollection.add(movie);
+            return "Добавление успешно.";
         } catch (Exception e){
-             
+            return "Произошла ошибка при добавлении элемента.";
         }
-        return "Добавление успешно.";
     }
 
     /**

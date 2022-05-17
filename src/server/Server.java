@@ -1,6 +1,7 @@
 package server;
 
 import commands.AbstractCommand;
+import commands.Connect;
 import commands.Save;
 import exceptions.DatabaseHandlingException;
 import utility.*;
@@ -8,6 +9,7 @@ import utility.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class Server {
 
@@ -31,11 +33,12 @@ public class Server {
             }
         }
         stream = System.in;
-        DataBaseHandler dataBaseHandler = new DataBaseHandler("localhost", 1337,"s336759", "wes537");
+        DataBaseHandler dataBaseHandler = new DataBaseHandler("localhost", 1337, "s336759", "wes537");
         DataBaseUserManager dataBaseUserManager = new DataBaseUserManager(dataBaseHandler);
+        Module.setDataBaseUserManager(dataBaseUserManager);
         DataBaseCollectionManager dataBaseCollectionManager = new DataBaseCollectionManager(dataBaseHandler, dataBaseUserManager);
         Module.setCollectionManager(new CollectionManager(dataBaseCollectionManager));
-    }
+        }
 
     public void run() {
         try {
@@ -44,19 +47,19 @@ public class Server {
             while (command == null) {
                 try {
                     command = (AbstractCommand) getObject();
-                } catch (Exception e) {
-                     
+                } catch (Exception ignored) {
+
                 }
             }
             boolean result = Module.running(command);
             if (result) {
-                Module.addMessage("Выполнение успешно.");
+                Module.addMessage("Выполнение завершено.");
             } else {
                 Module.addMessage("Выполнить команду не удалось.");
             }
             sendObject(Module.messageFlush());
         } catch (Exception e) {
-             
+
         }
         try {
             if (stream.available() > 0) {
@@ -68,8 +71,8 @@ public class Server {
                     System.out.println("Коллекция сохранена.");
                 }
             }
-        } catch (IOException e) {
-             
+        } catch (IOException ignored) {
+
         }
     }
 

@@ -21,6 +21,7 @@ public class DataBaseCollectionManager {
             DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + " = ?";
     private final String INSERT_MOVIE = "INSERT INTO " +
             DataBaseHandler.MOVIE_TABLE + " (" +
+            DataBaseHandler.MOVIE_TABLE_ID_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_NAME_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_CREATION_DATE_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_OSCARSCOUNT_COLUMN + ", " +
@@ -37,7 +38,7 @@ public class DataBaseCollectionManager {
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN + ", " +
             DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN + ", " +
-            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (?, ?, ?, ?, " +
+            DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN + ") VALUES (?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String DELETE_MOVIE_BY_ID = "DELETE FROM " + DataBaseHandler.MOVIE_TABLE +
             " WHERE " + DataBaseHandler.MOVIE_TABLE_ID_COLUMN + " = ?";
@@ -104,42 +105,46 @@ public class DataBaseCollectionManager {
      * @return New Marine.
      * @throws SQLException When there's exception inside.
      */
-    private Movie createMovie(ResultSet resultSet) throws SQLException {
-        long id = resultSet.getLong(DataBaseHandler.MOVIE_TABLE_ID_COLUMN);
-        String name = resultSet.getString(DataBaseHandler.MOVIE_TABLE_NAME_COLUMN);
-        Date creationDate = new Date(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_CREATION_DATE_COLUMN));
-        Long oscarsCount = resultSet.getLong(DataBaseHandler.MOVIE_TABLE_OSCARSCOUNT_COLUMN);
-        MovieGenre movieGenre = MovieGenre.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_GENRE_COLUMN));
-        MpaaRating mpaaRating = MpaaRating.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_MPAA_RATING_COLUMN));
-        Coordinates coordinates = new Coordinates(resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_COORDINATES_X_COLUMN), resultSet.getInt(DataBaseHandler.MOVIE_TABLE_COORDINATES_Y_COLUMN));
-        Person director = new Person(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NAME_COLUMN),
-                resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HEIGHT_COLUMN),
-                Color.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_EYE_COLOR_COLUMN)),
-                Color.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HAIR_COLOR_COLUMN)),
-                Country.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NATIONALITY_COLUMN)),
-                new Location(resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_X_COLUMN),
-                        resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN),
-                        resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN),
-                        resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN)));
-        User owner = databaseUserManager.getUserById(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN));
-        return new Movie(
-                id,
-                name,
-                coordinates,
-                creationDate,
-                oscarsCount,
-                movieGenre,
-                mpaaRating,
-                director
-                //, owner
-        );
+    private Movie createMovie(ResultSet resultSet) {
+        try {
+            long id = resultSet.getLong(DataBaseHandler.MOVIE_TABLE_ID_COLUMN);
+            String name = resultSet.getString(DataBaseHandler.MOVIE_TABLE_NAME_COLUMN);
+            Date creationDate = new Date(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_CREATION_DATE_COLUMN));
+            Long oscarsCount = resultSet.getLong(DataBaseHandler.MOVIE_TABLE_OSCARSCOUNT_COLUMN);
+            MovieGenre movieGenre = MovieGenre.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_GENRE_COLUMN));
+            MpaaRating mpaaRating = MpaaRating.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_MPAA_RATING_COLUMN));
+            Coordinates coordinates = new Coordinates(resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_COORDINATES_X_COLUMN), resultSet.getInt(DataBaseHandler.MOVIE_TABLE_COORDINATES_Y_COLUMN));
+            Person director = new Person(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NAME_COLUMN),
+                    resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HEIGHT_COLUMN),
+                    Color.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_EYE_COLOR_COLUMN)),
+                    Color.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HAIR_COLOR_COLUMN)),
+                    Country.valueOf(resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NATIONALITY_COLUMN)),
+                    new Location(resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_X_COLUMN),
+                            resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN),
+                            resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN),
+                            resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN)));
+            User owner = databaseUserManager.getUserById(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN));
+            return new Movie(
+                    id,
+                    name,
+                    coordinates,
+                    creationDate,
+                    oscarsCount,
+                    movieGenre,
+                    mpaaRating,
+                    director,
+                    owner
+            );
+        } catch (SQLException e){
+            return null;
+        }
     }
 
     /**
      * @return List of Marines.
      * @throws DatabaseHandlingException When there's exception inside.
      */
-    public PriorityQueue<Movie> getCollection() throws DatabaseHandlingException {
+    public PriorityQueue<Movie> getCollection() {
         PriorityQueue<Movie> moviesCollection = new PriorityQueue<>();
         PreparedStatement preparedSelectAllStatement = null;
         try {
@@ -150,7 +155,6 @@ public class DataBaseCollectionManager {
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
-            throw new DatabaseHandlingException();
         } finally {
             databaseHandler.closePreparedStatement(preparedSelectAllStatement);
         }
@@ -164,50 +168,33 @@ public class DataBaseCollectionManager {
      * @throws DatabaseHandlingException When there's exception inside.
      */
     public Movie insertMovie(Movie newMovie, User user) throws DatabaseHandlingException {
-        Movie movie;
         PreparedStatement preparedInsertMovieStatement = null;
         try {
             databaseHandler.setCommitMode();
             databaseHandler.setSavepoint();
-            Date creationTime = new Date();
             preparedInsertMovieStatement = databaseHandler.getPreparedStatement(INSERT_MOVIE, true);
-            preparedInsertMovieStatement.setString(1, newMovie.getName());
-            preparedInsertMovieStatement.setLong(2, newMovie.getCreationDate().getTime());
-            preparedInsertMovieStatement.setLong(3, newMovie.getOscarsCount());
-            preparedInsertMovieStatement.setString(4, newMovie.getGenre().toString());
-            preparedInsertMovieStatement.setString(5, newMovie.getMpaaRating().toString());
-            preparedInsertMovieStatement.setDouble(6, newMovie.getCoordinates().getX());
-            preparedInsertMovieStatement.setInt(7, newMovie.getCoordinates().getY());
-            preparedInsertMovieStatement.setString(8, newMovie.getDirector().getName());
-            preparedInsertMovieStatement.setDouble(9, newMovie.getDirector().getHeight());
-            preparedInsertMovieStatement.setString(10, String.valueOf(newMovie.getDirector().getEyeColor()));
-            preparedInsertMovieStatement.setString(11, String.valueOf(newMovie.getDirector().getHairColor()));
-            preparedInsertMovieStatement.setString(12, String.valueOf(newMovie.getDirector().getNationality()));
-            preparedInsertMovieStatement.setDouble(13, newMovie.getDirector().getLocation().getX());
-            preparedInsertMovieStatement.setDouble(14, newMovie.getDirector().getLocation().getY());
-            preparedInsertMovieStatement.setDouble(15, newMovie.getDirector().getLocation().getZ());
-            preparedInsertMovieStatement.setString(16, newMovie.getDirector().getLocation().getName());
-            preparedInsertMovieStatement.setLong(17, databaseUserManager.getUserIdByUsername(user));
+            preparedInsertMovieStatement.setLong(1, newMovie.getId());
+            preparedInsertMovieStatement.setString(2, newMovie.getName());
+            preparedInsertMovieStatement.setLong(3, newMovie.getCreationDate().getTime());
+            preparedInsertMovieStatement.setLong(4, newMovie.getOscarsCount());
+            preparedInsertMovieStatement.setString(5, newMovie.getGenre().toString());
+            preparedInsertMovieStatement.setString(6, newMovie.getMpaaRating().toString());
+            preparedInsertMovieStatement.setDouble(7, newMovie.getCoordinates().getX());
+            preparedInsertMovieStatement.setInt(8, newMovie.getCoordinates().getY());
+            preparedInsertMovieStatement.setString(9, newMovie.getDirector().getName());
+            preparedInsertMovieStatement.setDouble(10, newMovie.getDirector().getHeight());
+            preparedInsertMovieStatement.setString(11, String.valueOf(newMovie.getDirector().getEyeColor()));
+            preparedInsertMovieStatement.setString(12, String.valueOf(newMovie.getDirector().getHairColor()));
+            preparedInsertMovieStatement.setString(13, String.valueOf(newMovie.getDirector().getNationality()));
+            preparedInsertMovieStatement.setDouble(14, newMovie.getDirector().getLocation().getX());
+            preparedInsertMovieStatement.setDouble(15, newMovie.getDirector().getLocation().getY());
+            preparedInsertMovieStatement.setDouble(16, newMovie.getDirector().getLocation().getZ());
+            preparedInsertMovieStatement.setString(17, newMovie.getDirector().getLocation().getName());
+            preparedInsertMovieStatement.setLong(18, databaseUserManager.getUserIdByUsername(user));
             if (preparedInsertMovieStatement.executeUpdate() == 0) throw new SQLException();
-            ResultSet generatedMarineKeys = preparedInsertMovieStatement.getGeneratedKeys();
-            long movieId;
-            if (generatedMarineKeys.next()) {
-                movieId = generatedMarineKeys.getLong(1);
-            } else throw new SQLException();
-            movie = new Movie(
-                    movieId,
-                    newMovie.getName(),
-                    newMovie.getCoordinates(),
-                    creationTime,
-                    newMovie.getOscarsCount(),
-                    newMovie.getGenre(),
-                    newMovie.getMpaaRating(),
-                    newMovie.getDirector()
-                    //,user
-            );
-
             databaseHandler.commit();
-            return movie;
+            newMovie.setOwner(user);
+            return newMovie;
         } catch (SQLException exception) {
             exception.printStackTrace();
             databaseHandler.rollback();
@@ -394,7 +381,7 @@ public class DataBaseCollectionManager {
      * @return Is everything ok.
      * @throws DatabaseHandlingException When there's exception inside.
      */
-    public boolean checkMarineUserId(long movieId, User user) throws DatabaseHandlingException {
+    public boolean checkMovieUserId(long movieId, User user) throws DatabaseHandlingException {
         PreparedStatement preparedSelectMovieByIdAndUserIdStatement = null;
         try {
             preparedSelectMovieByIdAndUserIdStatement = databaseHandler.getPreparedStatement(SELECT_MOVIE_BY_ID_AND_USER_ID, false);

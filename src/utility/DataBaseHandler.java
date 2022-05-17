@@ -87,7 +87,6 @@ public class DataBaseHandler {
         try {
             sqlStatement.close();
         } catch (SQLException exception) {
-            exception.printStackTrace();
         }
     }
 
