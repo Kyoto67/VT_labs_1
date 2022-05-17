@@ -8,6 +8,8 @@
 [Lab4](https://github.com/Kyoto67/VT_labs_1/tree/Programming_lab4)
 [Lab5](https://github.com/Kyoto67/VT_labs_1/tree/Programming_lab5)
 [Lab6](https://github.com/Kyoto67/VT_labs_1/tree/Programming_lab6)
+[Lab7](https://github.com/Kyoto67/VT_labs_1/tree/Programming_lab7)
+
 
 ## Faculty of Professional Activity:
 [Lab1](https://github.com/Kyoto67/VT_labs_1/tree/Faculty_of_Professional_activity_lab1)
