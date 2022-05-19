@@ -33,7 +33,7 @@ public class Server {
             }
         }
         stream = System.in;
-        DataBaseHandler dataBaseHandler = new DataBaseHandler("localhost", 1337, "s336759", "wes537");
+        DataBaseHandler dataBaseHandler = new DataBaseHandler("pg", 5432, "s336759", "wes537");
         DataBaseUserManager dataBaseUserManager = new DataBaseUserManager(dataBaseHandler);
         Module.setDataBaseUserManager(dataBaseUserManager);
         DataBaseCollectionManager dataBaseCollectionManager = new DataBaseCollectionManager(dataBaseHandler, dataBaseUserManager);
