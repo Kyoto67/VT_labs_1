@@ -42,21 +42,59 @@
         \hline
         BB  & 81E0014002    & if CR(8) = 1 then GOTO RESERVED @ E0  \\
         \hline
-        E0  & & \\ %POP
+        E0  & 80E2801002    & if CR(7) = 0 then GOTO @ E2; \\
         \hline
-        E1  & & \\ %AC -> BR
+        E1  & 8001101040    & GOTO INFETCH @ 01 \\
         \hline
-        E2  & & \\ %POP
+        E2  & 80E4401002    & if CR(6) = 0 then GOTO @ E4; \\
         \hline
-        E3  & & \\ %ST -> --(SP)
+        E3  & 8001101040    & GOTO INFETCH @ 01 \\
         \hline
-        E4  & & \\ %BR -> AC
+        E4  & 80E6201002    & if CR(5) = 0 then GOTO @ E6; \\
         \hline
-        E5  & & \\ %push
+        E5  & 8001101040    & GOTO INFETCH @ 01 \\
         \hline
-        E6  & & \\ %SP -1
+        E6  & 80E8101002    & if CR(4) = 0 then GOTO @ E8; \\
         \hline
-        E7  & 80C4101040    & GOTO INT @ C4 \\
+        E7  & 8001101040    & GOTO INFETCH @ 01 \\
+        \hline
+        E8  & 80EA081002    & if CR(3) = 0 then GOTO @ EA; \\
+        \hline
+        E9  & 8001101040    & GOTO INFETCH @ 01 \\
+        \hline
+        EA  & 80EC041002    & if CR(2) = 0 then GOTO @ EC; \\
+        \hline
+        EB  & 8001101040    & GOTO INFETCH @ 01 \\
+        \hline
+        EC  & 80EE021002    & if CR(1) = 0 then GOTO @ EE; \\
+        \hline
+        ED  & 8001101040    & GOTO INFETCH @ 01 \\
+        \hline
+        EE  & 81F0011002    & if CR(0) = 1 then GOTO @ F0; \\
+        \hline
+        EF  & 8001101040    & GOTO INFETCH @ 01 \\
+        \hline
+        F0  & 00A0009008    & SP -> AR, BR; \\
+        \hline
+        F1  & 0120009410    & BR + 1 -> BR; MEM(AR) -> DR; \\
+        \hline
+        F2  & 0080009020    & BR -> AR; \\
+        \hline
+        F3  & 0020009001    & DR -> BR; \\
+        \hline
+        F4  & 0100000000    & MEM(AR) -> DR; \\
+        \hline
+        F5  & 0080009008    & SP -> AR; \\
+        \hline
+        F6  & 0200000000    & DR -> MEM(AR); \\
+        \hline
+        F7  & 0001009020    & BR -> DR; \\
+        \hline
+        F8  & 0080009208    & ~0 + SP -> AR; \\
+        \hline
+        F9  & 0200000000    & DR -> MEM(AR); \\
+        \hline
+        FA  & 80C4101040    & GOTO INT @ C4 \\
         \hline
     \end{tabular}
 \end{center}
