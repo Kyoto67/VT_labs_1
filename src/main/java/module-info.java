@@ -14,4 +14,6 @@ module com.example.vt_labs_1 {
 
     opens com.example.vt_labs_1 to javafx.fxml;
     exports com.example.vt_labs_1;
+    exports com.example.vt_labs_1.controllers;
+    opens com.example.vt_labs_1.controllers to javafx.fxml;
 }

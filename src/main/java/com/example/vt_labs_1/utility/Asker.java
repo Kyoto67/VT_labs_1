@@ -520,20 +520,20 @@ public class Asker {
         return newMovie;
     }
 
-    public static User askUser(){
-        System.out.print("Введите имя пользователя: ");
-        Scanner in = new Scanner(System.in);
-        String username = in.nextLine();
-        System.out.print("Введите пароль: ");
-        String rawPassword = in.nextLine();
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hashedPass = md.digest(rawPassword.getBytes(StandardCharsets.UTF_8));
-            String password = hashedPass.toString();
-            return new User(username, password);
-        } catch (NoSuchAlgorithmException ignored){
-            //pass
-        }
-        return null;
-    }
+//    public static User askUser(){
+//        System.out.print("Введите имя пользователя: ");
+//        Scanner in = new Scanner(System.in);
+//        String username = in.nextLine();
+//        System.out.print("Введите пароль: ");
+//        String rawPassword = in.nextLine();
+//        try {
+//            MessageDigest md = MessageDigest.getInstance("MD5");
+//            byte[] hashedPass = md.digest(rawPassword.getBytes(StandardCharsets.UTF_8));
+//            String password = hashedPass.toString();
+//            return new User(username, password);
+//        } catch (NoSuchAlgorithmException ignored){
+//            //pass
+//        }
+//        return null;
+//    }
 }

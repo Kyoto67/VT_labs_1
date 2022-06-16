@@ -44,7 +44,8 @@ public class DataBaseUserManager {
             if (resultSet.next()) {
                 user = new User(
                         resultSet.getString(DataBaseHandler.USER_TABLE_USERNAME_COLUMN),
-                        resultSet.getString(DataBaseHandler.USER_TABLE_PASSWORD_COLUMN)
+                        resultSet.getString(DataBaseHandler.USER_TABLE_PASSWORD_COLUMN),
+                        false
                 );
             } else throw new SQLException();
         } catch (SQLException exception) {
@@ -66,7 +67,8 @@ public class DataBaseUserManager {
             if (resultSet.next()) {
                 user = new User(
                         resultSet.getString(DataBaseHandler.USER_TABLE_USERNAME_COLUMN),
-                        resultSet.getString(DataBaseHandler.USER_TABLE_PASSWORD_COLUMN)
+                        resultSet.getString(DataBaseHandler.USER_TABLE_PASSWORD_COLUMN),
+                        false
                 );
             } else throw new SQLException();
         } catch (SQLException exception) {

@@ -6,10 +6,12 @@ import java.io.Serializable;
 public class User implements Serializable {
     private final String username;
     private final String password;
+    private final boolean signup;
 
-    public User(String username, String password) {
+    public User(String username, String password, boolean sign) {
         this.username = username;
         this.password = password;
+        this.signup=sign;
     }
 
     public String getUsername() {
@@ -18,6 +20,10 @@ public class User implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isSignup() {
+        return signup;
     }
 
     @Override
