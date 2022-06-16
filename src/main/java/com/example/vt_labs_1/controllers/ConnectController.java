@@ -1,7 +1,7 @@
 package com.example.vt_labs_1.controllers;
 
-import com.example.vt_labs_1.App;
 import com.example.vt_labs_1.client.Client;
+import com.example.vt_labs_1.exceptions.Disconnect;
 import com.example.vt_labs_1.utility.Data;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -10,26 +10,29 @@ import javafx.stage.Stage;
 public class ConnectController {
     @FXML
     private TextField port;
-    private static Stage stage;
 
-    public static void setStage(Stage stage) {
-        ConnectController.stage = stage;
-    }
-
-    public void connect(){
-        boolean success=false;
-        while(!success){
-            if(!(port ==null) && !port.getText().isEmpty()) {
-                try {
+    @FXML
+    public void connect() {
+        boolean success = false;
+        try {
+            while (!success) {
+                if (!(port == null) && !port.getText().isEmpty()) {
                     int p = Integer.parseInt(port.getText());
-                    Data.client= new Client("localhost", p, Data.user);
-                    success=true;
-                    ConnectController.stage.close();
-                    Data.working=false;
-                } catch (Exception ignored){
-                    //pass
+                    Data.client = new Client("localhost", p, Data.user);
+                    success = true;
+                    Data.primaryStage.setScene(Data.successScene);
                 }
             }
+        } catch (Disconnect e) {
+            Data.addMessage(e.getMessage());
+            Data.primaryStage.setTitle("Error");
+//            ExceptionController.msg.setText(Data.messageOut());
+            Data.primaryStage.setScene(Data.exceptionScene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Data.primaryStage.close();
         }
     }
+
 }
+

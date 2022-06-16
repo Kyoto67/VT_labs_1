@@ -2,8 +2,6 @@ package com.example.vt_labs_1;
 
 import com.example.vt_labs_1.client.Client;
 import com.example.vt_labs_1.client.Console;
-import com.example.vt_labs_1.controllers.ConnectController;
-import com.example.vt_labs_1.controllers.LoginController;
 import com.example.vt_labs_1.utility.CommandManager;
 import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.User;
@@ -14,52 +12,37 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static com.example.vt_labs_1.utility.Data.working;
-
 public class App extends Application {
 
-    private Client client;
-    private Stage primaryStage;
-    private User user;
-    private Scene loginScene;
-    private Scene connectScene;
 
-    public User getUser() {
-        return user;
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        launch();
-        Thread.sleep(1000);
+    public static void main(String[] args) {
         launch();
         CommandManager commandManager = new CommandManager(Data.client);
-        try {
-            Console.run(commandManager);
-        } catch (Exception e) {
-
-        }
     }
 
     @Override
     public void init() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("view/login.fxml"));
-        loginScene = new Scene(fxmlLoader.load(), 320, 240);
+        Data.loginScene = new Scene(fxmlLoader.load(), 600, 400);
         fxmlLoader = new FXMLLoader(getClass().getResource("view/port.fxml"));
-        connectScene = new Scene(fxmlLoader.load(), 320, 240);
-        Data.connectScene = connectScene;
+        Data.connectScene = new Scene(fxmlLoader.load(), 600, 400);
+        fxmlLoader = new FXMLLoader(getClass().getResource("view/exc.fxml"));
+        Data.exceptionScene = new Scene(fxmlLoader.load(), 600, 400);
+        fxmlLoader = new FXMLLoader(getClass().getResource("view/success.fxml"));
+        Data.successScene = new Scene(fxmlLoader.load(),600,400);
+        fxmlLoader = new FXMLLoader(getClass().getResource("view/menu.fxml"));
+        Data.menuScene = new Scene(fxmlLoader.load(),600,400);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        LoginController.setStage(stage);
-        ConnectController.setStage(stage);
+    public void start(Stage stage) {
+        Data.primaryStage=stage;
         login(stage);
     }
 
-    public void login(Stage stage) throws Exception {
+    public void login(Stage stage) {
         stage.setTitle("Hello!");
-        stage.setScene(loginScene);
+        stage.setScene(Data.loginScene);
         stage.show();
     }
 }

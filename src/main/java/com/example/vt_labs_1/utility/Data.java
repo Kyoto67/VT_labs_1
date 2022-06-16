@@ -10,4 +10,19 @@ public class Data {
     public static boolean working;
     public static Stage primaryStage;
     public static Scene connectScene;
+    public static Scene exceptionScene;
+    public static Scene loginScene;
+    public static Scene menuScene;
+    public static Scene successScene;
+    public static String message = "";
+
+    public static void addMessage(String s) {
+        message += s + "\n";
+    }
+
+    public static String messageOut(){
+        String m = message;
+        message = "";
+        return m;
+    }
 }

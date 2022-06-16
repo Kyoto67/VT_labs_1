@@ -19,7 +19,6 @@ public class LoginController {
     private TextField log;
     @FXML
     private PasswordField pass;
-    private static Stage stage;
 
     @FXML
     public void createUserSignUp(){
@@ -37,10 +36,9 @@ public class LoginController {
             while (password.length() < 32) {
                 password = "0" + password;
             }
-            Data.user = new User(log.getText(), password, false);
-            LoginController.stage.setTitle("Connect");
-            LoginController.stage.setScene(Data.connectScene);
-            Data.working=false;
+            Data.user = new User(log.getText(), password, true);
+            Data.primaryStage.setTitle("Connect");
+            Data.primaryStage.setScene(Data.connectScene);
         }
     }
 
@@ -60,13 +58,8 @@ public class LoginController {
                 password = "0" + password;
             }
             Data.user = new User(log.getText(), password, false);
-            LoginController.stage.close();
-            Data.working=false;
+            Data.primaryStage.setTitle("Connect");
+            Data.primaryStage.setScene(Data.connectScene);
         }
-    }
-
-
-    public static void setStage(Stage stage) {
-        LoginController.stage = stage;
     }
 }
