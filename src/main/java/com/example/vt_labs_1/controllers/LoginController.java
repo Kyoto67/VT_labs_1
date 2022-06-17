@@ -1,13 +1,10 @@
 package com.example.vt_labs_1.controllers;
 
-import com.example.vt_labs_1.App;
 import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -16,13 +13,13 @@ import java.security.NoSuchAlgorithmException;
 public class LoginController {
 
     @FXML
-    private TextField log;
+    public TextField log;
     @FXML
-    private PasswordField pass;
+    public PasswordField pass;
 
     @FXML
-    public void createUserSignUp(){
-        if(!(log ==null) && !log.getText().isEmpty() && !(pass==null) && !pass.getText().isEmpty()){
+    public void createUserSignUp() {
+        if (!(log == null) && !log.getText().isEmpty() && !(pass == null) && !pass.getText().isEmpty()) {
 
             MessageDigest md = null;
             try {
@@ -43,8 +40,8 @@ public class LoginController {
     }
 
     @FXML
-    public void createUserSignIn(){
-        if(!(log ==null) && !log.getText().isEmpty() && !(pass==null) && !pass.getText().isEmpty()){
+    public void createUserSignIn() {
+        if (!(log == null) && !log.getText().isEmpty() && !(pass == null) && !pass.getText().isEmpty()) {
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance("MD5");

@@ -1,6 +1,7 @@
 package com.example.vt_labs_1.utility;
 
 import com.example.vt_labs_1.commands.*;
+import com.example.vt_labs_1.exceptions.DatabaseHandlingException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,10 +16,10 @@ public class Module {
     private static ArrayList<User> users = new ArrayList<>();
     private static final String[] commands = {"help", "info", "show", "add", "update", "remove_by_id", "clear", "execute_script",
             "exit", "add_if_min", "remove_greater", "remove_lower", "remove_all_by_oscars_count", "remove_any_by_director",
-            "print_field_descending_oscars_count", "connect"};
+            "print_field_descending_oscars_count", "connect", "getTable"};
 
 
-    public static boolean running(AbstractCommand command){
+    public static boolean running(AbstractCommand command)  {
         String actualCommand = command.getName();
         Scanner scanner = new Scanner(actualCommand);
         scanner.useDelimiter("\\s");
@@ -100,21 +101,17 @@ public class Module {
             }
             case (15): {
                 Connect connect = (Connect) command;
-                for (User u : users){
-                    if(u.getUsername().equals(connect.getUser().getUsername())){
+                for (User u : users) {
+                    if (u.getUsername().equals(connect.getUser().getUsername())) {
                         addMessage("Данный пользователь уже работает с базой данных.");
                         return false;
                     }
                 }
                 try {
-                    if (dataBaseUserManager.checkUserByUsernameAndPassword(connect.getUser())) {
-                        addMessage("Авторизация успешна.");
-                        users.add(connect.getUser());
-                        return true;
-                    } else {
+                    if (connect.getUser().isSignup()) {
                         try {
                             dataBaseUserManager.getUserByUsername(connect.getUser().getUsername());
-                            addMessage("Неверный пароль");
+                            addMessage("Пользователь с таким именем уже зарегистрирован.");
                             return false;
                         } catch (SQLException e) {
                             dataBaseUserManager.insertUser(connect.getUser());
@@ -122,11 +119,24 @@ public class Module {
                             addMessage("Зарегистрирован новый пользователь.");
                             return true;
                         }
+                    } else {
+                        if (dataBaseUserManager.checkUserByUsernameAndPassword(connect.getUser())) {
+                            addMessage("Авторизация успешна.");
+                            return true;
+                        } else {
+                            addMessage("Некорректные данные для входа.");
+                            return false;
+                        }
                     }
-                } catch (Exception ignored) {
-                    //pass
+                } catch (DatabaseHandlingException e) {
+                    addMessage("Произошла непредвиденная ошибка при авторизации.");
                     return false;
                 }
+            }
+            case (16): {
+                getTable table = (getTable) command;
+                table.setCollectionManager(collectionManager);
+                return table.exec();
             }
             case (-1): {
                 System.out.println("Неизвестная ошибка.");

@@ -17,7 +17,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
-        CommandManager commandManager = new CommandManager(Data.client);
     }
 
     @Override
@@ -32,6 +31,10 @@ public class App extends Application {
         Data.successScene = new Scene(fxmlLoader.load(),600,400);
         fxmlLoader = new FXMLLoader(getClass().getResource("view/menu.fxml"));
         Data.menuScene = new Scene(fxmlLoader.load(),600,400);
+        fxmlLoader = new FXMLLoader(getClass().getResource("view/table.fxml"));
+        Data.tableScene = new Scene(fxmlLoader.load(), 600, 400);
+        fxmlLoader = new FXMLLoader(getClass().getResource("view/asker.fxml"));
+        Data.askerScene = new Scene(fxmlLoader.load(), 600, 400);
     }
 
     @Override

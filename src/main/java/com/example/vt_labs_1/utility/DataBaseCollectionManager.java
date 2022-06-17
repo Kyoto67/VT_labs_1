@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -143,6 +144,32 @@ public class DataBaseCollectionManager {
         }
     }
 
+    private String[] createTableMovie(ResultSet resultSet) {
+        String[] oneRow = new String[18];
+        try {
+            oneRow[0] = ((Long) resultSet.getLong(DataBaseHandler.MOVIE_TABLE_ID_COLUMN)).toString();
+            oneRow[1] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_NAME_COLUMN);
+            oneRow[2] = new Date(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_CREATION_DATE_COLUMN)).toString();
+            oneRow[3] = ((Long) resultSet.getLong(DataBaseHandler.MOVIE_TABLE_OSCARSCOUNT_COLUMN)).toString();
+            oneRow[4] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_GENRE_COLUMN);
+            oneRow[5] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_MPAA_RATING_COLUMN);
+            oneRow[6] = ((Double) resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_COORDINATES_X_COLUMN)).toString();
+            oneRow[7] = ((Integer) resultSet.getInt(DataBaseHandler.MOVIE_TABLE_COORDINATES_Y_COLUMN)).toString();
+            oneRow[8] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NAME_COLUMN);
+            oneRow[9] = ((Double) resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HEIGHT_COLUMN)).toString();
+            oneRow[10] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_EYE_COLOR_COLUMN);
+            oneRow[11] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_HAIR_COLOR_COLUMN);
+            oneRow[12] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_NATIONALITY_COLUMN);
+            oneRow[13] = ((Double) resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_X_COLUMN)).toString();
+            oneRow[14] = ((Double) resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN)).toString();
+            oneRow[15] = ((Double)resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN)).toString();
+            oneRow[16] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN);
+            oneRow[17] = ((Long) resultSet.getLong(DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN)).toString();
+            return oneRow;
+        } catch (SQLException e){
+            return null;
+        }
+    }
     /**
      * @return List of Marines.
      * @throws DatabaseHandlingException When there's exception inside.
@@ -162,6 +189,22 @@ public class DataBaseCollectionManager {
             databaseHandler.closePreparedStatement(preparedSelectAllStatement);
         }
         return moviesCollection;
+    }
+    public LinkedList<String[]> getTable() {
+        LinkedList<String[]> moviesTable = new LinkedList<>();
+        PreparedStatement preparedSelectAllStatement = null;
+        try {
+            preparedSelectAllStatement = databaseHandler.getPreparedStatement(SELECT_ALL_MOVIES, false);
+            ResultSet resultSet = preparedSelectAllStatement.executeQuery();
+            while (resultSet.next()) {
+                moviesTable.add(createTableMovie(resultSet));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            databaseHandler.closePreparedStatement(preparedSelectAllStatement);
+        }
+        return moviesTable;
     }
 
     /**

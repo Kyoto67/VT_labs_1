@@ -2,10 +2,15 @@ package com.example.vt_labs_1.controllers;
 
 import com.example.vt_labs_1.client.Client;
 import com.example.vt_labs_1.exceptions.Disconnect;
+import com.example.vt_labs_1.utility.CommandManager;
 import com.example.vt_labs_1.utility.Data;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class ConnectController {
     @FXML
@@ -19,6 +24,7 @@ public class ConnectController {
                 if (!(port == null) && !port.getText().isEmpty()) {
                     int p = Integer.parseInt(port.getText());
                     Data.client = new Client("localhost", p, Data.user);
+                    Data.commandManager = new CommandManager(Data.client);
                     success = true;
                     Data.primaryStage.setScene(Data.successScene);
                 }

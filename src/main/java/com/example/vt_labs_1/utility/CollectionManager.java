@@ -1,6 +1,7 @@
 package com.example.vt_labs_1.utility;
 
 import com.example.vt_labs_1.data.Movie;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ public class CollectionManager {
      * Конструктор класса. Автоматически создаёт коллекцию, заполненную рандомными значениями, сохраняет её в файл и загружает из файла (потому что так сказано в задании).
      * Записывает idList, в котором в реальном времени отображается наличие элементов по их IDшникам.
      * Записывает время инициализации коллекции и её тип.
-     *
      */
     public CollectionManager(DataBaseCollectionManager dataBaseCollectionManager) {
         this.dataBaseCollectionManager = dataBaseCollectionManager;
@@ -335,12 +335,23 @@ public class CollectionManager {
      * @return Возвращает True, если объект найден, и False, если нет.
      */
     public synchronized boolean checkMatchingDirectorName(String directorName, User user) {
-        for (Movie m : MoviesCollection){
-            if(m.getDirector().getName().equals(directorName) && m.getOwner().getUsername().equals(user.getUsername())){
+        for (Movie m : MoviesCollection) {
+            if (m.getDirector().getName().equals(directorName) && m.getOwner().getUsername().equals(user.getUsername())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public synchronized String getTable() {
+        LinkedList<String[]> table = dataBaseCollectionManager.getTable();
+        final String[] ans = {""};
+        table.forEach(strings -> {
+            for (String s : strings) {
+                ans[0] += s + "\n";
+            }
+        });
+        return ans[0];
     }
 
 }
