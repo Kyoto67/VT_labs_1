@@ -109,7 +109,7 @@ public class TableController {
     }
 
     public void back(){
-        Data.primaryStage.setTitle(Data.user.getUsername()+": Menu.");
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername()+". Page: Menu.");
         Data.primaryStage.setScene(Data.menuScene);
     }
 }

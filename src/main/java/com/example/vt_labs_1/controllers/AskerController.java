@@ -42,11 +42,11 @@ public class AskerController {
     private TextField loc_name;
 
     @FXML
-    public void compileMovie(){
+    public void compileMovie() {
         Movie movie = new Movie();
-        try{
+        try {
             movie.setName(movie_name.getText());
-            movie.setCoordinates(new Coordinates(Double.parseDouble(coordinates_x.getText()),Integer.parseInt(coordinates_y.getText())));
+            movie.setCoordinates(new Coordinates(Double.parseDouble(coordinates_x.getText()), Integer.parseInt(coordinates_y.getText())));
             movie.setCreationDate(new Date());
             movie.setGenre(MovieGenre.valueOf(genre.getText()));
             movie.setMpaaRating(MpaaRating.valueOf(mpaa.getText()));
@@ -56,20 +56,21 @@ public class AskerController {
             director.setHeight(Double.parseDouble(height.getText()));
             director.setEyeColor(Color.valueOf(eye.getText()));
             director.setHairColor(Color.valueOf(hair.getText()));
+            director.setNationality(Country.valueOf(country.getText()));
             director.setLocation(new Location(Double.parseDouble(loc_x.getText()), Double.parseDouble(loc_y.getText()), Double.parseDouble(loc_z.getText()), loc_name.getText()));
             movie.setDirector(director);
             Data.movie = movie;
-            Data.primaryStage.setTitle(Data.user.getUsername()+": Menu.");
+            Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Menu.");
             Data.primaryStage.setScene(Data.menuScene);
-        } catch (Exception e){
-            //exc
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
-    public void compileRandom(){
+    public void compileRandom() {
         Data.movie = GeneratingRandomInfo.generateOneObject();
-        Data.primaryStage.setTitle(Data.user.getUsername()+": Menu.");
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Menu.");
         Data.primaryStage.setScene(Data.menuScene);
     }
 

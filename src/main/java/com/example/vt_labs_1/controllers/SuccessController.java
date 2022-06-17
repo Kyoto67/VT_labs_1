@@ -5,7 +5,7 @@ import com.example.vt_labs_1.utility.Data;
 public class SuccessController {
 
     public void next(){
-        Data.primaryStage.setTitle(Data.user.getUsername()+": Menu.");
+        Data.primaryStage.setTitle("User: "+Data.user.getUsername()+". Page: Menu.");
         Data.primaryStage.setScene(Data.menuScene);
     }
 }

@@ -38,7 +38,7 @@ public class MenuController implements Initializable {
         }
         try {
             result.setText(Data.commandManager.managerWork(command));
-        } catch (ArgumentException e){
+        } catch (ArgumentException e) {
             result.setText(e.getMessage());
         }
     }
@@ -51,13 +51,13 @@ public class MenuController implements Initializable {
 
     @FXML
     public void openTable() {
-        Data.primaryStage.setTitle(Data.user.getUsername() + ": movies table");
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Movies table");
         Data.primaryStage.setScene(Data.tableScene);
     }
 
     @FXML
     public void openAsker() {
-        Data.primaryStage.setTitle(Data.user.getUsername() + ": Enter data");
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Enter data.");
         Data.primaryStage.setScene(Data.askerScene);
     }
 
