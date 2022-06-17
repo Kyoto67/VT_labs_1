@@ -20,14 +20,15 @@
                   <DropShadow />
                </effect>
             </AmbientLight>
-            <Button layoutX="335.0" layoutY="144.0" mnemonicParsing="false" onAction="#run" text="Запустить" />
+            <Button layoutX="256.0" layoutY="147.0" mnemonicParsing="false" onAction="#run" text="Запустить" />
             <Label layoutX="64.0" layoutY="33.0" text="Выберите команду:" />
             <Button layoutX="485.0" layoutY="339.0" mnemonicParsing="false" onAction="#exit" text="Выход" />
-            <TextField fx:id="argument" layoutX="294.0" layoutY="61.0" />
-            <Label layoutX="312.0" layoutY="38.0" text="Введите аргумент:" />
-            <TextArea fx:id="result" layoutX="33.0" layoutY="231.0" prefHeight="137.0" prefWidth="298.0" text="Привет!" />
+            <TextField fx:id="argument" layoutX="294.0" layoutY="61.0" prefHeight="24.0" prefWidth="135.0" promptText="значение" />
+            <Label layoutX="297.0" layoutY="38.0" text="Введите аргумент:" />
+            <TextArea fx:id="result" editable="false" layoutX="33.0" layoutY="231.0" prefHeight="137.0" prefWidth="298.0" text="Привет!" />
             <Label layoutX="33.0" layoutY="192.0" text="Результат:" />
-            <Button layoutX="478.0" layoutY="231.0" mnemonicParsing="false" text="Таблица" onAction="#openTable" />
+            <Button layoutX="478.0" layoutY="231.0" mnemonicParsing="false" onAction="#openTable" text="Таблица" />
+            <Button layoutX="485.0" layoutY="39.0" mnemonicParsing="false" onAction="#openAsker" prefHeight="68.0" prefWidth="89.0" text="Создать объект Movie" textAlignment="CENTER" wrapText="true" />
          </children></Pane>
    </children>
 </AnchorPane>

@@ -36,9 +36,7 @@ public class Client {
         try {
             connect();
             sendObject(o1);
-            System.out.println("//");
             out = (String) getObject();
-            System.out.println(out);
             close();
         } catch (IOException e){
             return "Отсутствует связь с сервером.";

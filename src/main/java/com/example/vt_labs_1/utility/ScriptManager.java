@@ -280,7 +280,6 @@ public class ScriptManager implements Serializable {
     }
 
     private int chooseCommand(String command) {
-        System.out.println(command);
         for (int i = 0; i < commands.length; i++) {
             if (command.equals(commands[i])) {
                 return i;

@@ -17,7 +17,7 @@ public class Data {
     public static Scene tableScene;
     public static String message = "";
     public static CommandManager commandManager;
-    public static Movie movie;
+    public static Movie movie = null;
     public static Scene askerScene;
     public static void addMessage(String s) {
         message += s + "\n";

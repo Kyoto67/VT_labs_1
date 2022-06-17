@@ -20,7 +20,6 @@ public class LoginController {
     @FXML
     public void createUserSignUp() {
         if (!(log == null) && !log.getText().isEmpty() && !(pass == null) && !pass.getText().isEmpty()) {
-
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance("MD5");
