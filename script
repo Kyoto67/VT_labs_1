@@ -1,20 +1,24 @@
 java -Dmode=cli -jar bcomp-ng14507.jar
-ma e0
-mw 80E2801002
+ma bb
+ma bb
+mw 81E1014002
+ma e1
+ma e1
+mw 80E3801002
 mw 8001101040
-mw 80E4401002
+mw 80E5401002
 mw 8001101040
-mw 80E6201002
+mw 80E7201002
 mw 8001101040
-mw 80E8101002
+mw 80E9101002
 mw 8001101040
-mw 80EA081002
+mw 80EB081002
 mw 8001101040
-mw 80EC041002
+mw 80ED041002
 mw 8001101040
-mw 80EE021002
+mw 80EF021002
 mw 8001101040
-mw 81F0011002
+mw 81F1011002
 mw 8001101040
 mw 00A0009008
 mw 0120009420
@@ -27,22 +31,44 @@ mw 0001009020
 mw 0080009408
 mw 0200000000
 mw 80C4101040
+
 asm
-ORG 0x0
-LD #0x1
-PUSH
-LD #0x2
-PUSH
-WORD 0F01
-WORD1: WORD 0x0
-WORD2: WORD 0x0
-POP
-ST $WORD1
-POP
-ST $WORD2
-HLT
+ORG         0x2E1
+            X1:         WORD 0x322
+            X2:         WORD 0x228
+            PS:         WORD 0x018F
+            RES1:       WORD 0x0
+            RES2:       WORD 0x0
+            RESFLAGS:   WORD 0x0
+            START:      LD  X1
+                        PUSH
+                        LD  X2
+                        PUSH
+                        LD PS
+                        PUSH
+                        POPF
+                        WORD 0F01
+                        PUSHF
+                        POP
+                        CMP PS
+                        BEQ FLAGSTRUE
+            FLAGSTRUE:  LD (RESFLAGS)+
+                        POP
+                        CMP X1
+                        BEQ X1TRUE
+            X1TRUE:     LD (RES1)+
+                        POP
+                        CMP X2
+                        BEQ X2TRUE
+            X2TRUE:     LD(RES2)+
+                        LD #0x1
+                        AND $RES1
+                        AND $RES2
+                        AND $RESFLAGS
+                        ST  RESMAIN
+                        HLT
+            RESMAIN:    WORD 0x0
 END
 ru
 s
 exit
-
