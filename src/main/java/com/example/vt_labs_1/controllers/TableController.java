@@ -52,37 +52,43 @@ public class TableController {
     private TableColumn<TableRows, String> loc_name;
     @FXML
     private TableColumn<TableRows, String> user;
-
     @FXML
     private TableView<TableRows> table;
 
     public void getterTable() throws Exception {
         initCols();
         String raw = Data.commandManager.managerWork("getTable");
+        System.out.println(raw);
         ObservableList<TableRows> rows = FXCollections.observableArrayList();
         String[] strs = new String[18];
         Scanner scanner = new Scanner(raw);
         scanner.useDelimiter(System.getProperty("line.separator"));
         while (!scanner.hasNext("")) {
-            strs[0] = scanner.next();
-            strs[1] = scanner.next();
-            strs[2] = scanner.next();
-            strs[3] = scanner.next();
-            strs[4] = scanner.next();
-            strs[5] = scanner.next();
-            strs[6] = scanner.next();
-            strs[7] = scanner.next();
-            strs[8] = scanner.next();
-            strs[9] = scanner.next();
-            strs[10] = scanner.next();
-            strs[11] = scanner.next();
-            strs[12] = scanner.next();
-            strs[13] = scanner.next();
-            strs[14] = scanner.next();
-            strs[15] = scanner.next();
-            strs[16] = scanner.next();
-            strs[17] = scanner.next();
-            rows.add(new TableRows(strs));
+            try {
+                strs[0] = scanner.next();
+                strs[1] = scanner.next();
+                strs[2] = scanner.next();
+                strs[3] = scanner.next();
+                strs[4] = scanner.next();
+                strs[5] = scanner.next();
+                strs[6] = scanner.next();
+                strs[7] = scanner.next();
+                strs[8] = scanner.next();
+                strs[9] = scanner.next();
+                strs[10] = scanner.next();
+                strs[11] = scanner.next();
+                strs[12] = scanner.next();
+                strs[13] = scanner.next();
+                strs[14] = scanner.next();
+                strs[15] = scanner.next();
+                strs[16] = scanner.next();
+                strs[17] = scanner.next();
+                rows.add(new TableRows(strs));
+                System.out.println(Arrays.toString(strs));
+                System.out.println("//");
+            } catch (Exception ing) {
+
+            }
         }
         table.setItems(rows);
     }
@@ -108,8 +114,8 @@ public class TableController {
         user.setCellValueFactory(new PropertyValueFactory<>("s17"));
     }
 
-    public void back(){
-        Data.primaryStage.setTitle("User: " + Data.user.getUsername()+". Page: Menu.");
+    public void back() {
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Menu.");
         Data.primaryStage.setScene(Data.menuScene);
     }
 }
