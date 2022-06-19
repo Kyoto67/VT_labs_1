@@ -51,17 +51,17 @@ ORG         0x2E1
                         PUSHF
                         POP
                         CMP PS
-                        BEQ FLAGSTRUE
-            FLAGSTRUE:  LD (RESFLAGS)+
-                        POP
+                        BNE NEXT1
+                        LD (RESFLAGS)+
+                NEXT1:  POP
                         CMP X1
-                        BEQ X1TRUE
-            X1TRUE:     LD (RES1)+
-                        POP
+                        BNE NEXT2
+                        LD (RES1)+
+                NEXT2:  POP
                         CMP X2
-                        BEQ X2TRUE
-            X2TRUE:     LD(RES2)+
-                        LD #0x1
+                        BNE NEXT3
+                        LD(RES2)+
+                NEXT3:  LD #0x1
                         AND $RES1
                         AND $RES2
                         AND $RESFLAGS

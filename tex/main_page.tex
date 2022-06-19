@@ -74,25 +74,25 @@
         \hline
         F0    & 8001101040   & GOTO INFETCH @ 01                     \\
         \hline
-        F1    & 00A0009008   & SP → AR, BR;                         \\
+        F1    & 00A0009008   & SP → AR, BR;                          \\
         \hline
-        F2    & 0120009420   & BR + 1 → BR; MEM(AR) → DR;          \\
+        F2    & 0120009420   & BR + 1 → BR; MEM(AR) → DR;            \\
         \hline
-        F3    & 0080009020   & BR → AR;                             \\
+        F3    & 0080009020   & BR → AR;                              \\
         \hline
-        F4    & 0020009001   & DR → BR;                             \\
+        F4    & 0020009001   & DR → BR;                              \\
         \hline
-        F5    & 0100000000   & MEM(AR) → DR;                        \\
+        F5    & 0100000000   & MEM(AR) → DR;                         \\
         \hline
-        F6    & 0080009008   & SP → AR;                             \\
+        F6    & 0080009008   & SP → AR;                              \\
         \hline
-        F7    & 0200000000   & DR → MEM(AR);                        \\
+        F7    & 0200000000   & DR → MEM(AR);                         \\
         \hline
-        F8    & 0001009020   & BR → DR;                             \\
+        F8    & 0001009020   & BR → DR;                              \\
         \hline
-        F9    & 0080009408   & SP + 1 → AR;                         \\
+        F9    & 0080009408   & SP + 1 → AR;                          \\
         \hline
-        FA    & 0200000000   & DR → MEM(AR);                        \\
+        FA    & 0200000000   & DR → MEM(AR);                         \\
         \hline
         FB    & 80C4101040   & GOTO INT @ C4                         \\
         \hline
@@ -122,17 +122,17 @@
                         PUSHF
                         POP
                         CMP PS
-                        BEQ FLAGSTRUE
-            FLAGSTRUE:  LD (RESFLAGS)+
-                        POP
+                        BNE NEXT1
+                        LD (RESFLAGS)+
+                NEXT1:  POP
                         CMP X1
-                        BEQ X1TRUE
-            X1TRUE:     LD (RES1)+
-                        POP
+                        BNE NEXT2
+                        LD (RES1)+
+                NEXT2:  POP
                         CMP X2
-                        BEQ X2TRUE
-            X2TRUE:     LD(RES2)+
-                        LD #0x1
+                        BNE NEXT3
+                        LD(RES2)+
+                NEXT3:  LD #0x1
                         AND $RES1
                         AND $RES2
                         AND $RESFLAGS
@@ -145,77 +145,164 @@
 
 
 \small{
-\begin{flushleft}
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-        \hline
-        МР до вы- & \multicolumn{12}{1}{Содержимое памяти и регистров процессора после выборки и исполнения микрокоманды} \\
-        \cline{2-13}
-        борки МК & MR         & Адрес & Значение & IP  & CR   & AR  & DR   & BR   & AC   & SP  & NZVC & МР \\
-        \hline
-        &            &       &          & 2EE & 0900 & 7FD & 018F & 02ED & 018F & 7FE & 1111 & 01 \\
-        \hline
-        01       & 00A0009004 &       &          & 2EE & 0900 & 2EE & 018F & 02EE & 018F & 7FE & 1111 & 02 \\
-        \hline
-        02       & 0104009420 & 2EE   & 0F01(L)  & 2EF & 0900 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 03 \\
-        \hline
-        03       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 04 \\
-        \hline
-        04       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 05 \\
-        \hline
-        05       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 06 \\
-        \hline
-        06       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 07 \\
-        \hline
-        07       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 78 \\
-        \hline
-        78       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & A4 \\
-        \hline
-        A4       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & B5 \\
-        \hline
-        B5       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & BB \\
-        \hline
-        BB       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E1 \\
-        \hline
-        E1       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E3 \\
-        \hline
-        E3       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E5 \\
-        \hline
-        E5       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E7 \\
-        \hline
-        E9       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & EB \\
-        \hline
-        EB       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & ED \\
-        \hline
-        ED       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & EF \\
-        \hline
-        EF       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & F1 \\
-        \hline
-        F1       & 00A0009008 &       &          & 2EF & 0F01 & 7FE & 0F01 & 07FE & 018F & 7FE & 1111 & F2 \\
-        \hline
-        F2       & 0120009420 & 7FE   & 0228(L)  & 2EF & 0F01 & 7FE & 0228 & 07FF & 018F & 7FE & 1111 & F3 \\
-        \hline
-        F3       & 0080009020 &       &          & 2EF & 0F01 & 7FF & 0228 & 07FF & 018F & 7FE & 1111 & F4 \\
-        \hline
-        F4       & 0020009001 &       &          & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & F5 \\
-        \hline
-        F5       & 0100000000 & 7FF   & 0322(L)  & 2EF & 0F01 & 7FF & 0322 & 0228 & 018F & 7FE & 1111 & F6 \\
-        \hline
-        F6       & 0080009008 &       &          & 2EF & 0F01 & 7FE & 0322 & 0228 & 018F & 7FE & 1111 & F7 \\
-        \hline
-        F7       & 0200000000 & 7FE   & 0322(S)  & 2EF & 0F01 & 7FE & 0322 & 0228 & 018F & 7FE & 1111 & F8 \\
-        \hline
-        F8       & 0001009020 &       &          & 2EF & 0F01 & 7FE & 0228 & 0228 & 018F & 7FE & 1111 & F9 \\
-        \hline
-        F9       & 0080009408 &       &          & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & FA \\
-        \hline
-        FA       & 0200000000 & 7FF   & 0228(S)  & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & FB \\
-        \hline
-        FB       & 80C4101040 &    \multicolumn{11}{1}{GO TO INT @C4} \\
-        \hline
+    \begin{flushleft}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \hline
+            МР до вы- & \multicolumn{12}{1}{Содержимое памяти и регистров процессора после выборки и исполнения микрокоманды} \\
+            \cline{2-13}
+            борки МК & MR         & Адрес & Значение & IP  & CR   & AR  & DR   & BR   & AC   & SP  & NZVC & МР \\
+            \hline
+            &            &       &          & 2EE & 0900 & 7FD & 018F & 02ED & 018F & 7FE & 1111 & 01 \\
+            \hline
+            01       & 00A0009004 &       &          & 2EE & 0900 & 2EE & 018F & 02EE & 018F & 7FE & 1111 & 02 \\
+            \hline
+            02       & 0104009420 & 2EE   & 0F01(L)  & 2EF & 0900 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 03 \\
+            \hline
+            03       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 04 \\
+            \hline
+            04       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 05 \\
+            \hline
+            05       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 06 \\
+            \hline
+            06       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 07 \\
+            \hline
+            07       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & 78 \\
+            \hline
+            78       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & A4 \\
+            \hline
+            A4       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & B5 \\
+            \hline
+            B5       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & BB \\
+            \hline
+            BB       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E1 \\
+            \hline
+            E1       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E3 \\
+            \hline
+            E3       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E5 \\
+            \hline
+            E5       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & E7 \\
+            \hline
+            E9       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & EB \\
+            \hline
+            EB       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & ED \\
+            \hline
+            ED       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & EF \\
+            \hline
+            EF       & 0002009001 &       &          & 2EF & 0F01 & 2EE & 0F01 & 02EE & 018F & 7FE & 1111 & F1 \\
+            \hline
+            F1       & 00A0009008 &       &          & 2EF & 0F01 & 7FE & 0F01 & 07FE & 018F & 7FE & 1111 & F2 \\
+            \hline
+            F2       & 0120009420 & 7FE   & 0228(L)  & 2EF & 0F01 & 7FE & 0228 & 07FF & 018F & 7FE & 1111 & F3 \\
+            \hline
+            F3       & 0080009020 &       &          & 2EF & 0F01 & 7FF & 0228 & 07FF & 018F & 7FE & 1111 & F4 \\
+            \hline
+            F4       & 0020009001 &       &          & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & F5 \\
+            \hline
+            F5       & 0100000000 & 7FF   & 0322(L)  & 2EF & 0F01 & 7FF & 0322 & 0228 & 018F & 7FE & 1111 & F6 \\
+            \hline
+            F6       & 0080009008 &       &          & 2EF & 0F01 & 7FE & 0322 & 0228 & 018F & 7FE & 1111 & F7 \\
+            \hline
+            F7       & 0200000000 & 7FE   & 0322(S)  & 2EF & 0F01 & 7FE & 0322 & 0228 & 018F & 7FE & 1111 & F8 \\
+            \hline
+            F8       & 0001009020 &       &          & 2EF & 0F01 & 7FE & 0228 & 0228 & 018F & 7FE & 1111 & F9 \\
+            \hline
+            F9       & 0080009408 &       &          & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & FA \\
+            \hline
+            FA       & 0200000000 & 7FF   & 0228(S)  & 2EF & 0F01 & 7FF & 0228 & 0228 & 018F & 7FE & 1111 & FB \\
+            \hline
+            FB & 80C4101040 & \multicolumn{11}{1}{GO TO INT @C4} \\
+            \hline
 
-    \end{tabular}
-\end{flushleft}
+        \end{tabular}
+    \end{flushleft}
 }
+\newpage
+
+\section{Методика проверки.}
+
+\begin{enumerate}
+    \item Открыть терминал.
+    \item Ввести \texttt{java -Dmode=cli -jar bcomp-ng14507.jar} , нажать ENTER.
+    \item В открывшейся программе ввести:   \\
+    \texttt{ma bb   \\
+    ma bb   \\
+    mw 81E1014002   \\
+    ma e1   \\
+    ma e1   \\
+    mw 80E3801002   \\
+    mw 8001101040   \\
+    mw 80E5401002   \\
+    mw 8001101040   \\
+    mw 80E7201002   \\
+    mw 8001101040   \\
+    mw 80E9101002   \\
+    mw 8001101040   \\
+    mw 80EB081002   \\
+    mw 8001101040   \\
+    mw 80ED041002   \\
+    mw 8001101040   \\
+    mw 80EF021002   \\
+    mw 8001101040   \\
+    mw 81F1011002   \\
+    mw 8001101040   \\
+    mw 00A0009008   \\
+    mw 0120009420   \\
+    mw 0080009020   \\
+    mw 0020009001   \\
+    mw 0100000000   \\
+    mw 0080009008   \\
+    mw 0200000000   \\
+    mw 0001009020   \\
+    mw 0080009408   \\
+    mw 0200000000   \\
+    mw 80C4101040}
+    \item Ввести в терминал \texttt{asm} и нажать ENTER.
+    \item Ввести в терминал тестовую программу:\\
+\texttt{ORG         0x2E1   \\
+            X1:         WORD 0x322  \\
+            X2:         WORD 0x228  \\
+            PS:         WORD 0x018F \\
+            RES1:       WORD 0x0    \\
+            RES2:       WORD 0x0    \\
+            RESFLAGS:   WORD 0x0    \\
+            START:      LD  X1      \\
+                        PUSH        \\
+                        LD  X2      \\
+                        PUSH        \\
+                        LD PS       \\
+                        PUSH        \\
+                        POPF        \\
+                        WORD 0F01   \\
+                        PUSHF       \\
+                        POP         \\
+                        CMP PS      \\
+                        BNE NEXT1   \\
+                        LD (RESFLAGS)+  \\
+                NEXT1:  POP         \\
+                        CMP X1      \\
+                        BNE NEXT2   \\
+                        LD (RES1)+  \\
+                NEXT2:  POP         \\
+                        CMP X2      \\
+                        BNE NEXT3   \\
+                        LD (RES2)+   \\
+                NEXT3:  LD #0x1     \\
+                        AND \$RES1  \\
+                        AND \$RES2  \\
+                        AND \$RESFLAGS  \\
+                        ST  RESMAIN \\
+                        HLT         \\
+            RESMAIN:    WORD 0x0    \\
+END}
+    \item Ввести \texttt{ru} (режим Работа) и нажать ENTER.
+    \item Ввести \texttt{s} (старт программы) и нажать ENTER.
+    \item Проверить результат в ячейке 302 (в терминате будет выведен результат в формате: \texttt{ЯЧЕЙКА ЗНАЧЕНИЕ})
+    \item Если итоговый результат тест не равен единице, то проверить ячейки 2E4, 2E5, 2E6:\\
+    2E4 - Результат того, что второе по счёту число переместилось на вершину стека. \\
+    2E5 - Результат того, что число с вершины стека переместилось на второе место.  \\
+    2E6 - Результат того, что флаги NZVC остались неизменны.
+    \item Спок.
+\end{enumerate}
 %
 %\section{Методика проверки.}
 %Проверка обработки прерываний:
