@@ -48,7 +48,7 @@ ORG         0x2E1
                         LD PS
                         PUSH
                         POPF
-                        WORD 0F01
+                        WORD 0x0F01
                         PUSHF
                         POP
                         CMP PS
