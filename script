@@ -2,8 +2,9 @@ java -Dmode=cli -jar bcomp-ng14507.jar
 ma bb
 ma bb
 mw 81E1014002
-ma e1
-ma e1
+ma e0
+ma e0
+mw 80FC101040
 mw 80E3801002
 mw 8001101040
 mw 80E5401002
@@ -60,7 +61,7 @@ ORG         0x2E1
                 NEXT2:  POP
                         CMP X2
                         BNE NEXT3
-                        LD(RES2)+
+                        LD (RES2)+
                 NEXT3:  LD #0x1
                         AND $RES1
                         AND $RES2
