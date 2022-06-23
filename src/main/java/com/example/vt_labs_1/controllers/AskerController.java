@@ -4,11 +4,15 @@ import com.example.vt_labs_1.data.*;
 import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.GeneratingRandomInfo;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
 import java.util.Date;
+import java.util.ResourceBundle;
 
-public class AskerController {
+public class AskerController implements Initializable {
 
     @FXML
     private TextField movie_name;
@@ -40,6 +44,10 @@ public class AskerController {
     private TextField loc_z;
     @FXML
     private TextField loc_name;
+    @FXML
+    private Button randomButton;
+    @FXML
+    private Button nextButton;
 
     @FXML
     public void compileMovie() {
@@ -74,4 +82,10 @@ public class AskerController {
         Data.primaryStage.setScene(Data.menuScene);
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        randomButton.textProperty().bind(Data.factory.getStringBinding("GenerateRandomObjectButton"));
+        nextButton.textProperty().bind(Data.factory.getStringBinding("NextButton"));
+
+    }
 }

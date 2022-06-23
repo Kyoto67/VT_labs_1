@@ -59,10 +59,10 @@
                 <Label layoutX="228.0" layoutY="286.0" prefHeight="16.0" prefWidth="78.0" text="Nationality:"/>
                 <Label layoutX="225.0" layoutY="310.0" prefHeight="16.0" prefWidth="232.0"
                        text="(GERMANY, NORTH_KOREA, JAPAN)"/>
-                <Button layoutX="411.0" layoutY="7.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="180.0"
-                        text="Сгенерировать случайный объект" textAlignment="CENTER" wrapText="true"
+                <Button fx:id="randomButton" layoutX="411.0" layoutY="7.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="180.0"
+                        text="%GenerateRandomObjectButton" textAlignment="CENTER" wrapText="true"
                         onAction="#compileRandom"/>
-                <Button layoutX="464.0" layoutY="348.0" mnemonicParsing="false" text="Далее" onAction="#compileMovie"/>
+                <Button fx:id="nextButton" layoutX="464.0" layoutY="348.0" mnemonicParsing="false" text="%NextButton" onAction="#compileMovie"/>
                 <Label layoutX="302.0" layoutY="62.0" text="(ACTION, DRAMA, ADVENTURE)"/>
                 <Label layoutX="303.0" layoutY="96.0" text="(PG, PG_13, R, NC_17)"/>
             </children>

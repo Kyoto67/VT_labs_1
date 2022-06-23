@@ -5,11 +5,21 @@ import com.example.vt_labs_1.exceptions.Disconnect;
 import com.example.vt_labs_1.utility.CommandManager;
 import com.example.vt_labs_1.utility.Data;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-public class ConnectController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ConnectController implements Initializable {
     @FXML
     private TextField port;
+    @FXML
+    private Label request;
+    @FXML
+    private Button button;
 
     @FXML
     public void connect() {
@@ -34,5 +44,10 @@ public class ConnectController {
         }
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        request.textProperty().bind(Data.factory.getStringBinding("EnterPortRequest"));
+        button.textProperty().bind(Data.factory.getStringBinding("ConnectButton"));
+    }
 }
 

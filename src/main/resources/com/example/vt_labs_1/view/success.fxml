@@ -10,12 +10,12 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="70.0" prefHeight="170.0" prefWidth="329.0" text="Подключение и авторизация успешны!" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+            <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="70.0" prefHeight="170.0" prefWidth="329.0" text="%ConnectionSuccessfulLabel" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
                <font>
                   <Font size="19.0" />
                </font>
             </Label>
-            <Button layoutX="281.0" layoutY="295.0" mnemonicParsing="false" text="Next" onAction="#next"/>
+            <Button fx:id="button" layoutX="281.0" layoutY="295.0" mnemonicParsing="false" text="%NextButton" onAction="#next"/>
          </children></Pane>
    </children>
 </AnchorPane>

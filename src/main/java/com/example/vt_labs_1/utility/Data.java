@@ -1,11 +1,15 @@
 package com.example.vt_labs_1.utility;
 
 import com.example.vt_labs_1.client.Client;
+import com.example.vt_labs_1.controllers.tools.ObservableResourceFactory;
 import com.example.vt_labs_1.data.Movie;
+import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.LinkedList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class Data {
     public static User user;
@@ -27,7 +31,16 @@ public class Data {
     public static Stage errorStage;
     public static Scene accessScene;
     public static Scene updaterScene;
+    public static ResourceBundle resourceBundle;
+    public static ObservableResourceFactory factory;
+    public static Locale locale;
+    public static Locale ruLocale = new Locale("ru");
+    public static Locale uaLocale = new Locale("ua");
+    public static Locale finLocale = new Locale("fin");
+    public static Locale enLocale = new Locale("en");
     public static LinkedList<TableRows> rows;
+    public static LinkedList<AnimationTimer> animations = new LinkedList<>();
+
     public static void addMessage(String s) {
         message += s + "\n";
     }

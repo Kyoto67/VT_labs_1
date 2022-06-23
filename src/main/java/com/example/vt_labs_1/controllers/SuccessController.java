@@ -4,14 +4,18 @@ import com.example.vt_labs_1.App;
 import com.example.vt_labs_1.exceptions.ArgumentException;
 import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.TableRows;
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -22,11 +26,17 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class SuccessController {
+public class SuccessController implements Initializable {
 
+    @FXML
+    private Label label;
+    @FXML
+    private Button button;
     private LinkedList<String> users = new LinkedList<>();
     private LinkedList<Color> colors = new LinkedList<>();
 
@@ -43,7 +53,7 @@ public class SuccessController {
         Data.primaryStage.setScene(Data.menuScene);
     }
 
-    private void canvasInit() throws ArgumentException, FileNotFoundException {
+    private void canvasInit() {
 
 //        LinkedList<TableRows> data = new LinkedList<>();
 //        if(Data.rows==null){
@@ -88,14 +98,42 @@ public class SuccessController {
             double coordinate_y = Double.parseDouble(tableRows.getS7());
             Color color = colors.get(users.indexOf(tableRows.getS17()));
 
+//
+//            graphics_context.setFill(Color.BLACK);
+//            graphics_context.fillRect(0, 0, 150, 100);
+//
+//            // set fill for rectangle
+//            graphics_context.setFill(color);
+//            graphics_context.fillRect(10, 10, 130, 80);
+//            graphics_context.drawImage(meow, 10, 0);
 
-            graphics_context.setFill(Color.BLACK);
-            graphics_context.fillRect(0, 0, 150, 100);
+            Data.animations.add(new AnimationTimer() {
+                double startX = 0;
+                double endX = 10;
+                double y = 0;
+                double x = startX;
+                double speed = 0.000001;
+                GraphicsContext graphicsContext = graphics_context;
 
-            // set fill for rectangle
-            graphics_context.setFill(color);
-            graphics_context.fillRect(10, 10, 130, 80);
-            graphics_context.drawImage(meow, 10, 0);
+                @Override
+                public void handle(long now) {
+
+                    graphics_context.setFill(Color.BLACK);
+                    graphics_context.fillRect(x, y, 150, 100);
+
+                    // set fill for rectangle
+                    graphics_context.setFill(color);
+                    graphics_context.fillRect(x+10, y+10, 130, 80);
+                    graphics_context.drawImage(meow, x+10, y);
+
+                    x+=speed;
+
+                    if( x >= endX) {
+                        this.stop();
+                    }
+                }
+            });
+
             Tooltip tip = new Tooltip();
             tip.setText(
                     "id: " + tableRows.getS0() + "\n" +
@@ -118,6 +156,7 @@ public class SuccessController {
                             "loc_name: " + tableRows.getS16() + "\n" + "\n" +
                             "movie owner: " + tableRows.getS17());
             Button baton = new Button();
+
             baton.setGraphic(canvas);
             baton.setLayoutX(coordinate_x);
             baton.setLayoutY(coordinate_y);
@@ -128,7 +167,7 @@ public class SuccessController {
                     if (tableRows.getS17().equals(Data.user.getUsername())) {
                         Data.updatableObject = tableRows;
                         try {
-                            Data.updaterScene = new Scene(new FXMLLoader(App.class.getResource("view/updater.fxml")).load(), 300, 200);
+                            Data.updaterScene = new Scene(new FXMLLoader(App.class.getResource("view/updater.fxml"), Data.resourceBundle).load(), 300, 200);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -210,5 +249,11 @@ public class SuccessController {
         Data.errorStage.setScene(Data.accessScene);
         Data.errorStage.initModality(Modality.WINDOW_MODAL);
         Data.errorStage.show();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        label.textProperty().bind(Data.factory.getStringBinding("ConnectionSuccessfulLabel"));
+        button.textProperty().bind(Data.factory.getStringBinding("NextButton"));
     }
 }

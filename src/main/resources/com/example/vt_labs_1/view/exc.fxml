@@ -9,9 +9,9 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseEntered="#soutError" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Label fx:id="msg" alignment="CENTER" layoutX="87.0" layoutY="47.0" prefHeight="217.0" prefWidth="426.0" text="ОШИБКА!" />
-            <Button layoutX="392.0" layoutY="305.0" mnemonicParsing="false" text="EXIT" onAction="#exit" />
-            <Button layoutX="149.0" layoutY="305.0" mnemonicParsing="false" text="Try again" onAction="#loginAgain" />
+            <Label fx:id="msg" alignment="CENTER" layoutX="87.0" layoutY="47.0" prefHeight="217.0" prefWidth="426.0" text="%ConnectionErrorNotificationLabel" />
+            <Button fx:id="loginButton" layoutX="392.0" layoutY="305.0" mnemonicParsing="false" text="%ExitButton" onAction="#exit" />
+            <Button fx:id="tryAgainButton" layoutX="149.0" layoutY="305.0" mnemonicParsing="false" text="%TryAgainButton" onAction="#loginAgain" />
          </children>
       </Pane>
    </children>

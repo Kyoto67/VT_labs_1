@@ -9,8 +9,8 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0">
          <children>
-            <Label fx:id="msg" alignment="CENTER" layoutY="22.0" prefHeight="78.0" prefWidth="300.0" text="У вас недостаточно прав для редактирования этого объекта." textAlignment="CENTER" wrapText="true" />
-            <Button layoutX="120.0" layoutY="124.0" mnemonicParsing="false" onAction="#back" text="Назад" />
+            <Label fx:id="msg" alignment="CENTER" layoutY="22.0" prefHeight="78.0" prefWidth="300.0" text="%AccessExceptionLabel" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="back" layoutX="120.0" layoutY="124.0" mnemonicParsing="false" onAction="#back" text="%BackButton" />
          </children>
       </Pane>
    </children>

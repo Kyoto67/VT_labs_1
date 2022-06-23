@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
@@ -111,8 +112,11 @@ public class Server {
                 }
 
                 private void sendObject(Object o) throws IOException {
+                    String s = (String) o;
+                    byte[] sbytes = s.getBytes();
+                    String sEncoded = new String(sbytes, StandardCharsets.UTF_8);
                     outputStream = new ObjectOutputStream(socket.getOutputStream());
-                    outputStream.writeObject(o);
+                    outputStream.writeObject(sEncoded);
                     outputStream.flush();
                     outputStream.close();
                 }

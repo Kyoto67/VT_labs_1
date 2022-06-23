@@ -2,6 +2,7 @@ package com.example.vt_labs_1.controllers;
 
 import com.example.vt_labs_1.exceptions.ArgumentException;
 import com.example.vt_labs_1.utility.Data;
+import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -24,13 +26,38 @@ public class MenuController implements Initializable {
     private TextField argument;
     @FXML
     private TextArea result;
-
-    private Stage stage;
+    @FXML
+    private Button executeButton;
+    @FXML
+    private Label chooseCommand;
+    @FXML
+    private Button exitButton;
+    @FXML
+    private Label resultLabel;
+    @FXML
+    private Label enterArgument;
+    @FXML
+    private Button tableButton;
+    @FXML
+    private Button createMovieButton;
+    @FXML
+    private Button canvasButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         commandChoice.setItems(list);
         commandChoice.setValue(list.get(0));
+        argument.promptTextProperty().bind(Data.factory.getStringBinding("ValueLabel"));
+        result.textProperty().bind(Data.factory.getStringBinding("HelloLabel"));;
+        executeButton.textProperty().bind(Data.factory.getStringBinding("ExecuteButton"));
+        chooseCommand.textProperty().bind(Data.factory.getStringBinding("ChooseCommandRequestLabel"));
+        exitButton.textProperty().bind(Data.factory.getStringBinding("ExitButton"));
+        resultLabel.textProperty().bind(Data.factory.getStringBinding("ResultLabel"));
+        enterArgument.textProperty().bind(Data.factory.getStringBinding("EnterArgumentRequestLabel"));
+        tableButton.textProperty().bind(Data.factory.getStringBinding("TableButton"));
+        createMovieButton.textProperty().bind(Data.factory.getStringBinding("CreateMovieButton"));
+        canvasButton.textProperty().bind(Data.factory.getStringBinding("CanvasButton"));
+
     }
 
     @FXML
@@ -40,7 +67,9 @@ public class MenuController implements Initializable {
             command += " " + argument.getText();
         }
         try {
-            result.setText(Data.commandManager.managerWork(command));
+            String s=Data.commandManager.managerWork(command);
+            System.out.println(s);
+            result.setText(s);
         } catch (ArgumentException e) {
             result.setText(e.getMessage());
         }
@@ -69,6 +98,14 @@ public class MenuController implements Initializable {
         Data.canvasStage.setTitle("User: " + Data.user.getUsername() + ". Page: Canvas.");
         Data.canvasStage.setScene(Data.canvasScene);
         Data.canvasStage.show();
+
+        startAnimation();
+    }
+
+    private void startAnimation(){
+        LinkedList<AnimationTimer> ani = Data.animations;
+
+        ani.forEach((a) -> a.start());
     }
 
 }

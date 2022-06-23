@@ -6,6 +6,7 @@ import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.GeneratingRandomInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -44,6 +45,10 @@ public class UpdaterController implements Initializable {
     private TextField loc_z;
     @FXML
     private TextField loc_name;
+    @FXML
+    private Button randomButton;
+    @FXML
+    private Button nextButton;
 
     @FXML
     public void compileMovie() {
@@ -96,5 +101,8 @@ public class UpdaterController implements Initializable {
         loc_y.setText(Data.updatableObject.getS14());
         loc_z.setText(Data.updatableObject.getS15());
         loc_name.setText(Data.updatableObject.getS16());
+        randomButton.textProperty().bind(Data.factory.getStringBinding("GenerateRandomObjectButton"));
+        nextButton.textProperty().bind(Data.factory.getStringBinding("NextButton"));
+
     }
 }

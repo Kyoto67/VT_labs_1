@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -59,6 +60,10 @@ public class TableController implements Initializable {
     private TableColumn<TableRows, String> user;
     @FXML
     private TableView<TableRows> table;
+    @FXML
+    private Button loadButton;
+    @FXML
+    private Button backButton;
 
     public void getterTable() throws Exception {
         String raw = Data.commandManager.managerWork("getTable");
@@ -128,6 +133,9 @@ public class TableController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initCols();
+        loadButton.textProperty().bind(Data.factory.getStringBinding("LoadButton"));
+        backButton.textProperty().bind(Data.factory.getStringBinding("BackButton"));
+
     }
 
 }
