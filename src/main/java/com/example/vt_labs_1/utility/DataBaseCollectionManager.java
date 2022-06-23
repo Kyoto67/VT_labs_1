@@ -164,7 +164,7 @@ public class DataBaseCollectionManager {
             oneRow[14] = ((Double) resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Y_COLUMN)).toString();
             oneRow[15] = ((Double)resultSet.getDouble(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_Z_COLUMN)).toString();
             oneRow[16] = resultSet.getString(DataBaseHandler.MOVIE_TABLE_DIRECTOR_LOCATION_NAME_COLUMN);
-            oneRow[17] = ((Long) resultSet.getLong(DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN)).toString();
+            oneRow[17] = databaseUserManager.getUserById(resultSet.getLong(DataBaseHandler.MOVIE_TABLE_USER_ID_COLUMN)).getUsername();
             return oneRow;
         } catch (SQLException e){
             return null;

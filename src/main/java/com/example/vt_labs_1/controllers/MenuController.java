@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +24,8 @@ public class MenuController implements Initializable {
     private TextField argument;
     @FXML
     private TextArea result;
+
+    private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,6 +62,13 @@ public class MenuController implements Initializable {
     public void openAsker() {
         Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Enter data.");
         Data.primaryStage.setScene(Data.askerScene);
+    }
+
+    @FXML
+    public void canvas(){
+        Data.canvasStage.setTitle("User: " + Data.user.getUsername() + ". Page: Canvas.");
+        Data.canvasStage.setScene(Data.canvasScene);
+        Data.canvasStage.show();
     }
 
 }

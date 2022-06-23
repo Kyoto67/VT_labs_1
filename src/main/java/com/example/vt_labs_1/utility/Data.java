@@ -5,6 +5,8 @@ import com.example.vt_labs_1.data.Movie;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
+
 public class Data {
     public static User user;
     public static Client client;
@@ -19,6 +21,13 @@ public class Data {
     public static CommandManager commandManager;
     public static Movie movie = null;
     public static Scene askerScene;
+    public static Scene canvasScene;
+    public static Stage canvasStage;
+    public static TableRows updatableObject;
+    public static Stage errorStage;
+    public static Scene accessScene;
+    public static Scene updaterScene;
+    public static LinkedList<TableRows> rows;
     public static void addMessage(String s) {
         message += s + "\n";
     }

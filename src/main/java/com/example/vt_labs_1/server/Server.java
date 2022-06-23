@@ -4,7 +4,6 @@ import com.example.vt_labs_1.commands.AbstractCommand;
 import com.example.vt_labs_1.exceptions.DatabaseHandlingException;
 import com.example.vt_labs_1.utility.*;
 import com.example.vt_labs_1.utility.Module;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;

@@ -41,4 +41,76 @@ public class TableRows {
         this.s16=strs[16];
         this.s17=strs[17];
     }
+
+    public String getS0() {
+        return s0;
+    }
+
+    public String getS1() {
+        return s1;
+    }
+
+    public String getS2() {
+        return s2;
+    }
+
+    public String getS3() {
+        return s3;
+    }
+
+    public String getS4() {
+        return s4;
+    }
+
+    public String getS5() {
+        return s5;
+    }
+
+    public String getS6() {
+        return s6;
+    }
+
+    public String getS7() {
+        return s7;
+    }
+
+    public String getS8() {
+        return s8;
+    }
+
+    public String getS9() {
+        return s9;
+    }
+
+    public String getS10() {
+        return s10;
+    }
+
+    public String getS11() {
+        return s11;
+    }
+
+    public String getS12() {
+        return s12;
+    }
+
+    public String getS13() {
+        return s13;
+    }
+
+    public String getS14() {
+        return s14;
+    }
+
+    public String getS15() {
+        return s15;
+    }
+
+    public String getS16() {
+        return s16;
+    }
+
+    public String getS17() {
+        return s17;
+    }
 }

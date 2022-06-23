@@ -27,7 +27,6 @@ public class ConnectController {
         } catch (Disconnect e) {
             Data.addMessage(e.getMessage());
             Data.primaryStage.setTitle("Error");
-//            ExceptionController.msg.setText(Data.messageOut());
             Data.primaryStage.setScene(Data.exceptionScene);
         } catch (Exception e) {
             e.printStackTrace();

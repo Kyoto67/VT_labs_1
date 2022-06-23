@@ -3,18 +3,23 @@ package com.example.vt_labs_1.controllers;
 import com.example.vt_labs_1.commands.getTable;
 import com.example.vt_labs_1.utility.Data;
 import com.example.vt_labs_1.utility.TableRows;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.controlsfx.control.table.TableFilter;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class TableController {
+public class TableController implements Initializable {
 
     @FXML
     private TableColumn<TableRows, String> id;
@@ -56,14 +61,13 @@ public class TableController {
     private TableView<TableRows> table;
 
     public void getterTable() throws Exception {
-        initCols();
         String raw = Data.commandManager.managerWork("getTable");
-        System.out.println(raw);
-        ObservableList<TableRows> rows = FXCollections.observableArrayList();
+        LinkedList<TableRows> rows = new LinkedList<>();
         String[] strs = new String[18];
         Scanner scanner = new Scanner(raw);
         scanner.useDelimiter(System.getProperty("line.separator"));
-        while (!scanner.hasNext("")) {
+        boolean over = false;
+        while (!over) {
             try {
                 strs[0] = scanner.next();
                 strs[1] = scanner.next();
@@ -84,38 +88,46 @@ public class TableController {
                 strs[16] = scanner.next();
                 strs[17] = scanner.next();
                 rows.add(new TableRows(strs));
-                System.out.println(Arrays.toString(strs));
-                System.out.println("//");
             } catch (Exception ing) {
-
+                over=true;
             }
         }
-        table.setItems(rows);
+        Data.rows=rows;
+        ObservableList<TableRows> rowsObservableList = FXCollections.observableArrayList(rows);
+        table.setItems(rowsObservableList);
+        TableFilter.forTableView(table).apply();
+        table.getSelectionModel().clearSelection();
     }
 
     private void initCols() {
-        id.setCellValueFactory(new PropertyValueFactory<>("s0"));
-        movieName.setCellValueFactory(new PropertyValueFactory<>("s1"));
-        date.setCellValueFactory(new PropertyValueFactory<>("s2"));
-        oscarscount.setCellValueFactory(new PropertyValueFactory<>("s3"));
-        genre.setCellValueFactory(new PropertyValueFactory<>("s4"));
-        mpaa.setCellValueFactory(new PropertyValueFactory<>("s5"));
-        coordinate_x.setCellValueFactory(new PropertyValueFactory<>("s6"));
-        coordinate_y.setCellValueFactory(new PropertyValueFactory<>("s7"));
-        director_name.setCellValueFactory(new PropertyValueFactory<>("s8"));
-        height.setCellValueFactory(new PropertyValueFactory<>("s9"));
-        eye.setCellValueFactory(new PropertyValueFactory<>("s10"));
-        hair.setCellValueFactory(new PropertyValueFactory<>("s11"));
-        country.setCellValueFactory(new PropertyValueFactory<>("s12"));
-        loc_x.setCellValueFactory(new PropertyValueFactory<>("s13"));
-        loc_y.setCellValueFactory(new PropertyValueFactory<>("s14"));
-        loc_z.setCellValueFactory(new PropertyValueFactory<>("s15"));
-        loc_name.setCellValueFactory(new PropertyValueFactory<>("s16"));
-        user.setCellValueFactory(new PropertyValueFactory<>("s17"));
+        id.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS0()));
+        movieName.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS1()));
+        date.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS2()));
+        oscarscount.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS3()));
+        genre.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS4()));
+        mpaa.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS5()));
+        coordinate_x.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS6()));
+        coordinate_y.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS7()));
+        director_name.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS8()));
+        height.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS9()));
+        eye.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS10()));
+        hair.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS11()));
+        country.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS12()));
+        loc_x.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS13()));
+        loc_y.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS14()));
+        loc_z.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS15()));
+        loc_name.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS16()));
+        user.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS17()));
     }
 
     public void back() {
         Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Menu.");
         Data.primaryStage.setScene(Data.menuScene);
     }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initCols();
+    }
+
 }
