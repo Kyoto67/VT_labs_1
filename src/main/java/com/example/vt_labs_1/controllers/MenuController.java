@@ -8,6 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -48,7 +51,6 @@ public class MenuController implements Initializable {
         commandChoice.setItems(list);
         commandChoice.setValue(list.get(0));
         argument.promptTextProperty().bind(Data.factory.getStringBinding("ValueLabel"));
-        result.textProperty().bind(Data.factory.getStringBinding("HelloLabel"));;
         executeButton.textProperty().bind(Data.factory.getStringBinding("ExecuteButton"));
         chooseCommand.textProperty().bind(Data.factory.getStringBinding("ChooseCommandRequestLabel"));
         exitButton.textProperty().bind(Data.factory.getStringBinding("ExitButton"));
@@ -67,9 +69,7 @@ public class MenuController implements Initializable {
             command += " " + argument.getText();
         }
         try {
-            String s=Data.commandManager.managerWork(command);
-            System.out.println(s);
-            result.setText(s);
+            result.setText(Data.commandManager.managerWork(command));
         } catch (ArgumentException e) {
             result.setText(e.getMessage());
         }

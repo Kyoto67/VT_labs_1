@@ -37,7 +37,8 @@ public class locale_ru extends ListResourceBundle {
                 {"rus", "Русский"},
                 {"fin", "Финский"},
                 {"ua", "Украинский"},
-                {"en", "Английский"}
+                {"en", "Английский"},
+                {"changeButton","Изменить"}
         };
     }
 }

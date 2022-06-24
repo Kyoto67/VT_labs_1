@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-public class UpdaterController implements Initializable {
+public class TableUpdaterController implements Initializable {
 
     @FXML
     private TextField movie_name;
@@ -70,8 +70,8 @@ public class UpdaterController implements Initializable {
             movie.setDirector(director);
             Data.movie = movie;
             Data.commandManager.managerWork("update "+Data.updatableObject.getS0());
-            Data.canvasStage.setTitle("User: " + Data.user.getUsername() + ". Page: Canvas.");
-            Data.canvasStage.setScene(Data.canvasScene);
+            Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Table.");
+            Data.primaryStage.setScene(Data.tableScene);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,8 +81,8 @@ public class UpdaterController implements Initializable {
     public void compileRandom() throws ArgumentException {
         Data.movie = GeneratingRandomInfo.generateOneObject();
         Data.commandManager.managerWork("update "+Data.updatableObject.getS0());
-        Data.canvasStage.setTitle("User: " + Data.user.getUsername() + ". Page: Canvas.");
-        Data.canvasStage.setScene(Data.canvasScene);
+        Data.primaryStage.setTitle("User: " + Data.user.getUsername() + ". Page: Table.");
+        Data.primaryStage.setScene(Data.tableScene);
     }
 
     @Override

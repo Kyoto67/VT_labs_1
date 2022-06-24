@@ -37,7 +37,8 @@ public class locale_ua extends ListResourceBundle {
                 {"rus", "Російська"},
                 {"fin", "Фінський"},
                 {"ua", "Український"},
-                {"en", "Англійська"}
+                {"en", "Англійська"},
+                {"changeButton","Змінити"}
         };
     }
 }

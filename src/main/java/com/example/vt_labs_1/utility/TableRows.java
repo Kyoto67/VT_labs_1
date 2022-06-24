@@ -1,7 +1,19 @@
 package com.example.vt_labs_1.utility;
 
+import com.example.vt_labs_1.App;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
 public class TableRows {
 
+    private Button change;
     private String s0;
     private String s1;
     private String s2;
@@ -40,6 +52,31 @@ public class TableRows {
         this.s15=strs[15];
         this.s16=strs[16];
         this.s17=strs[17];
+        this.change = new Button();
+        change.textProperty().bind(Data.factory.getStringBinding("changeButton"));
+
+        EventHandler<ActionEvent> update = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (s17.equals(Data.user.getUsername())) {
+                    Data.updatableObject = getThis();
+                    Data.primaryStage.setTitle("Отредактируйте поля.");
+                    try {
+                        Data.primaryStage.setScene(new Scene(new FXMLLoader(App.class.getResource("view/tableupdater.fxml"), Data.resourceBundle).load(), 300, 200));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        errorWindowOpen();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        };
+
+        change.setOnAction(update);
+
     }
 
     public String getS0() {
@@ -112,5 +149,21 @@ public class TableRows {
 
     public String getS17() {
         return s17;
+    }
+
+    public TableRows getThis(){
+        return this;
+    }
+
+    public Button getChange() {
+        return change;
+    }
+
+    private void errorWindowOpen() throws IOException {
+        Data.errorStage = new Stage();
+        Data.errorStage.setTitle("Error");
+        Data.errorStage.setScene(Data.accessScene);
+        Data.errorStage.initModality(Modality.WINDOW_MODAL);
+        Data.errorStage.show();
     }
 }

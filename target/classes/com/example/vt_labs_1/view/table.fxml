@@ -10,30 +10,31 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Button fx:id="backButton" layoutX="2.0" layoutY="33.0" mnemonicParsing="false" onAction="#back" text="%BackButton" />
+            <Button fx:id="backButton" alignment="CENTER" layoutX="2.0" layoutY="33.0" mnemonicParsing="false" onAction="#back" prefHeight="24.0" prefWidth="115.0" text="%BackButton" textAlignment="CENTER" />
          </children></Pane>
-      <TableView fx:id="table" layoutX="58.0" prefHeight="400.0" prefWidth="600.0">
+      <TableView fx:id="table" layoutX="124.0" prefHeight="400.0" prefWidth="476.0">
         <columns>
-          <TableColumn fx:id="id" prefWidth="54.0" text="ID" />
-            <TableColumn fx:id="movieName" prefWidth="177.0" text="movie_name" />
-            <TableColumn fx:id="date" prefWidth="346.0" text="creation_date" />
-            <TableColumn fx:id="oscarscount" prefWidth="101.0" text="oscars" />
-            <TableColumn fx:id="genre" prefWidth="134.0" text="genre" />
-            <TableColumn fx:id="mpaa" prefWidth="61.0" text="mpaa" />
-            <TableColumn fx:id="coordinate_x" prefWidth="89.0" text="c_x" />
-            <TableColumn fx:id="coordinate_y" prefWidth="97.0" text="c_y" />
-            <TableColumn fx:id="director_name" prefWidth="139.0" text="director" />
-            <TableColumn fx:id="height" prefWidth="73.0" text="d_height" />
-            <TableColumn fx:id="eye" prefWidth="91.0" text="eye" />
-            <TableColumn fx:id="hair" prefWidth="89.0" text="hair" />
-            <TableColumn fx:id="country" prefWidth="117.0" text="country" />
-            <TableColumn fx:id="loc_x" minWidth="0.0" prefWidth="121.0" text="loc_x" />
-            <TableColumn fx:id="loc_y" prefWidth="115.0" text="loc_y" />
-            <TableColumn fx:id="loc_z" prefWidth="116.0" text="loc_z" />
-            <TableColumn fx:id="loc_name" prefWidth="153.0" text="loc_name" />
-            <TableColumn fx:id="user" prefWidth="216.0" text="user" />
+            <TableColumn fx:id="buttons" prefWidth="107.0" text="Buttons" />
+          <TableColumn fx:id="id" prefWidth="52.0" text="ID" />
+            <TableColumn fx:id="movieName" prefWidth="186.0" text="movie_name" />
+            <TableColumn fx:id="date" prefWidth="294.0" text="creation_date" />
+            <TableColumn fx:id="oscarscount" prefWidth="127.0" text="oscars" />
+            <TableColumn fx:id="genre" prefWidth="128.0" text="genre" />
+            <TableColumn fx:id="mpaa" prefWidth="73.0" text="mpaa" />
+            <TableColumn fx:id="coordinate_x" prefWidth="107.0" text="c_x" />
+            <TableColumn fx:id="coordinate_y" prefWidth="104.0" text="c_y" />
+            <TableColumn fx:id="director_name" prefWidth="113.0" text="director" />
+            <TableColumn fx:id="height" prefWidth="79.0" text="d_height" />
+            <TableColumn fx:id="eye" prefWidth="88.0" text="eye" />
+            <TableColumn fx:id="hair" prefWidth="87.0" text="hair" />
+            <TableColumn fx:id="country" prefWidth="126.0" text="country" />
+            <TableColumn fx:id="loc_x" minWidth="0.0" prefWidth="119.0" text="loc_x" />
+            <TableColumn fx:id="loc_y" prefWidth="114.0" text="loc_y" />
+            <TableColumn fx:id="loc_z" prefWidth="111.0" text="loc_z" />
+            <TableColumn fx:id="loc_name" prefWidth="155.0" text="loc_name" />
+            <TableColumn fx:id="user" prefWidth="195.0" text="user" />
         </columns>
       </TableView>
-      <Button fx:id="loadButton" layoutX="2.0" layoutY="5.0" mnemonicParsing="false" onAction="#getterTable" text="%LoadButton" />
+      <Button fx:id="loadButton" alignment="CENTER" layoutX="2.0" layoutY="5.0" mnemonicParsing="false" onAction="#getterTable" prefHeight="24.0" prefWidth="115.0" text="%LoadButton" textAlignment="CENTER" />
    </children>
 </AnchorPane>

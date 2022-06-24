@@ -23,6 +23,8 @@ import java.util.Scanner;
 public class TableController implements Initializable {
 
     @FXML
+    private TableColumn<TableRows, Button> buttons;
+    @FXML
     private TableColumn<TableRows, String> id;
     @FXML
     private TableColumn<TableRows, String> movieName;
@@ -105,6 +107,7 @@ public class TableController implements Initializable {
     }
 
     private void initCols() {
+        buttons.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getChange()));
         id.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS0()));
         movieName.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS1()));
         date.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getS2()));

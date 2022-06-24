@@ -18,6 +18,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -37,8 +39,6 @@ public class SuccessController implements Initializable {
     private Label label;
     @FXML
     private Button button;
-    private LinkedList<String> users = new LinkedList<>();
-    private LinkedList<Color> colors = new LinkedList<>();
 
     public void next() {
         try {
@@ -55,153 +55,124 @@ public class SuccessController implements Initializable {
 
     private void canvasInit() {
 
-//        LinkedList<TableRows> data = new LinkedList<>();
-//        if(Data.rows==null){
-//            data = readCollectionData();
-//        } else {
-//            data = Data.rows;
-//        }
-
-        LinkedList<TableRows> data = null;
-        try {
-            data = readCollectionData();
-        } catch (ArgumentException e) {
-            throw new RuntimeException(e);
-        }
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(System.getProperty("user.dir") + "/src/main/resources/com/example/vt_labs_1/images/meow.png");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
         Pane layout = new Pane();
         Group group = new Group(layout);
+        Image meow = new Image(fis, 150, 100, true, true);
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    LinkedList<TableRows> data = readCollectionData();
+                    LinkedList<String> users = new LinkedList<>();
+                    LinkedList<Color> colors = new LinkedList<>();
+                    data.forEach(tableRows -> {
+                        if (!users.contains(tableRows.getS17())) {
+                            users.add(tableRows.getS17());
+                        }
+                    });
+                    for (int i = 0; i < users.size(); i++) {
+                        colors.add(Color.rgb(randomRGB(), randomRGB(), randomRGB()));
+                    }
+                    data.forEach(tableRows -> {
 
-        data.forEach(tableRows -> {
-            if (!users.contains(tableRows.getS17())) {
-                users.add(tableRows.getS17());
+                        Canvas canvas = new Canvas(150.00f, 100.00f);
+                        GraphicsContext graphics_context =
+                                canvas.getGraphicsContext2D();
+                        double coordinate_x = Double.parseDouble(tableRows.getS6());
+                        double coordinate_y = Double.parseDouble(tableRows.getS7());
+                        Color color = colors.get(users.indexOf(tableRows.getS17()));
+
+                        Data.animations.add(new AnimationTimer() {
+                            double startX = 0;
+                            double endX = 10;
+                            double y = 0;
+                            double x = startX;
+                            double speed = 0.000001;
+                            GraphicsContext graphicsContext = graphics_context;
+
+                            @Override
+                            public void handle(long now) {
+
+                                graphics_context.setFill(Color.BLACK);
+                                graphics_context.fillRect(x, y, 150, 100);
+
+                                // set fill for rectangle
+                                graphics_context.setFill(color);
+                                graphics_context.fillRect(x + 10, y + 10, 130, 80);
+                                graphics_context.drawImage(meow, x + 10, y);
+
+                                x += speed;
+
+                                if (x >= endX) {
+                                    this.stop();
+                                }
+                            }
+                        });
+
+                        Tooltip tip = new Tooltip();
+                        tip.setText(
+                                "id: " + tableRows.getS0() + "\n" +
+                                        "movie name: " + tableRows.getS1() + "\n" +
+                                        "creation date: " + tableRows.getS2() + "\n" +
+                                        "oscars count: " + tableRows.getS3() + "\n" +
+                                        "genre: " + tableRows.getS4() + "\n" +
+                                        "rating: " + tableRows.getS5() + "\n" +
+                                        "coordinate x: " + tableRows.getS6() + "\n" +
+                                        "coordinate y: " + tableRows.getS7() + "\n" +
+                                        "director:\n" +
+                                        "name: " + tableRows.getS8() + "\n" +
+                                        "height: " + tableRows.getS9() + "\n" +
+                                        "eye color: " + tableRows.getS10() + "\n" +
+                                        "hair color: " + tableRows.getS11() + "\n" +
+                                        "nationality: " + tableRows.getS12() + "\n" +
+                                        "loc_x: " + tableRows.getS13() + "\n" +
+                                        "loc_y: " + tableRows.getS14() + "\n" +
+                                        "loc_z: " + tableRows.getS15() + "\n" +
+                                        "loc_name: " + tableRows.getS16() + "\n" + "\n" +
+                                        "movie owner: " + tableRows.getS17());
+                        Button baton = new Button();
+                        baton.setBackground(new Background(new BackgroundFill(null, null, null)));
+                        baton.setGraphic(canvas);
+                        baton.setLayoutX(coordinate_x);
+                        baton.setLayoutY(coordinate_y);
+                        baton.setTooltip(tip);
+                        EventHandler<ActionEvent> update = new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent actionEvent) {
+                                if (tableRows.getS17().equals(Data.user.getUsername())) {
+                                    Data.updatableObject = tableRows;
+                                    try {
+                                        Data.updaterScene = new Scene(new FXMLLoader(App.class.getResource("view/updater.fxml"), Data.resourceBundle).load(), 300, 200);
+                                    } catch (IOException e) {
+                                    }
+                                    Data.canvasStage.setTitle("Отредактируйте поля.");
+                                    Data.canvasStage.setScene(Data.updaterScene);
+                                } else {
+                                    try {
+                                        errorWindowOpen();
+                                    } catch (IOException e) {
+                                    }
+                                }
+                            }
+                        };
+                        baton.setOnAction(update);
+                        group.getChildren().add(baton);
+                    });
+                    Data.canvasScene = new Scene(group, 600, 400);
+                } catch (Exception e) {
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                }
             }
         });
-        for (int i = 0; i < users.size(); i++) {
-            colors.add(Color.rgb(randomRGB(), randomRGB(), randomRGB()));
-        }
-        Image meow = new Image(fis, 150, 100, true, true);
-
-
-        data.forEach(tableRows -> {
-
-            Canvas canvas = new Canvas(150.00f, 100.00f);
-            GraphicsContext graphics_context =
-                    canvas.getGraphicsContext2D();
-            double coordinate_x = Double.parseDouble(tableRows.getS6());
-            double coordinate_y = Double.parseDouble(tableRows.getS7());
-            Color color = colors.get(users.indexOf(tableRows.getS17()));
-
-//
-//            graphics_context.setFill(Color.BLACK);
-//            graphics_context.fillRect(0, 0, 150, 100);
-//
-//            // set fill for rectangle
-//            graphics_context.setFill(color);
-//            graphics_context.fillRect(10, 10, 130, 80);
-//            graphics_context.drawImage(meow, 10, 0);
-
-            Data.animations.add(new AnimationTimer() {
-                double startX = 0;
-                double endX = 10;
-                double y = 0;
-                double x = startX;
-                double speed = 0.000001;
-                GraphicsContext graphicsContext = graphics_context;
-
-                @Override
-                public void handle(long now) {
-
-                    graphics_context.setFill(Color.BLACK);
-                    graphics_context.fillRect(x, y, 150, 100);
-
-                    // set fill for rectangle
-                    graphics_context.setFill(color);
-                    graphics_context.fillRect(x+10, y+10, 130, 80);
-                    graphics_context.drawImage(meow, x+10, y);
-
-                    x+=speed;
-
-                    if( x >= endX) {
-                        this.stop();
-                    }
-                }
-            });
-
-            Tooltip tip = new Tooltip();
-            tip.setText(
-                    "id: " + tableRows.getS0() + "\n" +
-                            "movie name: " + tableRows.getS1() + "\n" +
-                            "creation date: " + tableRows.getS2() + "\n" +
-                            "oscars count: " + tableRows.getS3() + "\n" +
-                            "genre: " + tableRows.getS4() + "\n" +
-                            "rating: " + tableRows.getS5() + "\n" +
-                            "coordinate x: " + tableRows.getS6() + "\n" +
-                            "coordinate y: " + tableRows.getS7() + "\n" +
-                            "director:\n" +
-                            "name: " + tableRows.getS8() + "\n" +
-                            "height: " + tableRows.getS9() + "\n" +
-                            "eye color: " + tableRows.getS10() + "\n" +
-                            "hair color: " + tableRows.getS11() + "\n" +
-                            "nationality: " + tableRows.getS12() + "\n" +
-                            "loc_x: " + tableRows.getS13() + "\n" +
-                            "loc_y: " + tableRows.getS14() + "\n" +
-                            "loc_z: " + tableRows.getS15() + "\n" +
-                            "loc_name: " + tableRows.getS16() + "\n" + "\n" +
-                            "movie owner: " + tableRows.getS17());
-            Button baton = new Button();
-
-            baton.setGraphic(canvas);
-            baton.setLayoutX(coordinate_x);
-            baton.setLayoutY(coordinate_y);
-            baton.setTooltip(tip);
-            EventHandler<ActionEvent> update = new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    if (tableRows.getS17().equals(Data.user.getUsername())) {
-                        Data.updatableObject = tableRows;
-                        try {
-                            Data.updaterScene = new Scene(new FXMLLoader(App.class.getResource("view/updater.fxml"), Data.resourceBundle).load(), 300, 200);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        Data.canvasStage.setTitle("Отредактируйте поля.");
-                        Data.canvasStage.setScene(Data.updaterScene);
-                    } else {
-                        try {
-                            errorWindowOpen();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            };
-            baton.setOnAction(update);
-            group.getChildren().add(baton);
-
-
-        });
-
-//        Button back = new Button("BACK");
-//
-//        EventHandler<ActionEvent> event = new EventHandler<>() {
-//            @Override
-//            public void handle(ActionEvent actionEvent) {
-//                Data.canvasStage.close();
-//            }
-//
-//        };
-
-//        back.setOnAction(event);
-
-        Data.canvasScene = new Scene(group, 600, 400);
-
+        thread.start();
     }
 
     private LinkedList<TableRows> readCollectionData() throws ArgumentException {
